@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
  * @since 2021/4/11
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RequestDTO {
     /** 请求指令码 */
     public int code;
@@ -21,5 +19,5 @@ public class RequestDTO {
     public  String msg;
 
     /** 请求数据 */
-    public DataContentDTO data;
+    public DataContentRequest data;
 }

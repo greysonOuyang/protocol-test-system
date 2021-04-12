@@ -5,7 +5,6 @@ package com.yuyi.pts.common.controller;/*
  */
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.vo.request.DataContentDTO;
 import com.yuyi.pts.netty.NettyClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -59,8 +58,6 @@ public class DemoTest {
     @OnMessage
     public void onMessage(String message, Session session) {
         JSONObject object = JSONObject.parseObject(message);
-        DataContentDTO dcd = new DataContentDTO();
-        DataContentDTO.RequestDataDTO requestData = dcd.getRequestData();
         if(null!=object){
             // 获取到前端上送的ip、端口、类型、具体内容
             System.out.println(",,,,"+object.get("ip").toString());
