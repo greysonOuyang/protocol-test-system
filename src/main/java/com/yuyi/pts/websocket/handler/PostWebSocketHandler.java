@@ -1,4 +1,4 @@
-package com.yuyi.pts.websocket.springboot.handler;
+package com.yuyi.pts.websocket.handler;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;

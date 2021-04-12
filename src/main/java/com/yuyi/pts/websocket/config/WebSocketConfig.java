@@ -1,6 +1,6 @@
-package com.yuyi.pts.websocket.springboot.config;
+package com.yuyi.pts.websocket.config;
 
-import com.yuyi.pts.websocket.springboot.handler.HttpAuthHandler;
+import com.yuyi.pts.websocket.handler.HandlerDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -17,16 +17,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
+
     @Autowired
-    private HttpAuthHandler httpAuthHandler;
-//    @Autowired
-//    private MyInterceptor myInterceptor;
+    private HandlerDispatcher handlerDispatcher;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry
-                .addHandler(httpAuthHandler, "ws/serverOne")
-//                .addInterceptors(myInterceptor)
+        registry.addHandler(handlerDispatcher, "ws/ost")
+
                 .setAllowedOrigins("*");
     }
 }

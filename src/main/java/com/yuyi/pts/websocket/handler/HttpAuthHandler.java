@@ -1,6 +1,6 @@
-package com.yuyi.pts.websocket.springboot.handler;
+package com.yuyi.pts.websocket.handler;
 
-import com.yuyi.pts.websocket.springboot.WsSessionManager;
+import com.yuyi.pts.websocket.WsSessionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;

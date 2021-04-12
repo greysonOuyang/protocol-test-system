@@ -1,4 +1,4 @@
-//package com.yuyi.pts.websocket.springboot.handler;
+//package com.yuyi.pts.websocket.handler;
 //
 //import io.netty.handler.codec.http.HttpUtil;
 //import org.springframework.http.server.ServerHttpRequest;
@@ -12,7 +12,7 @@
 //import java.util.Map;
 //
 ///**
-// * description
+// * 前置拦截器、进行请求校验
 // *
 // * @author greyson
 // * @since 2021/4/12
