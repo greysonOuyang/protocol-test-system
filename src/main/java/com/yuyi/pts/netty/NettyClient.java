@@ -3,18 +3,18 @@ package com.yuyi.pts.netty;
 import com.yuyi.pts.config.ProtocolConfig;
 import com.yuyi.pts.netty.handler.NettyClientInitializer;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -23,10 +23,16 @@ import javax.annotation.Resource;
  * @since 2021/4/11
  */
 @Component
+@Slf4j
+@Data
 public class NettyClient {
 
     @Autowired
     private ProtocolConfig protocolConfig;
+
+    Channel channel = null;
+
+    Bootstrap bootstrap1 = new Bootstrap();
 
     @Value("${user.protocol.ip}")
     private String host;
@@ -61,7 +67,8 @@ public class NettyClient {
 
     public void start() {
         try {
-            channelFuture = bootstrap.connect(host, port).sync();
+            channelFuture = bootstrap.connect(getHost(), getPort()).sync();
+            log.info("连接成功-------");
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -69,13 +76,22 @@ public class NettyClient {
             group.shutdownGracefully();
         }
     }
-
-    private int getPort() {
-        return 0;
-    }
-
-    private String getHost() {
-        return null;
+    //以下版本是公司代码 直接复制而来
+    int currentPort = 1; // 当前的端口
+    public void doConnect() {
+        if (channel != null && channel.isActive()) {
+            return;
+        }
+        ChannelFuture future = bootstrap1.connect(getHost(), getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
+        future.addListener((ChannelFutureListener) futureListener -> {
+            if (futureListener.isSuccess()) {
+                channel = futureListener.channel();
+            } else {
+                currentPort = currentPort == 1 ? 2 : 1;
+                log.info("连接服务器[" + getHost() + ":" + getPort() + "]失败,10s后重试");
+                futureListener.channel().eventLoop().schedule(this::doConnect, 10, TimeUnit.SECONDS);
+            }
+        });
     }
 
 }
