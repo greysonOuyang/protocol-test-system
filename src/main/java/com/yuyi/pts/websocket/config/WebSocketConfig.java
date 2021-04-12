@@ -23,7 +23,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(handlerDispatcher, "ws/ost")
+        registry.addHandler(handlerDispatcher, "/ws/ost")
 
                 .setAllowedOrigins("*");
     }

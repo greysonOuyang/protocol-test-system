@@ -46,17 +46,6 @@ public class NettyClient {
 
     private ChannelFuture channelFuture;
 
-//    private static class SingletonNettyClient{
-//        static final NettyClient INSTANCE = new NettyClient();
-//    }
-//
-//    public static NettyClient getInstance(){
-//
-//        return SingletonNettyClient.INSTANCE;
-//    }
-
-
-
     public NettyClient() {
         group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -76,7 +65,7 @@ public class NettyClient {
             group.shutdownGracefully();
         }
     }
-    //以下版本是公司代码 直接复制而来
+
     int currentPort = 1; // 当前的端口
     public void doConnect() {
         if (channel != null && channel.isActive()) {

@@ -6,7 +6,7 @@ package com.yuyi.pts.common.enums;
  * @author greyson
  * @since 2021/4/11
  */
-public enum OptionCommand {
+public enum OperationCommand {
     /** 取消操作:-1 */
     CANCEL(-1),
     /** 提交测试:1 */
@@ -33,7 +33,7 @@ public enum OptionCommand {
     /** 状态码 */
     private int code;
 
-    private OptionCommand(int code) {
+    private OperationCommand(int code) {
         this.code = code;
     }
 

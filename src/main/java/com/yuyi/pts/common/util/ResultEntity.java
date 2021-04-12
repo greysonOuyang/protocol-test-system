@@ -52,7 +52,6 @@ public class ResultEntity<T> {
     public static <Type> ResultEntity<Type> successWithData(Type data) {
         return new ResultEntity<Type>(SUCCESS, null, data);
     }
-
     /**
      * 请求处理失败后使用的工具方法
      * @param message
