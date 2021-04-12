@@ -14,6 +14,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <netty.version>4.1.39.Final</netty.version>
         <lombok.version>1.16.18</lombok.version>
+        <fastjson.version>1.2.75</fastjson.version>
     </properties>
 
 
@@ -47,6 +48,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
         </dependency>
     </dependencies>
 
