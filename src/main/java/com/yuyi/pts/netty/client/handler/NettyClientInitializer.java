@@ -1,13 +1,10 @@
 package com.yuyi.pts.netty.client.handler;
 
-import com.yuyi.pts.netty.handler.InitialHandler;
-import com.yuyi.pts.netty.handler.WebSocketRequestHandler;
+import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
  * 处理器初始化，有新的协议处理器加在此处
