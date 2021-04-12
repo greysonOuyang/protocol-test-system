@@ -5,8 +5,11 @@ package com.yuyi.pts.common.controller;/*
  */
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.netty.NettyClient;
+import com.yuyi.pts.common.service.MessageService;
+import com.yuyi.pts.common.vo.request.DataRequest;
+import com.yuyi.pts.netty.client.NettyClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -28,7 +31,8 @@ public class DemoTest {
      */
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
-    NettyClient nettyClient = new NettyClient();
+    @Autowired
+    public MessageService messageService;
 
 
     /**
@@ -57,18 +61,8 @@ public class DemoTest {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        JSONObject object = JSONObject.parseObject(message);
-        if(null!=object){
-            // 获取到前端上送的ip、端口、类型、具体内容
-            System.out.println(",,,,"+object.get("ip").toString());
-         //   requestData.setHost(object.get("ip").toString());
-        }
-        // 将IP 端口获取到
-        nettyClient.setHost(object.get("ip").toString());
-        nettyClient.setPort(Integer.parseInt(object.get("port").toString()));
-        // 在这启动netty客户端，调用第三方接口服务
-        nettyClient.start();
 
+        JSONObject object = messageService.getConnect(message);
         System.out.println("服务端收到客户端[{}]的消息:{}" + session.getId() + message);
         //  将信息传给前端
         this.sendMessage("Hello,ip为" + object.get("ip")+"端口为："+object.get("port"),session);

@@ -1,7 +1,7 @@
-package com.yuyi.pts.netty;
+package com.yuyi.pts.netty.client;
 
 import com.yuyi.pts.config.ProtocolConfig;
-import com.yuyi.pts.netty.handler.NettyClientInitializer;
+import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
