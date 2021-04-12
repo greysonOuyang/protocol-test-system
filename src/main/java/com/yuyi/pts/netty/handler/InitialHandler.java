@@ -1,8 +1,7 @@
 package com.yuyi.pts.netty.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.yuyi.pts.common.enums.OptionCommand;
-import com.yuyi.pts.common.vo.RequestDTO;
+import com.yuyi.pts.common.vo.request.RequestDTO;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
