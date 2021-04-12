@@ -1,5 +1,7 @@
-package com.yuyi.pts.netty.handler;
+package com.yuyi.pts.netty.client.handler;
 
+import com.yuyi.pts.netty.handler.InitialHandler;
+import com.yuyi.pts.netty.handler.WebSocketRequestHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

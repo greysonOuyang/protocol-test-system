@@ -1,13 +1,9 @@
 package com.yuyi.pts.common.controller;/*
- * @author : wzl
- * @date   : 2021/4/12/14:23
- * @description:
- */
 
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.NettyClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -20,6 +16,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @ServerEndpoint(value = "/test/one") 前端通过此URI和后端交互，建立连接
  */
 
+import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.service.MessageService;
+import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.netty.client.NettyClient;
+import com.yuyi.pts.netty.client.NettyClient1;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @ServerEndpoint(value = "/test/one")
 @Component
 @Slf4j
@@ -29,7 +38,8 @@ public class DemoTest {
      */
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
-    NettyClient nettyClient = new NettyClient();
+    @Autowired
+    public MessageService messageService;
 
 
     /**
@@ -66,14 +76,16 @@ public class DemoTest {
          //   requestData.setHost(object.get("ip").toString());
         }
         // 将IP 端口获取到
+        NettyClient nettyClient = new NettyClient();
         nettyClient.setHost(object.get("ip").toString());
         nettyClient.setPort(Integer.parseInt(object.get("port").toString()));
         // 在这启动netty客户端，调用第三方接口服务
         nettyClient.start();
 
+        JSONObject object1 = messageService.getConnect(message);
         System.out.println("服务端收到客户端[{}]的消息:{}" + session.getId() + message);
         //  将信息传给前端
-        this.sendMessage("Hello,ip为" + object.get("ip")+"端口为："+object.get("port"),session);
+        this.sendMessage("Hello,ip为" + object1.get("ip")+"端口为："+object1.get("port"),session);
     }
 
     @OnError

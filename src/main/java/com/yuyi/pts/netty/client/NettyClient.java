@@ -1,7 +1,7 @@
-package com.yuyi.pts.netty;
+package com.yuyi.pts.netty.client;
 
 import com.yuyi.pts.config.ProtocolConfig;
-import com.yuyi.pts.netty.handler.NettyClientInitializer;
+import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -64,23 +64,6 @@ public class NettyClient {
         } finally {
             group.shutdownGracefully();
         }
-    }
-
-    int currentPort = 1; // 当前的端口
-    public void doConnect() {
-        if (channel != null && channel.isActive()) {
-            return;
-        }
-        ChannelFuture future = bootstrap1.connect(getHost(), getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
-        future.addListener((ChannelFutureListener) futureListener -> {
-            if (futureListener.isSuccess()) {
-                channel = futureListener.channel();
-            } else {
-                currentPort = currentPort == 1 ? 2 : 1;
-                log.info("连接服务器[" + getHost() + ":" + getPort() + "]失败,10s后重试");
-                futureListener.channel().eventLoop().schedule(this::doConnect, 10, TimeUnit.SECONDS);
-            }
-        });
     }
 
 }

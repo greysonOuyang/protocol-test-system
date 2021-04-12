@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.NettyClient;
+import com.yuyi.pts.netty.client.NettyClient;
 import com.yuyi.pts.service.ExecuteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
