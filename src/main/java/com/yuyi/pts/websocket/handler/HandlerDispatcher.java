@@ -2,7 +2,7 @@ package com.yuyi.pts.websocket.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.enums.OptionCommand;
-import com.yuyi.pts.common.vo.request.DataContentDTO;
+import com.yuyi.pts.common.vo.request.DataContentRequest;
 import com.yuyi.pts.common.vo.request.RequestDTO;
 import com.yuyi.pts.websocket.WsSessionManager;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,7 @@ public class HandlerDispatcher extends AbstractWebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         RequestDTO requestDTO = (RequestDTO) message;
-        DataContentDTO dataContent = requestDTO.getData();
+        DataContentRequest dataContent = requestDTO.getData();
         String contentJson = JSON.toJSONString(dataContent);
 
         if (log.isDebugEnabled()) {
