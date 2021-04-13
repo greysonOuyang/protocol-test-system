@@ -1,20 +1,14 @@
 package com.yuyi.pts.netty.client;
 
 import com.alibaba.fastjson.JSON;
-import com.yuyi.pts.common.cache.CtxWithSessionIdCache;
-import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.config.ProtocolConfig;
-import com.yuyi.pts.netty.client.handler.HttpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
-import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
-import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
 import lombok.Data;
@@ -22,13 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketSession;
-
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import static com.yuyi.pts.common.cache.SessionIdWithRequestDataCache.ctxAndDataMap;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求

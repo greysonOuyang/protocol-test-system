@@ -49,8 +49,6 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         CtxWithSessionIdCache.put(session.getId(), currentCtx);
         nettyClient.start(host, port, currentCtx, dataContent);
 
-//        RequestDataDto send = nettyClient.send(dataContent);
-//        System.out.println(send);
     }
 
 
@@ -67,8 +65,10 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
             nettyClientInitializer = new TcpRequestInitializer();
             currentCtx = TcpRequestHandler.myCtx;
         } else if (type == RequestType.HTTP) {
+            // TODO 同上 指定currentCtx
             nettyClientInitializer = new HttpRequestInitializer();
         } else if (type == RequestType.WebSocket) {
+            // TODO 同上 指定currentCtx
             nettyClientInitializer = new WebSocketInitializer();
         }
         return currentCtx;

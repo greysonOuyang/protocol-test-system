@@ -1,6 +1,9 @@
 package com.yuyi.pts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.cache.CtxWithSessionIdCache;
+import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
@@ -10,16 +13,16 @@ import com.yuyi.pts.netty.client.NettyClient;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
+import org.omg.CORBA.Object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.AbstractWebSocketMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import static com.yuyi.pts.common.util.ResultEntity.successWithData;
 
@@ -72,9 +75,16 @@ public class ExecuteServiceImpl implements ExecuteService {
         Integer port = dataContent.getPort();
         RequestType type = dataContent.getType();
         protocolHandlerDispatcher.submitRequest(session, host, port, type, dataContent);
-//        send(dataContent);
         // TODO SSL证书校验
 
+    }
+
+    public void receiveData(WebSocketSession session) {
+        String id = session.getId();
+        ChannelHandlerContext ctx = CtxWithSessionIdCache.get(id);
+        Object responseData = CtxWithResponseMsgCache.get(ctx);
+        String result = JSON.toJSONString(responseData);
+        session.sendMessage(new TextMessage(result);
     }
 
 

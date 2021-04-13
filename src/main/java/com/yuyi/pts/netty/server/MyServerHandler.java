@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.server;
 
+import com.alibaba.fastjson.JSON;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.util.CharsetUtil;
@@ -40,6 +41,7 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.debug("服务端{}收到客户端消息：{}", ctx.channel().remoteAddress(), msg);
-        ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已收到消息" + msg, CharsetUtil.UTF_8));
+        String content = JSON.toJSONString(msg);
+        ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已接收到消息:" + content, CharsetUtil.UTF_8));
     }
 }
