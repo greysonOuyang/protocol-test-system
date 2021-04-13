@@ -107,6 +107,7 @@
  **/
 
 import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.util.ApplicationHelper;
 import com.yuyi.pts.netty.client.NettyClient1;
 import com.yuyi.pts.netty.client.handler.TcpHandler;
 import com.yuyi.pts.service.impl.NettyMessageServiceImpl;
@@ -114,6 +115,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -128,7 +130,7 @@ public class DemoTest {
      */
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
-    private Session session;
+    private RedisTemplate redisTemplate = ApplicationHelper.getBean("redisTemplate");
 
     @Autowired
     private NettyClient1 nettyClient1;
@@ -137,7 +139,6 @@ public class DemoTest {
      */
     @OnOpen
     public void onOpen( Session session) {
-        this.session = session;
         onlineCount.incrementAndGet(); // 在线数加1
         System.out.println("有新连接加入：{}，当前在线人数为：{}" + session.getId() + onlineCount.get());
     }
@@ -178,26 +179,11 @@ public class DemoTest {
      */
     public void sendMessage(String message, Session session) {
         try {
-            System.out.println("服务端发送消息给客户端成功"+ message);
-            session.getBasicRemote().sendText(message);
+            Object o = redisTemplate.boundValueOps("StringKey").get();
+            System.out.println("服务端发送消息给客户端成功"+ o);
+            session.getBasicRemote().sendText(o.toString());
         } catch (Exception e) {
             System.out.println("服务端发送消息给客户端失败：{}" + e);
         }
     }
-    public void sendMessage(String message) {
-        try {
-            this.session.getBasicRemote().sendText(message);
-            System.out.println("wzl  成功-------"+ message);
-        } catch (Exception e) {
-            System.out.println("wzl  失败-------" + e);
-        }
-    }
-    public String  getMessage(ByteBuf msg){
-        ByteBuf in = msg;
-        //  将信息传给前端
-        String s = in.toString(CharsetUtil.UTF_8);
-        return s;
-    }
-
-
 }

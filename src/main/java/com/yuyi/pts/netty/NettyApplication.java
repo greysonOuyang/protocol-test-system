@@ -1,9 +1,12 @@
 package com.yuyi.pts.netty;
+
 import com.yuyi.pts.config.ProtocolConfig;
+import com.yuyi.pts.netty.client.NettyClient1;
 import com.yuyi.pts.service.impl.NettyMessageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -22,6 +25,11 @@ public class NettyApplication implements ApplicationListener<ContextRefreshedEve
 
     @Autowired
     public NettyMessageServiceImpl messageService;
+    @Autowired
+    public RedisTemplate redisTemplate;
+
+    @Autowired
+    public NettyClient1 nettyClient1;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {

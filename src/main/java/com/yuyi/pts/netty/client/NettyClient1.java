@@ -1,10 +1,16 @@
 package com.yuyi.pts.netty.client;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.vo.request.ConfigRequest;
+import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.config.ProtocolConfig;
 import com.yuyi.pts.netty.client.handler.NettyClientHandler;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpHandler;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.oio.OioEventLoopGroup;
@@ -18,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,22 +62,22 @@ public class NettyClient1 {
 
     }
 
-    public void start(String type) {
+    public void start(String type, RequestDataDto data) {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap(); // (1)
         // 根据不同的类型去匹配对应的协议
-        if(("tcp").equals(type)){
+        if(("TCP").equals(type)){
             bootstrap.group(workerGroup)
                      .option(ChannelOption.SO_KEEPALIVE, true)
                      .channel(NioSocketChannel.class)
                      .handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast(new IdleStateHandler(1, 1, 0)
+                     ch.pipeline().addLast(new IdleStateHandler(1, 1, 0)
                     ,new TcpHandler());
                 }
             });
-            doTcpConnect();
+            doTcpConnect(type,data);
         } else if (("http").equals(type)){
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -103,22 +110,28 @@ public class NettyClient1 {
     private void doHttpConnect() {
     }
 
-    //  tcp 连接 以下版本是公司代码 直接复制而来
     int currentPort = 1; // 当前的端口
-    public void doTcpConnect() {
+    public void doTcpConnect(String type,RequestDataDto data) {
         if (channel != null && channel.isActive()) {
             return;
         }
-        ChannelFuture future = bootstrap.connect(getHost(), getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
+        ChannelFuture future = bootstrap.connect(data.getHost(), data.getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
         future.addListener((ChannelFutureListener) futureListener -> {
             if (futureListener.isSuccess()) {
+                ByteBuf byteBuf = Unpooled.copiedBuffer(JSON.toJSONString(data), Charset.defaultCharset());
+                log.info("连接成功-----");
+                ChannelFuture channelFuture = future.channel().writeAndFlush(byteBuf);
                 channel = futureListener.channel();
             } else {
                 currentPort = currentPort == 1 ? 2 : 1;
                 log.info("连接服务器[" + getHost() + ":" + getPort() + "]失败,10s后重试");
-                futureListener.channel().eventLoop().schedule(this::doTcpConnect, 10, TimeUnit.SECONDS);
             }
         });
+        try {
+            channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
