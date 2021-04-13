@@ -3,11 +3,14 @@ package com.yuyi.pts.netty.client;
 import com.yuyi.pts.config.ProtocolConfig;
 import com.yuyi.pts.netty.client.handler.NettyClientHandler;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
+import com.yuyi.pts.netty.client.handler.TcpHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -55,16 +58,16 @@ public class NettyClient1 {
     public void start(String type) {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap(); // (1)
-        bootstrap.group(workerGroup); // (2)
-        bootstrap.channel(NioSocketChannel.class); // (3)
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, true); // (4)
         // 根据不同的类型去匹配对应的协议
         if(("tcp").equals(type)){
-            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+            bootstrap.group(workerGroup)
+                     .option(ChannelOption.SO_KEEPALIVE, true)
+                     .channel(NioSocketChannel.class)
+                     .handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast(new IdleStateHandler(1, 1, 0));
-                    ch.pipeline().addLast(new NettyClientHandler());
+                    ch.pipeline().addLast(new IdleStateHandler(1, 1, 0)
+                    ,new TcpHandler());
                 }
             });
             doTcpConnect();
@@ -106,7 +109,7 @@ public class NettyClient1 {
         if (channel != null && channel.isActive()) {
             return;
         }
-        ChannelFuture future = bootstrap1.connect(getHost(), getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
+        ChannelFuture future = bootstrap.connect(getHost(), getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
         future.addListener((ChannelFutureListener) futureListener -> {
             if (futureListener.isSuccess()) {
                 channel = futureListener.channel();

@@ -7,19 +7,20 @@ package com.yuyi.pts.controller;
  **/
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.NettyClient;
+import com.yuyi.pts.netty.client.NettyClient1;
+import com.yuyi.pts.netty.client.handler.TcpHandler;
 import com.yuyi.pts.service.impl.NettyMessageServiceImpl;
+import io.netty.buffer.ByteBuf;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ServerEndpoint(value = "/test/one")
 @Component
+@ServerEndpoint(value = "/test/one")
 @Slf4j
 public class DemoTest {
     /**
@@ -27,18 +28,16 @@ public class DemoTest {
      */
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
+    private Session session;
+
     @Autowired
-    public NettyMessageServiceImpl messageService;
-
-
-
+    private NettyClient1 nettyClient1;
     /**
      * 连接建立成功调用的方法
      */
     @OnOpen
     public void onOpen( Session session) {
-
-
+        this.session = session;
         onlineCount.incrementAndGet(); // 在线数加1
         System.out.println("有新连接加入：{}，当前在线人数为：{}" + session.getId() + onlineCount.get());
     }
@@ -57,23 +56,12 @@ public class DemoTest {
      *
      * @param message 客户端发送过来的消息
      */
+
+
     @OnMessage
     public void onMessage(String message, Session session) {
-        JSONObject object = JSONObject.parseObject(message);
-        RequestDataDto dcd = new RequestDataDto();
-        if(null!=object){
-            // 获取到前端上送的ip、端口、类型、具体内容
-            System.out.println(",,,,"+object.get("ip").toString());
-         //   requestData.setHost(object.get("ip").toString());
-        }
-        // 将IP 端口获取到
-        NettyClient nettyClient = new NettyClient();
-        nettyClient.setHost(object.get("ip").toString());
-        nettyClient.setPort(Integer.parseInt(object.get("port").toString()));
-        // 在这启动netty客户端，调用第三方接口服务
-        nettyClient.start();
-
-        JSONObject object1 = messageService.getConnect(message);
+        NettyMessageServiceImpl nettyMessageServiceImpl = new NettyMessageServiceImpl();
+        JSONObject object1 = nettyMessageServiceImpl.getConnect(message);
         System.out.println("服务端收到客户端[{}]的消息:{}" + session.getId() + message);
         //  将信息传给前端
         this.sendMessage("Hello,ip为" + object1.get("ip")+"端口为："+object1.get("port"),session);
@@ -88,13 +76,27 @@ public class DemoTest {
     /**
      * 服务端发送消息给客户端
      */
-    private void sendMessage(String message, Session toSession) {
+    public void sendMessage(String message, Session session) {
         try {
-            System.out.println("服务端给客户端[{}]发送消息{}" + toSession.getId() + message);
-            toSession.getBasicRemote().sendText(message);
+            System.out.println("服务端发送消息给客户端成功"+ message);
+            session.getBasicRemote().sendText(message);
         } catch (Exception e) {
             System.out.println("服务端发送消息给客户端失败：{}" + e);
         }
+    }
+    public void sendMessage(String message) {
+        try {
+            this.session.getBasicRemote().sendText(message);
+            System.out.println("wzl  成功-------"+ message);
+        } catch (Exception e) {
+            System.out.println("wzl  失败-------" + e);
+        }
+    }
+    public String  getMessage(ByteBuf msg){
+        ByteBuf in = msg;
+        //  将信息传给前端
+        String s = in.toString(CharsetUtil.UTF_8);
+        return s;
     }
 
 

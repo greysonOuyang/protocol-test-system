@@ -8,14 +8,16 @@ package com.yuyi.pts.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.vo.request.DataRequest;
 import com.yuyi.pts.netty.client.NettyClient1;
+import com.yuyi.pts.service.NettyMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NettyMessageServiceImpl {
-    @Autowired
-    public NettyClient1 nettyClient;
+public class NettyMessageServiceImpl implements NettyMessageService {
 
+    NettyClient1 nettyClient = new NettyClient1();
+    @Autowired
+    private NettyClient1 nettyClient1;
     public JSONObject getConnect(String message){
         JSONObject object = JSONObject.parseObject(message);
         DataRequest dataRequest = new DataRequest();
@@ -27,7 +29,8 @@ public class NettyMessageServiceImpl {
         nettyClient.setHost(object.get("ip").toString());
         nettyClient.setPort(Integer.parseInt(object.get("port").toString()));
         // 在这启动netty客户端，调用第三方接口服务
-        nettyClient.start(object.get("type").toString());
+        //nettyClient.start(object.get("type").toString());
+        nettyClient.start("tcp");
         return object;
     }
 }
