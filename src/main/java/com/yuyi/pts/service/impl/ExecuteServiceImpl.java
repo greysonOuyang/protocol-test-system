@@ -45,7 +45,6 @@ public class ExecuteServiceImpl implements ExecuteService {
 
     @Override
     public void execute(WebSocketSession session,  RequestDataDto dataContent) {
-
         JSONObject result = new JSONObject();
         result.put("processors", JvmMetricsUtil.availableProcessors());
         result.put("totalMemory", JvmMetricsUtil.totalMemory());
@@ -72,29 +71,12 @@ public class ExecuteServiceImpl implements ExecuteService {
         String host = dataContent.getHost();
         Integer port = dataContent.getPort();
         RequestType type = dataContent.getType();
-        protocolHandlerDispatcher.submitRequest(host, port, type);
-        send(dataContent);
+        protocolHandlerDispatcher.submitRequest(session, host, port, type, dataContent);
+//        send(dataContent);
         // TODO SSL证书校验
 
     }
 
-    /**
-     * 客户端发送消息
-     *
-     * @param dataContent
-     * @return
-     * @throws InterruptedException
-     * @throws ExecutionException
-     */
-    public RequestDataDto send(RequestDataDto dataContent){
-        ChannelPromise promise = tcpRequestHandler.sendMessage(dataContent);
-        try {
-            promise.await(3, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            log.error("Something occurs error：{}", e.getMessage());
-        }
-        return tcpRequestHandler.getResponse();
-    }
+
 
 }

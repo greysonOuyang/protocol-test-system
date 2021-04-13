@@ -2,17 +2,13 @@ package com.yuyi.pts.netty.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,44 +19,28 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
-public class TcpRequestHandler extends SimpleChannelInboundHandler<SocketChannel> {
+public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
-    private ChannelHandlerContext ctx;
+    public static ChannelHandlerContext myCtx;
     private ChannelPromise promise;
     private RequestDataDto response;
 
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        myCtx = ctx;
         super.channelActive(ctx);
-        this.ctx = ctx;
-        ctx.write("欢迎来到客户端" + InetAddress.getLocalHost().getHostName() + "!\r\n");
+        log.info("客户端已经被激活:" + ctx.channel().remoteAddress().toString());
         ctx.flush();
 
     }
 
+
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, SocketChannel msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String content = JSON.toJSONString(msg);
-        String data = "客户端的消息:" + content;
-        System.out.println(data);
-        ctx.channel().writeAndFlush(Unpooled.copiedBuffer(data, CharsetUtil.UTF_8));
+        log.info("收到服务端返回的消息：{}", content);
+
     }
 
-    public synchronized ChannelPromise sendMessage(Object message) {
-        while (ctx == null) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                log.error("等待ChannelHandlerContext实例化过程中出错",e);
-            }
-        }
-        promise = ctx.newPromise();
-        ctx.writeAndFlush(message);
-        return promise;
-    }
-
-    public RequestDataDto getResponse(){
-        return response;
-    }
 }

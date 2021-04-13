@@ -3,6 +3,7 @@ package com.yuyi.pts.netty.server;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.util.CharsetUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Locale;
  * @author greyson
  * @since 2021/4/11
  */
+@Slf4j
 @ChannelHandler.Sharable
 public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
 
@@ -37,7 +39,7 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String content = (String) msg;
-        ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已收到消息" + content, CharsetUtil.UTF_8));
+        log.debug("服务端{}收到客户端消息：{}", ctx.channel().remoteAddress(), msg);
+        ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已收到消息" + msg, CharsetUtil.UTF_8));
     }
 }

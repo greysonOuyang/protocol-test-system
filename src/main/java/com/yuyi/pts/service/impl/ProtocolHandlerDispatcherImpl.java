@@ -1,5 +1,7 @@
 package com.yuyi.pts.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.yuyi.pts.common.cache.CtxWithSessionIdCache;
 import com.yuyi.pts.common.cache.SessionWithChannelCache;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
@@ -10,12 +12,16 @@ import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.nio.channels.SocketChannel;
+import java.util.Map;
 
 /**
  * description
@@ -33,14 +39,21 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
     @Autowired
     private NettyClientInitializer nettyClientInitializer;
 
+
     @Override
-    public void submitRequest(String host, Integer port, RequestType type) {
+    public void submitRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
         nettyClient.setHost(host);
         nettyClient.setPort(port);
-        chooseInitializer(type);
+        ChannelHandlerContext currentCtx = chooseInitializer(type);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start();
+        CtxWithSessionIdCache.put(session.getId(), currentCtx);
+        nettyClient.start(host, port, currentCtx, dataContent);
+
+//        RequestDataDto send = nettyClient.send(dataContent);
+//        System.out.println(send);
     }
+
+
 
 
     /**
@@ -48,13 +61,16 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
      *
      * @param type 协议类型
      */
-    public void chooseInitializer(RequestType type) {
+    public ChannelHandlerContext chooseInitializer(RequestType type) {
+        ChannelHandlerContext currentCtx = null;
         if (type == RequestType.TCP) {
             nettyClientInitializer = new TcpRequestInitializer();
+            currentCtx = TcpRequestHandler.myCtx;
         } else if (type == RequestType.HTTP) {
             nettyClientInitializer = new HttpRequestInitializer();
         } else if (type == RequestType.WebSocket) {
             nettyClientInitializer = new WebSocketInitializer();
         }
+        return currentCtx;
     }
 }

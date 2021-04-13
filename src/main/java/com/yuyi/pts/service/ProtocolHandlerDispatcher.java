@@ -2,7 +2,6 @@ package com.yuyi.pts.service;
 
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -16,5 +15,5 @@ import org.springframework.web.socket.WebSocketSession;
 public interface ProtocolHandlerDispatcher {
 
 
-    void submitRequest(String host, Integer port, RequestType type);
+    void submitRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent);
 }
