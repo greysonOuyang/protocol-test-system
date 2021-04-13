@@ -1,4 +1,4 @@
-package com.yuyi.pts.common.service;
+package com.yuyi.pts.service.impl;
 /*
  * @author : wzl
  * @date   : 2021/4/12/16:59
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MessageService {
+public class NettyMessageServiceImpl {
     @Autowired
     public NettyClient1 nettyClient;
 

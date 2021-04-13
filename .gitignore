@@ -1,4 +1,26 @@
 # IDEA文件
 .idea
 *.iml
+**/target/
+**/.settings/
+**/.classpath
+**/.project
+**/.svn
+**/.metadata/
+RemoteSystemsTempFiles/
+**/bin/
+**/*.iml
+build/
+**/build/
+**/*.bak
+**/.gradle/
+**/.idea/
+out/
+.idea/
+.git/
+logs/
+logFilePath_IS_UNDEFINED/
+.factorypath
+/.factorypath
+
 target

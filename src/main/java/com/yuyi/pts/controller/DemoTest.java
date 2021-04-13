@@ -1,26 +1,15 @@
-package com.yuyi.pts.common.controller;/*
-
-import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
-import java.util.concurrent.atomic.AtomicInteger;
+package com.yuyi.pts.controller;
 
 /**
  * 前后端交互的类实现消息的接收推送(自己发送给自己)
  *
  * @ServerEndpoint(value = "/test/one") 前端通过此URI和后端交互，建立连接
- */
+ **/
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.service.MessageService;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
-import com.yuyi.pts.netty.client.NettyClient1;
+import com.yuyi.pts.service.impl.NettyMessageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,7 +28,7 @@ public class DemoTest {
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
     @Autowired
-    public MessageService messageService;
+    public NettyMessageServiceImpl messageService;
 
 
     /**
