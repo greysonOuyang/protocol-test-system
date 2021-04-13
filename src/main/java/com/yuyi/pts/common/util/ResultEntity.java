@@ -1,8 +1,12 @@
 package com.yuyi.pts.common.util;
 
+import com.alibaba.fastjson.JSON;
+import com.yuyi.pts.common.enums.OperationCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.lang.reflect.Type;
 
 /**
  * 统一处理响应结果
@@ -17,7 +21,12 @@ public class ResultEntity<T> {
 
     public static final String SUCCESS = "SUCCESS";
 
-    public static final String FAILD="FAILD";
+    public static final String FAILED ="FAILED";
+
+    /**
+     * 操作指令
+     */
+    private OperationCommand operationCommand;
 
     /**
      * 封装当前请求结果（失败、成功）
@@ -39,8 +48,8 @@ public class ResultEntity<T> {
      * @param <Type>
      * @return
      */
-    public static <Type> ResultEntity<Type> successWithoutData() {
-        return new ResultEntity<Type>(SUCCESS, null, null);
+    public static <Type> ResultEntity<Type> successWithoutData(OperationCommand operationCommand) {
+        return new ResultEntity<Type>(operationCommand, SUCCESS,null,  null);
     }
 
     /**
@@ -49,16 +58,51 @@ public class ResultEntity<T> {
      * @param <Type>
      * @return
      */
-    public static <Type> ResultEntity<Type> successWithData(Type data) {
-        return new ResultEntity<Type>(SUCCESS, null, data);
+    public static <Type> ResultEntity<Type> successWithData(OperationCommand operationCommand, Type data) {
+        return new ResultEntity<Type>(operationCommand, SUCCESS, null,  data);
     }
     /**
-     * 请求处理失败后使用的工具方法
+     * 请求处理失败后使用的工具方法，返回指令类型，失败消息
      * @param message
      * @param <Type>
      * @return
      */
-    public static <Type> ResultEntity<Type> faild(String message) {
-        return new ResultEntity<>(FAILD, message, null);
+    public static <Type> ResultEntity<Type> failedWithMsg(OperationCommand operationCommand, String message) {
+        return new ResultEntity<>(operationCommand, FAILED, message, null);
     }
+
+    /**
+     * 请求失败，返回指令类型、失败消息、失败后的数据
+     *
+     * @param operationCommand
+     * @param message
+     * @param data
+     * @param <Type>
+     * @return
+     */
+    public static <Type> ResultEntity<Type> failedWithMsgAndData(OperationCommand operationCommand, String message, Type data) {
+        return new ResultEntity<>(operationCommand, FAILED, message, data);
+    }
+
+    /**
+     * 请求失败，只返回指令类型
+     *
+     * @param operationCommand
+     * @param <Type>
+     * @return
+     */
+    public static <Type> ResultEntity<Type> failedWithoutNothing(OperationCommand operationCommand) {
+        return new ResultEntity<>(operationCommand, FAILED, null, null);
+    }
+
+    /**
+     * 将响应结果转成json
+     *
+     * @param obj
+     * @return
+     */
+    public static String getJsonResult(Object obj) {
+        return JSON.toJSONString(obj);
+    }
+
 }

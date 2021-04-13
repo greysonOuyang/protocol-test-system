@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.common.vo.request.RequestMainDTO;
+import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ExecuteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 /**
- * description
+ * 前端与后端进行websocket通信的方法
  *
  * @author greyson
  * @since 2021/4/12
@@ -26,6 +27,8 @@ public class HandlerDispatcher extends AbstractWebSocketHandler {
 
     @Autowired
     private ExecuteService executeService;
+
+
 
     /**
      * 建立连接后
@@ -41,7 +44,7 @@ public class HandlerDispatcher extends AbstractWebSocketHandler {
 
 
     /**
-     * 处理客户端发来的消息
+     * 处理客户端发来的消息，根据消息指令分发到对应的处理方法
      *
      * @param session session
      * @param message 消息体

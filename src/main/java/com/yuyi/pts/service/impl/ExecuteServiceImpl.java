@@ -18,7 +18,7 @@ import java.io.IOException;
 import static com.yuyi.pts.common.util.ResultEntity.successWithData;
 
 /**
- * description
+ * 执行测试的主类，对请求进行验证、识别，根据请求类型调用不同的协议处理service，并启动NettyClient
  *
  * @author greyson
  * @since 2021/4/12

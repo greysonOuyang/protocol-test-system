@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.nio.channels.SocketChannel;
 
 /**
- * description
+ * TCP协议处理器
  *
  * @author greyson
  * @since 2021/4/11
