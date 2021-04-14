@@ -11,6 +11,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
@@ -50,7 +51,8 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String content = JSON.toJSONString(msg);
+        ByteBuf in = (ByteBuf) msg;
+        String content = in.toString(CharsetUtil.UTF_8);
         CtxWithResponseMsgCache.put(ctx, content);
         WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
         processResponseService.receiveDataAndSend2User(session, msg);
