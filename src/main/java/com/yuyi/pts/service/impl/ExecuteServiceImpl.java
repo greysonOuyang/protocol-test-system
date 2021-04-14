@@ -15,10 +15,8 @@ import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.Object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.AbstractWebSocketMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -47,7 +45,7 @@ public class ExecuteServiceImpl implements ExecuteService {
     private TcpRequestHandler tcpRequestHandler;
 
     @Override
-    public void execute(WebSocketSession session,  RequestDataDto dataContent) {
+    public void execute(WebSocketSession session, RequestDataDto dataContent) {
         JSONObject result = new JSONObject();
         result.put("processors", JvmMetricsUtil.availableProcessors());
         result.put("totalMemory", JvmMetricsUtil.totalMemory());
@@ -67,14 +65,16 @@ public class ExecuteServiceImpl implements ExecuteService {
     /**
      * 真正执行测试的地方
      *
-     * @param session 会话
+     * @param session     会话
      * @param dataContent 数据
      */
-    private void startTest(WebSocketSession session, RequestDataDto dataContent){
+    private void startTest(WebSocketSession session, RequestDataDto dataContent) {
         String host = dataContent.getHost();
         Integer port = dataContent.getPort();
         RequestType type = dataContent.getType();
         protocolHandlerDispatcher.submitRequest(session, host, port, type, dataContent);
+        System.out.println("netty启动完成，执行了此处");
+//        receiveData(session);
         // TODO SSL证书校验
 
     }
@@ -84,9 +84,12 @@ public class ExecuteServiceImpl implements ExecuteService {
         ChannelHandlerContext ctx = CtxWithSessionIdCache.get(id);
         Object responseData = CtxWithResponseMsgCache.get(ctx);
         String result = JSON.toJSONString(responseData);
-        session.sendMessage(new TextMessage(result);
+        try {
+            session.sendMessage(new TextMessage(result));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 
 
 }

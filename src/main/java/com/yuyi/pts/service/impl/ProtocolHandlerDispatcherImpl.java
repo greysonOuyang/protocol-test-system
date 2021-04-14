@@ -1,8 +1,8 @@
 package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.cache.CtxWithSessionIdCache;
-import com.yuyi.pts.common.cache.SessionWithChannelCache;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
@@ -10,18 +10,15 @@ import com.yuyi.pts.netty.client.handler.HttpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
-import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.nio.channels.SocketChannel;
-import java.util.Map;
+import java.io.IOException;
 
 /**
  * description
@@ -44,14 +41,33 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
     public void submitRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
         nettyClient.setHost(host);
         nettyClient.setPort(port);
-        ChannelHandlerContext currentCtx = chooseInitializer(type);
+        chooseInitializer(type);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        CtxWithSessionIdCache.put(session.getId(), currentCtx);
-        nettyClient.start(host, port, currentCtx, dataContent);
-
+        nettyClient.start(session, dataContent);
+        receiveData(session);
     }
 
+    public void receiveData(WebSocketSession session) {
+        String id = session.getId();
+        log.info("接收数据时的SessionId是：{}", id);
+        // TODO 发送数据问题
 
+        ChannelHandlerContext ctx = CtxWithSessionIdCache.get(id);
+            try {
+                Thread.sleep(1000);
+                if (CtxWithResponseMsgCache.isDataReady) {
+                    log.info("CtxWithSessionIdCache缓存的获取结果：key--{}, value--{}", id, ctx.hashCode());
+                    Object responseData = CtxWithResponseMsgCache.get(ctx);
+                    log.info("CtxWithResponseMsgCache缓存的获取结果：key--{}, value--{}", ctx.hashCode(), responseData);
+                    String result = JSON.toJSONString(responseData);
+                    synchronized (session) {
+                        session.sendMessage(new TextMessage(result));
+                    }
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+    }
 
 
     /**
@@ -59,11 +75,9 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
      *
      * @param type 协议类型
      */
-    public ChannelHandlerContext chooseInitializer(RequestType type) {
-        ChannelHandlerContext currentCtx = null;
+    public void chooseInitializer(RequestType type) {
         if (type == RequestType.TCP) {
             nettyClientInitializer = new TcpRequestInitializer();
-            currentCtx = TcpRequestHandler.myCtx;
         } else if (type == RequestType.HTTP) {
             // TODO 同上 指定currentCtx
             nettyClientInitializer = new HttpRequestInitializer();
@@ -71,6 +85,5 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
             // TODO 同上 指定currentCtx
             nettyClientInitializer = new WebSocketInitializer();
         }
-        return currentCtx;
     }
 }

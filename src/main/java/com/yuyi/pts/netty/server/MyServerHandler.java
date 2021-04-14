@@ -2,13 +2,13 @@ package com.yuyi.pts.netty.server;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Server handler
@@ -42,6 +42,7 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.debug("服务端{}收到客户端消息：{}", ctx.channel().remoteAddress(), msg);
         String content = JSON.toJSONString(msg);
+        log.info("放数据进缓存的CTX是：{}", ctx.hashCode());
         ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已接收到消息:" + content, CharsetUtil.UTF_8));
     }
 }

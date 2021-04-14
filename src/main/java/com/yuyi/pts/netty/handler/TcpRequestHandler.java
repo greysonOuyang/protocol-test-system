@@ -1,15 +1,11 @@
 package com.yuyi.pts.netty.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.net.InetAddress;
-import java.util.concurrent.TimeUnit;
 
 /**
  * TCP协议处理器、需要将ChannelHandlerContext作为全局属性且是静态；
@@ -40,7 +36,11 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String content = JSON.toJSONString(msg);
-        log.info("收到服务端返回的消息：{}", content);
+        CtxWithResponseMsgCache.put(ctx, content);
+        log.info("CtxWithResponseMsgCache的放置结果：key--{}, value--{}", ctx.hashCode(), CtxWithResponseMsgCache.get(ctx));
+        if (CtxWithResponseMsgCache.get(ctx) != null) {
+            CtxWithResponseMsgCache.isDataReady = true;
+        }
     }
 
 }

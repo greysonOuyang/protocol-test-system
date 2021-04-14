@@ -5,12 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.common.vo.request.RequestMainDTO;
-import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ExecuteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
@@ -38,6 +38,7 @@ public class HandlerDispatcher extends AbstractWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("websockt连接建立了");
+        session.sendMessage(new TextMessage("我在发送消息"));
         super.afterConnectionEstablished(session);
     }
 
