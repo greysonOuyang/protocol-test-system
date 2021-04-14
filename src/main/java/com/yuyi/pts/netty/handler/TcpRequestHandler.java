@@ -3,10 +3,12 @@ package com.yuyi.pts.netty.handler;
 import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +41,8 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String content = JSON.toJSONString(msg);
+        ByteBuf in = (ByteBuf) msg;
+        String content = in.toString(CharsetUtil.UTF_8);
         CtxWithResponseMsgCache.put(ctx, content);
         future = ctx.write("数据写入成功");
         TcpRequestHandler.future.addListener(ctl -> {
