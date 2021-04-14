@@ -1,9 +1,6 @@
 package com.yuyi.pts.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.cache.CtxWithSessionIdCache;
-import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
@@ -13,7 +10,6 @@ import com.yuyi.pts.netty.client.NettyClient;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,11 +48,11 @@ public class ExecuteServiceImpl implements ExecuteService {
         result.put("maxMemory", JvmMetricsUtil.maxMemory());
         result.put("freeMemory", JvmMetricsUtil.freeMemory());
         log.info("执行发送信息给客户端-->当前服务器性能:" + result);
-        String jsonResult = ResultEntity.getJsonResult(successWithData(OperationCommand.JVM_METRIC, result));
+        String jsonResult = ResultEntity.getJsonResult(successWithData(OperationCommand.JVM_METRIC.value(), result));
         try {
             session.sendMessage(new TextMessage(jsonResult));
             startTest(session, dataContent);
-            session.close();
+//            session.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

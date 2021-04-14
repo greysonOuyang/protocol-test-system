@@ -2,13 +2,18 @@ package com.yuyi.pts.netty.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
+import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.service.ProcessResponseService;
+import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketSession;
 
 /**
  * TCP协议处理器、需要将ChannelHandlerContext作为全局属性且是静态；
@@ -20,6 +25,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
+
+    private static ProcessResponseService processResponseService;
+
+    static {
+        processResponseService = SpringUtils.getBean(ProcessResponseServiceImpl.class);
+    }
 
     public static ChannelHandlerContext myCtx;
     public static ChannelFuture future;
@@ -41,10 +52,16 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String content = JSON.toJSONString(msg);
         CtxWithResponseMsgCache.put(ctx, content);
-        future = ctx.write("数据写入成功");
-        TcpRequestHandler.future.addListener(ctl -> {
-            CtxWithResponseMsgCache.isDataReady = true;
-        });
+        WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
+        processResponseService.receiveDataAndSend2User(session, msg);
+//        future = ctx.write("数据写入成功");
+//        future.channel().closeFuture().awaitUninterruptibly();
+//
+//        TcpRequestHandler.future.addListener(ctl -> {
+//            if (ctl.isSuccess()) {
+//                CtxWithResponseMsgCache.isDataReady = true;
+//            }
+//        });
         log.info("CtxWithResponseMsgCache的放置结果：key--{}, value--{}", ctx.hashCode(), CtxWithResponseMsgCache.get(ctx));
 //        if (CtxWithResponseMsgCache.get(ctx) != null) {
 //            CtxWithResponseMsgCache.isDataReady = true;

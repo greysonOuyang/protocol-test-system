@@ -1,8 +1,5 @@
 package com.yuyi.pts.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
-import com.yuyi.pts.common.cache.CtxWithSessionIdCache;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
@@ -11,14 +8,10 @@ import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.io.IOException;
 
 /**
  * description
@@ -44,46 +37,9 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         chooseInitializer(type);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
         nettyClient.start(session, dataContent);
-        receiveData(session);
     }
 
-    public void receiveData(WebSocketSession session) {
-        String id = session.getId();
-        log.info("接收数据时的SessionId是：{}", id);
-        // TODO 发送数据问题
-        Object responseData = null;
-        while (!CtxWithResponseMsgCache.isDataReady) {
-        }
-        ChannelHandlerContext ctx = CtxWithSessionIdCache.get(id);
-        log.info("CtxWithSessionIdCache缓存的获取结果：key--{}, value--{}", id, ctx.hashCode());
-        responseData = CtxWithResponseMsgCache.get(ctx);
-        log.info("CtxWithResponseMsgCache缓存的获取结果：key--{}, value--{}", ctx.hashCode(), responseData);
 
-
-
-        String result = JSON.toJSONString(responseData);
-        try {
-            synchronized (session) {
-                session.sendMessage(new TextMessage(result));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        try {
-//                Thread.sleep(1000);
-//                if (CtxWithResponseMsgCache.isDataReady) {
-//                    log.info("CtxWithSessionIdCache缓存的获取结果：key--{}, value--{}", id, ctx.hashCode());
-//                    Object responseData = CtxWithResponseMsgCache.get(ctx);
-//                    log.info("CtxWithResponseMsgCache缓存的获取结果：key--{}, value--{}", ctx.hashCode(), responseData);
-//                    String result = JSON.toJSONString(responseData);
-//                    synchronized (session) {
-//                        session.sendMessage(new TextMessage(result));
-//                    }
-//                }
-//            } catch (IOException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-    }
 
 
     /**
