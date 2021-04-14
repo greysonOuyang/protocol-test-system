@@ -13,5 +13,11 @@ import org.springframework.web.socket.WebSocketSession;
 @Service
 public interface ExecuteService {
 
+    /**
+     * 执行提交测试任务
+     *
+     * @param session 会话
+     * @param dataContent 待发送的数据
+     */
     public void execute(WebSocketSession session, RequestDataDto dataContent);
 }

@@ -51,22 +51,38 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         String id = session.getId();
         log.info("接收数据时的SessionId是：{}", id);
         // TODO 发送数据问题
-
+        Object responseData = null;
+        while (!CtxWithResponseMsgCache.isDataReady) {
+        }
         ChannelHandlerContext ctx = CtxWithSessionIdCache.get(id);
-            try {
-                Thread.sleep(1000);
-                if (CtxWithResponseMsgCache.isDataReady) {
-                    log.info("CtxWithSessionIdCache缓存的获取结果：key--{}, value--{}", id, ctx.hashCode());
-                    Object responseData = CtxWithResponseMsgCache.get(ctx);
-                    log.info("CtxWithResponseMsgCache缓存的获取结果：key--{}, value--{}", ctx.hashCode(), responseData);
-                    String result = JSON.toJSONString(responseData);
-                    synchronized (session) {
-                        session.sendMessage(new TextMessage(result));
-                    }
-                }
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+        log.info("CtxWithSessionIdCache缓存的获取结果：key--{}, value--{}", id, ctx.hashCode());
+        responseData = CtxWithResponseMsgCache.get(ctx);
+        log.info("CtxWithResponseMsgCache缓存的获取结果：key--{}, value--{}", ctx.hashCode(), responseData);
+
+
+
+        String result = JSON.toJSONString(responseData);
+        try {
+            synchronized (session) {
+                session.sendMessage(new TextMessage(result));
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        try {
+//                Thread.sleep(1000);
+//                if (CtxWithResponseMsgCache.isDataReady) {
+//                    log.info("CtxWithSessionIdCache缓存的获取结果：key--{}, value--{}", id, ctx.hashCode());
+//                    Object responseData = CtxWithResponseMsgCache.get(ctx);
+//                    log.info("CtxWithResponseMsgCache缓存的获取结果：key--{}, value--{}", ctx.hashCode(), responseData);
+//                    String result = JSON.toJSONString(responseData);
+//                    synchronized (session) {
+//                        session.sendMessage(new TextMessage(result));
+//                    }
+//                }
+//            } catch (IOException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
     }
 
 

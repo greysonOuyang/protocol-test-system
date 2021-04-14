@@ -42,7 +42,6 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.debug("服务端{}收到客户端消息：{}", ctx.channel().remoteAddress(), msg);
         String content = JSON.toJSONString(msg);
-        log.info("放数据进缓存的CTX是：{}", ctx.hashCode());
         ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已接收到消息:" + content, CharsetUtil.UTF_8));
     }
 }

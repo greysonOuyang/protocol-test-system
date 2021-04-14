@@ -79,17 +79,6 @@ public class ExecuteServiceImpl implements ExecuteService {
 
     }
 
-    public void receiveData(WebSocketSession session) {
-        String id = session.getId();
-        ChannelHandlerContext ctx = CtxWithSessionIdCache.get(id);
-        Object responseData = CtxWithResponseMsgCache.get(ctx);
-        String result = JSON.toJSONString(responseData);
-        try {
-            session.sendMessage(new TextMessage(result));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
