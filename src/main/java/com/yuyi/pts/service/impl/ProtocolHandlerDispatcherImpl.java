@@ -67,6 +67,7 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
              String uri = url.substring(21);
              ObjCache.put("uri",uri);
          }
+        ObjCache.put("method",dataContent.getMethod());
         chooseInitializer(type);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
         nettyClient.start(session, dataContent);

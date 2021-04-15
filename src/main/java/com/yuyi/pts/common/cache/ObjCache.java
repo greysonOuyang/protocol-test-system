@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description:
  */
 public class ObjCache {
-    public static Map<String, String> map  = new ConcurrentHashMap<>();
+    public static Map<String, Object> map  = new ConcurrentHashMap<>();
 
     public static Object get(String ctx) {
         if (ctx == null) {
@@ -21,7 +21,7 @@ public class ObjCache {
         }
     }
 
-    public static Object put(String ctx, String msg) {
+    public static Object put(String ctx, Object msg) {
         if (ctx == null || msg == null) {
             return null;
         } else {

@@ -1,10 +1,8 @@
 package com.yuyi.pts.netty.handler;
 
-import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
+
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.cache.ObjCache;
-import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.common.util.ApplicationHelper;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
@@ -12,17 +10,13 @@ import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.service.ProcessResponseService;
 import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.net.URI;
 
 /**
  * HTTP(S)协议处理器、需要将ChannelHandlerContext作为全局属性且是静态；
@@ -47,8 +41,11 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         myCtx = ctx;
+        FullHttpRequest request = null;
         Object url = ObjCache.get("uri");
-        FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, HttpMethod.GET, url.toString());
+        // 获取到发送请求方式
+        HttpMethod method = HttpMethod.valueOf(ObjCache.get("method").toString());
+        request= new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, url.toString());
         request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
         request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
         ctx.writeAndFlush(request);
