@@ -2,9 +2,7 @@ package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.cache.LocalDataCounter;
-import com.yuyi.pts.common.cache.OperateIdWithRequestDtoCache;
-import com.yuyi.pts.common.cache.OperateWithWebSocketSessionCache;
+import com.yuyi.pts.common.cache.*;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
@@ -19,8 +17,10 @@ import com.yuyi.pts.service.ProtocolHandlerDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -101,7 +101,7 @@ public class ExecuteServiceImpl implements ExecuteService {
 
         // 往下是对输入的参数合法性校验 也许不需要
         if (requestType == RequestType.HTTP) {
-           return checkHttpRequest(dataContent);
+           return checkHttpRequest(session,dataContent);
         } else if (requestType == RequestType.TCP) {
            return checkTcpRequest(dataContent);
 
@@ -141,9 +141,26 @@ public class ExecuteServiceImpl implements ExecuteService {
      * @param dataContent
      * @return
      */
-    private boolean checkHttpRequest(RequestDataDto dataContent) {
+    private boolean checkHttpRequest(WebSocketSession session,RequestDataDto dataContent) {
+        boolean flag = false;
         // TODO 参数校验
-        return true;
+        // 把url的字符串进行截取，拼接host和port
+        String url = dataContent.getUrl();
+        String target = url.substring(0,7);
+        // 校验前6位
+        if("http://".equals(target)){
+            flag=true;
+        }else if ("https:/".equals(target)){
+            flag=true;
+        }else {
+            String responseData = ResultEntity.failedWithMsg(OperationCommand.MISSING_PARAMETER.value(), "请输入正确的Ip地址");
+            try {
+                session.sendMessage(new TextMessage(responseData));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return flag;
     }
 
     /**
@@ -166,7 +183,13 @@ public class ExecuteServiceImpl implements ExecuteService {
         OperateWithWebSocketSessionCache.put(operateId, session);
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
-        protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
+     //   protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
+        if("TCP".equals(requestType.name())){
+            protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
+        }else if("HTTP".equals(requestType.name())){
+            protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
+        }
+
         System.out.println("netty启动完成，执行了此处");
 
     }

@@ -160,8 +160,6 @@ public class NettyClient {
         } else if (nettyClientInitializer instanceof WebSocketInitializer) {
             // TODO 同上判断类型 以及http
 //            currentCtx = WebSocketHandler.myCtx;
-        } else if (nettyClientInitializer instanceof HttpRequestInitializer) {
-
         }
         else if (nettyClientInitializer instanceof HttpRequestInitializer) {
           currentCtx = HttpRequestHandler.myCtx;
