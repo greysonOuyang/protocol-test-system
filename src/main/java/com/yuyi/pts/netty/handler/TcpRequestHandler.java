@@ -1,12 +1,12 @@
 package com.yuyi.pts.netty.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.service.ProcessResponseService;
 import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -56,18 +56,7 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
         CtxWithResponseMsgCache.put(ctx, content);
         WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
         processResponseService.receiveDataAndSend2User(session, msg);
-//        future = ctx.write("数据写入成功");
-//        future.channel().closeFuture().awaitUninterruptibly();
-//
-//        TcpRequestHandler.future.addListener(ctl -> {
-//            if (ctl.isSuccess()) {
-//                CtxWithResponseMsgCache.isDataReady = true;
-//            }
-//        });
         log.info("CtxWithResponseMsgCache的放置结果：key--{}, value--{}", ctx.hashCode(), CtxWithResponseMsgCache.get(ctx));
-//        if (CtxWithResponseMsgCache.get(ctx) != null) {
-//            CtxWithResponseMsgCache.isDataReady = true;
-//        }
     }
 
 }

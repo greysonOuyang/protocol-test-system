@@ -1,7 +1,7 @@
 package com.yuyi.pts.netty.client;
 
-import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.config.ProtocolConfig;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -114,10 +112,7 @@ public class NettyClient {
             if (future.isSuccess()) {
                 chooseChannelHandlerContext(nettyClientInitializer);
                 CtxWithWebSocketSessionCache.put(currentCtx, session);
-//                CtxWithSessionIdCache.put(session.getId(), currentCtx);
-//                log.info("CtxWithSessionIdCache的缓存放置结果：key--{}, value--{}", session.getId(), CtxWithSessionIdCache.get(session.getId()).hashCode());
                 sendMessage(currentCtx, dataContent);
-//                    sendMessage(currentCtx, dataContent);
                 log.info("服务端[" + channelFuture.channel().localAddress().toString() + "]已连接...");
                 clientChannel = channelFuture.channel();
             }
@@ -146,10 +141,9 @@ public class NettyClient {
      * @param dataContent
      */
     private void sendMessage(ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
-        String result = JSON.toJSONString(dataContent);
-        byte[] bytes = result.getBytes(StandardCharsets.UTF_8);
+        byte[] serialize = SerializeUtil.serialize(dataContent);
         ByteBuf buffer = currentCtx.alloc().buffer();
-        buffer.writeBytes(bytes);
+        buffer.writeBytes(serialize);
         log.info("客户端往服务端发送的数据：" + dataContent);
         currentCtx.writeAndFlush(buffer);
     }

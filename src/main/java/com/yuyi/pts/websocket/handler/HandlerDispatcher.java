@@ -16,7 +16,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 /**
- * 前端与后端进行websocket通信的方法
+ * 前端与后端进行websocket通信的处理
  *
  * @author greyson
  * @since 2021/4/12

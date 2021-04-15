@@ -1,4 +1,4 @@
-package com.yuyi.pts.common.vo;
+package com.yuyi.pts.common.vo.response;
 
 import com.alibaba.fastjson.JSONObject;
 

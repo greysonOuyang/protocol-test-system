@@ -52,7 +52,6 @@ public class ExecuteServiceImpl implements ExecuteService {
         try {
             session.sendMessage(new TextMessage(jsonResult));
             startTest(session, dataContent);
-//            session.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -40,8 +40,6 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
     }
 
 
-
-
     /**
      * 根据协议选择对应的处理器初始器
      *
