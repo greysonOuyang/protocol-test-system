@@ -8,6 +8,7 @@ import com.yuyi.pts.common.util.ApplicationHelper;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.service.ProcessResponseService;
 import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
@@ -64,9 +65,24 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
             FullHttpResponse response = (FullHttpResponse)msg;
             ByteBuf buf = response.content();
             String result = buf.toString(CharsetUtil.UTF_8);
-            String responseData = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE.value(), result);
-            WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
-            session.sendMessage(new TextMessage(responseData));
+            ResponseInfo responseInfo = new ResponseInfo();
+            // 状态码
+            responseInfo.setCode(response.status().code());
+            // 响应体
+            responseInfo.setBody(result);
+            // 头信息
+            responseInfo.setHeaders(response.headers());
+            responseInfo.setState(response.status().code());
+            // 成功执行 successWithData()
+            if(200==response.status().code()){
+                String responseData = ResultEntity.successWithData(response.status().code(), responseInfo);
+                WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
+                session.sendMessage(new TextMessage(responseData));
+            }else {
+                String responseData = ResultEntity.failedWithMsg(response.status().code(), "请求失败，请稍后重试");
+                WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
+                session.sendMessage(new TextMessage(responseData));
+            }
             System.out.println("response -> "+result);
         }
     }

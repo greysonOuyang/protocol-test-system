@@ -1,6 +1,8 @@
 package com.yuyi.pts.common.vo.response;
 
 import com.alibaba.fastjson.JSONObject;
+import io.netty.handler.codec.http.HttpHeaders;
+import lombok.Data;
 
 /**
  * 响应前端组织的信息
@@ -8,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
  * @author greyson
  * @since 2021/4/15
  */
+@Data
 public class ResponseInfo {
 	/** 服务器响应的状态码 */
 	private int code;
@@ -19,7 +22,8 @@ public class ResponseInfo {
 	private int state;
 	/** 响应的信息 */
 	private String body;
-
+	/**响应头信息*/
+    private HttpHeaders headers;
 	/**
 	 * 将当前对象转换为JsonObject
 	 * 
@@ -31,6 +35,7 @@ public class ResponseInfo {
 		result.put("count", getCount());
 		result.put("index", getIndex());
 		result.put("state", getState());
+		result.put("headers",getHeaders());
 		if (getBody() != null) {
 			result.put("body", getBody());
 		}
