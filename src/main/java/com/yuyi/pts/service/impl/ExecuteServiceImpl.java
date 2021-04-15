@@ -2,9 +2,14 @@ package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.cache.LocalDataCounter;
+import com.yuyi.pts.common.cache.OperateWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
+import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.SendMsg2UserUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
@@ -13,10 +18,12 @@ import com.yuyi.pts.service.ProtocolHandlerDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.yuyi.pts.common.util.ResultEntity.successWithData;
 
@@ -40,6 +47,9 @@ public class ExecuteServiceImpl implements ExecuteService {
     @Autowired
     private TcpRequestHandler tcpRequestHandler;
 
+    private ScheduledExecutorService scheduledExecutorService= Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
+
     /**
      * 请求类型
      */
@@ -47,29 +57,45 @@ public class ExecuteServiceImpl implements ExecuteService {
 
     @Override
     public void execute(WebSocketSession session, RequestDataDto dataContent) {
-        checkOperattion(session, dataContent);
-
-        JSONObject result = new JSONObject();
-        result.put("processors", JvmMetricsUtil.availableProcessors());
-        result.put("totalMemory", JvmMetricsUtil.totalMemory());
-        result.put("maxMemory", JvmMetricsUtil.maxMemory());
-        result.put("freeMemory", JvmMetricsUtil.freeMemory());
-        log.info("执行发送信息给客户端-->当前服务器性能:" + result);
-        String jsonResult = successWithData(OperationCommand.JVM_METRIC.value(), result);
-        try {
-            session.sendMessage(new TextMessage(jsonResult));
+        boolean isSuccess = checkOperattion(session, dataContent);
+        if (isSuccess) {
+            scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject result = new JSONObject();
+                    result.put("processors", JvmMetricsUtil.availableProcessors());
+                    result.put("totalMemory", JvmMetricsUtil.totalMemory());
+                    result.put("maxMemory", JvmMetricsUtil.maxMemory());
+                    result.put("freeMemory", JvmMetricsUtil.freeMemory());
+                    log.info("执行发送信息给客户端-->当前服务器性能:" + result);
+                    String jsonResult = successWithData(OperationCommand.JVM_METRIC.value(), result);
+                    SendMsg2UserUtil.sendTextMsg(session, jsonResult);
+                }
+            }, 0, 1000, TimeUnit.MILLISECONDS);
             startTest(session, dataContent);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            // TODO 把数据放入缓存
+            // TODO 设置Socket关闭事件
+        } else {
+            log.info("请求参数校验失败");
+            String responseMsg = ResultEntity.failedWithoutNothing(OperationCommand.MISSING_PARAMETER.value());
+            SendMsg2UserUtil.sendTextMsg(session, responseMsg);
         }
     }
 
     private boolean checkOperattion(WebSocketSession session, RequestDataDto dataContent) {
-        boolean isSuccess;
         if (log.isDebugEnabled()) {
             log.info("执行参数检查并加载请求信息，请求数据为--》{}", JSON.toJSONString(dataContent));
         }
         requestType = dataContent.getType();
+        SslCertType cert = dataContent.getCert();
+//        if (cert != null && cert != SslCertType.DEFAULT) {
+//            if (SslCertType.PFX == cert) {
+//                // TODO 证书校验
+//            }
+//        }
+
+        // 往下是对输入的参数合法性校验 也许不需要
         if (requestType == RequestType.HTTP) {
            return checkHttpRequest(dataContent);
         } else if (requestType == RequestType.TCP) {
@@ -96,6 +122,7 @@ public class ExecuteServiceImpl implements ExecuteService {
 
     /**
      * 检查websocket请求
+     *
      * @param dataContent
      * @return
      */
@@ -122,13 +149,21 @@ public class ExecuteServiceImpl implements ExecuteService {
      * @param dataContent 数据
      */
     private void startTest(WebSocketSession session, RequestDataDto dataContent) {
+        // TODO 对请求进行校验 校验通过则根据protocolHandlerDispatcher进行任务分发，校验失败返回false到此处
         String host = dataContent.getHost();
         Integer port = dataContent.getPort();
-        String id = session.getId();
+        String operateId = UUID.randomUUID().toString();
+        String sessionId = session.getId();
+        dataContent.setId(operateId);
         dataContent.setId(session.getId());
+        // 存储需要请求的数量
+        LocalDataCounter.newCounter(operateId, ((long) dataContent.getAverage() * dataContent.getCount()));
+        // 共享WebSocket
+        OperateWithWebSocketSessionCache.put(operateId, session);
+        // 共享请求配置
+        LocalDataRequestOptions.put(optionsId, options);
         protocolHandlerDispatcher.submitRequest(session, host, port, requestType, dataContent);
         System.out.println("netty启动完成，执行了此处");
-        // TODO SSL证书校验
 
     }
 

@@ -1,9 +1,10 @@
 package com.yuyi.pts.netty.handler;
 
-import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
+import com.yuyi.pts.common.cache.CtxWithRequestDataCCache;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.service.ProcessRequestService;
 import com.yuyi.pts.service.ProcessResponseService;
 import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
@@ -29,8 +30,12 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
     private static ProcessResponseService processResponseService;
 
+    private static ProcessRequestService processRequestService;
+
+
     static {
         processResponseService = SpringUtils.getBean(ProcessResponseServiceImpl.class);
+        processRequestService = SpringUtils.getBean(ProcessRequestService.class);
     }
 
     public static ChannelHandlerContext myCtx;
@@ -43,6 +48,9 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         myCtx = ctx;
         super.channelActive(ctx);
+        RequestDataDto requestDataDto = CtxWithRequestDataCCache.get(ctx);
+        // 连接上服务器之后则发送消息
+        processRequestService.sendBinMessage(ctx, requestDataDto);
         log.info("客户端已经被激活:" + ctx.channel().remoteAddress().toString());
         ctx.flush();
 

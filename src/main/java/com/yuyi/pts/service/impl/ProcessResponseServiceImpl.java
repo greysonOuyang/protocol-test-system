@@ -1,12 +1,9 @@
 package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.yuyi.pts.common.cache.CtxWithResponseMsgCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.service.ProcessResponseService;
-import io.netty.buffer.ByteBuf;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
@@ -26,9 +23,7 @@ public class ProcessResponseServiceImpl implements ProcessResponseService {
 
     @Override
     public void receiveDataAndSend2User(WebSocketSession session, Object msg) {
-
-        ByteBuf in = (ByteBuf) msg;
-        String result = in.toString(CharsetUtil.UTF_8);
+        String result = JSON.toJSONString(msg);
         log.info("客户端收到服务端的数据： {}", msg);
         String responseData = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE.value(), result);
         log.info("客户端收到服务端的数据2： {}", responseData);

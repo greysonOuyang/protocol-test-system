@@ -1,5 +1,7 @@
 package com.yuyi.pts.common.cache;
-import com.yuyi.pts.model.OstRequestOptions;
+
+import com.yuyi.pts.common.vo.request.RequestDataDto;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,9 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="http://mirrentools.org">Mirren</a>
  *
  */
-public class LocalDataRequestOptions {
+public class CtxWithRequestDataCCache {
 	/** 数据 */
-	private static Map<String, OstRequestOptions> OPTIONS_MAP = new ConcurrentHashMap<>();
+	private static Map<ChannelHandlerContext, RequestDataDto> OPTIONS_MAP = new ConcurrentHashMap<>();
 
 	/**
 	 * 添加一个RequestOptions,如果已经存在RequestOptions就替换
@@ -22,11 +24,11 @@ public class LocalDataRequestOptions {
 	 * @param options
 	 * @return 如果参数key或参数options==null则返回null
 	 */
-	public static OstRequestOptions put(String key, OstRequestOptions options) {
+	public static RequestDataDto put(ChannelHandlerContext key, RequestDataDto options) {
 		if (key == null || options == null) {
 			return null;
 		}
-		OstRequestOptions result = OPTIONS_MAP.put(key, options);
+		RequestDataDto result = OPTIONS_MAP.put(key, options);
 		return result;
 	}
 
@@ -38,11 +40,11 @@ public class LocalDataRequestOptions {
 	 * @param options
 	 * @return 如果参数key或参数options==null则返回null
 	 */
-	public static OstRequestOptions putIfAbsent(String key, OstRequestOptions options) {
+	public static RequestDataDto putIfAbsent(ChannelHandlerContext key, RequestDataDto options) {
 		if (key == null || options == null) {
 			return null;
 		}
-		OstRequestOptions result = OPTIONS_MAP.putIfAbsent(key, options);
+		RequestDataDto result = OPTIONS_MAP.putIfAbsent(key, options);
 		return result;
 	}
 
@@ -53,7 +55,7 @@ public class LocalDataRequestOptions {
 	 *          RequestOptions的id通常对应 WebSocket的写id
 	 * @return 如果参数key==null则返回null
 	 */
-	public static OstRequestOptions get(String key) {
+	public static RequestDataDto get(ChannelHandlerContext key) {
 		if (key == null) {
 			return null;
 		}
@@ -69,7 +71,7 @@ public class LocalDataRequestOptions {
 	 *          如果为空就返回默认值
 	 * @return 如果参数key==null则返回null
 	 */
-	public static OstRequestOptions get(String key, OstRequestOptions defaultValue) {
+	public static RequestDataDto get(ChannelHandlerContext key, RequestDataDto defaultValue) {
 		if (key == null) {
 			return null;
 		}
@@ -83,7 +85,7 @@ public class LocalDataRequestOptions {
 	 *          RequestOptions的id通常对应 WebSocket的写id
 	 * @return 如果参数key==null则返回null
 	 */
-	public static OstRequestOptions remove(String key) {
+	public static RequestDataDto remove(ChannelHandlerContext key) {
 		if (key == null) {
 			return null;
 		}

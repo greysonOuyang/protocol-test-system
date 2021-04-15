@@ -14,7 +14,7 @@ public interface ProtocolHandlerDispatcher {
 
 
     /**
-     * 执行测试，提交请求；主要作用是根据host、port启动nettyClient，连接到第三方接口系统；根据请求协议选择不同的协议处理器；
+     * 执行TCP测试，提交请求；主要作用是根据host、port启动nettyClient，连接到第三方接口系统；根据请求协议选择不同的协议处理器；
      *
      * @param session websocket会话
      * @param host 测试系统ip

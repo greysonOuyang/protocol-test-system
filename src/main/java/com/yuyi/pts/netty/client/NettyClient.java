@@ -1,15 +1,15 @@
 package com.yuyi.pts.netty.client;
 
+import com.yuyi.pts.common.cache.CtxWithRequestDataCCache;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
-import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.config.ProtocolConfig;
+import com.yuyi.pts.netty.client.handler.HttpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
+import com.yuyi.pts.service.ProcessRequestService;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -34,13 +34,6 @@ import org.springframework.web.socket.WebSocketSession;
 @Data
 public class NettyClient {
 
-    @Autowired
-    private ProtocolConfig protocolConfig;
-
-    Channel channel = null;
-
-    Bootstrap bootstrap1 = new Bootstrap();
-
     @Value("${user.protocol.ip}")
     private String host;
 
@@ -52,6 +45,9 @@ public class NettyClient {
 
     @Autowired
     private TcpRequestHandler tcpRequestHandler;
+
+    @Autowired
+    private ProcessRequestService processRequestService;
 
     private ChannelHandlerContext currentCtx;
 
@@ -73,6 +69,12 @@ public class NettyClient {
         bootstrap.group(group);
     }
 
+    /**
+     * 启动前需要初始化nettyClientInitializer、host、port
+     *
+     * @param session 会话
+     * @param dataContent 数据
+     */
     public void start(WebSocketSession session, RequestDataDto dataContent) {
         try {
             if (nettyClientInitializer == null) {
@@ -84,7 +86,6 @@ public class NettyClient {
             doConnect(session, dataContent);
             doClose();
             doClear(session);
-
         } catch (InterruptedException e) {
             e.printStackTrace();
             log.error("Something occurs error in Netty Client: {}", e.getMessage());
@@ -94,7 +95,7 @@ public class NettyClient {
     /**
      * 关闭或者结束时清理请求
      *
-     * @param session
+     * @param session 会话
      */
     private void doClear(WebSocketSession session) {
         channelFuture.addListener(ctl -> {
@@ -135,7 +136,7 @@ public class NettyClient {
             if (future.isSuccess()) {
                 chooseChannelHandlerContext(nettyClientInitializer);
                 CtxWithWebSocketSessionCache.put(currentCtx, session);
-                sendMessage(currentCtx, dataContent);
+                CtxWithRequestDataCCache.put(currentCtx, dataContent);
                 log.info("服务端[" + channelFuture.channel().localAddress().toString() + "]已连接...");
                 clientChannel = channelFuture.channel();
             }
@@ -154,21 +155,9 @@ public class NettyClient {
         } else if (nettyClientInitializer instanceof WebSocketInitializer) {
             // TODO 同上判断类型 以及http
 //            currentCtx = WebSocketHandler.myCtx;
-        }
-    }
+        } else if (nettyClientInitializer instanceof HttpRequestInitializer) {
 
-    /**
-     * 往第三方接口系统发送数据
-     *
-     * @param currentCtx
-     * @param dataContent
-     */
-    private void sendMessage(ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
-        byte[] serialize = SerializeUtil.serialize(dataContent);
-        ByteBuf buffer = currentCtx.alloc().buffer();
-        buffer.writeBytes(serialize);
-        log.info("客户端往服务端发送的数据：" + dataContent);
-        currentCtx.writeAndFlush(buffer);
+        }
     }
 
 

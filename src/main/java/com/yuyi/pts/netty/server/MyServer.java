@@ -7,12 +7,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.json.JsonObjectDecoder;
-import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-
-import java.nio.charset.Charset;
 
 /**
  *  测试NettyClient发送数据
@@ -36,8 +32,8 @@ public class MyServer {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                               socketChannel.pipeline()
-                                      .addLast(new JsonObjectDecoder())
-                                      .addLast(new StringDecoder(Charset.forName("utf-8")))
+//                                      .addLast(new JsonObjectDecoder())
+//                                      .addLast(new StringDecoder(Charset.forName("utf-8")))
                                       .addLast(new MyServerHandler());
 
                             }

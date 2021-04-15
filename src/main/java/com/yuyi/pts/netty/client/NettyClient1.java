@@ -1,31 +1,23 @@
 package com.yuyi.pts.netty.client;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.vo.request.ConfigRequest;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.config.ProtocolConfig;
 import com.yuyi.pts.netty.client.handler.NettyClientHandler;
-import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -38,8 +30,6 @@ import java.util.concurrent.TimeUnit;
 @Data
 public class NettyClient1 {
 
-    @Autowired
-    private ProtocolConfig protocolConfig;
 
     Channel channel = null;
 
