@@ -7,6 +7,7 @@ import com.yuyi.pts.netty.client.handler.HttpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
+import com.yuyi.pts.netty.handler.HttpRequestHandler;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ProcessRequestService;
 import io.netty.bootstrap.Bootstrap;
@@ -22,6 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -157,6 +162,9 @@ public class NettyClient {
 //            currentCtx = WebSocketHandler.myCtx;
         } else if (nettyClientInitializer instanceof HttpRequestInitializer) {
 
+        }
+        else if (nettyClientInitializer instanceof HttpRequestInitializer) {
+          currentCtx = HttpRequestHandler.myCtx;
         }
     }
 

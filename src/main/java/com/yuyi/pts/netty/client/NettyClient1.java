@@ -108,6 +108,7 @@ public class NettyClient1 {
         ChannelFuture future = bootstrap.connect(data.getHost(), data.getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
         future.addListener((ChannelFutureListener) futureListener -> {
             if (futureListener.isSuccess()) {
+                // 发数据到第三方系统
                 ByteBuf byteBuf = Unpooled.copiedBuffer(JSON.toJSONString(data), Charset.defaultCharset());
                 log.info("连接成功-----");
                 ChannelFuture channelFuture = future.channel().writeAndFlush(byteBuf);

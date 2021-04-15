@@ -1,5 +1,5 @@
 package com.yuyi.pts.service;
-/*
+/**
  * @author : wzl
  * @date   : 2021/4/12/16:59
  * @description:  处理前端发来的信息，进行数据封装,建立连接第三方系统
