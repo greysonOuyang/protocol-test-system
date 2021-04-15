@@ -2,6 +2,8 @@ package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.cache.ObjCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
@@ -17,6 +19,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.UUID;
 
 import static com.yuyi.pts.common.util.ResultEntity.successWithData;
 
@@ -124,9 +128,13 @@ public class ExecuteServiceImpl implements ExecuteService {
     private void startTest(WebSocketSession session, RequestDataDto dataContent) {
         String host = dataContent.getHost();
         Integer port = dataContent.getPort();
-        String id = session.getId();
         dataContent.setId(session.getId());
-        protocolHandlerDispatcher.submitRequest(session, host, port, requestType, dataContent);
+        RequestType type = dataContent.getType();
+        if(type.name().equals("TCP")){
+            protocolHandlerDispatcher.submitRequest(session, host, port, type, dataContent);
+        }else if("HTTP".equals(type.name())){
+            protocolHandlerDispatcher.submitHttpRequest(session, type,dataContent);
+        }
         System.out.println("netty启动完成，执行了此处");
         // TODO SSL证书校验
 

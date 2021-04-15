@@ -13,10 +13,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.channel.socket.oio.OioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -118,6 +115,7 @@ public class NettyClient1 {
         ChannelFuture future = bootstrap.connect(data.getHost(), data.getPort());// getCurrentPort() 获取到 IP 这是已经初始化后的port
         future.addListener((ChannelFutureListener) futureListener -> {
             if (futureListener.isSuccess()) {
+                // 发数据到第三方系统
                 ByteBuf byteBuf = Unpooled.copiedBuffer(JSON.toJSONString(data), Charset.defaultCharset());
                 log.info("连接成功-----");
                 ChannelFuture channelFuture = future.channel().writeAndFlush(byteBuf);

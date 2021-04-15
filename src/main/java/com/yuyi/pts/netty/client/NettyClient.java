@@ -4,9 +4,11 @@ import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.config.ProtocolConfig;
+import com.yuyi.pts.netty.client.handler.HttpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.NettyClientInitializer;
 import com.yuyi.pts.netty.client.handler.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.handler.WebSocketInitializer;
+import com.yuyi.pts.netty.handler.HttpRequestHandler;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -22,6 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -155,6 +161,9 @@ public class NettyClient {
             // TODO 同上判断类型 以及http
 //            currentCtx = WebSocketHandler.myCtx;
         }
+        else if (nettyClientInitializer instanceof HttpRequestInitializer) {
+          currentCtx = HttpRequestHandler.myCtx;
+        }
     }
 
     /**
@@ -170,7 +179,4 @@ public class NettyClient {
         log.info("客户端往服务端发送的数据：" + dataContent);
         currentCtx.writeAndFlush(buffer);
     }
-
-
-
 }
