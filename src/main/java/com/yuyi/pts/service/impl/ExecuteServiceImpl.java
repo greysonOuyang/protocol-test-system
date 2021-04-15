@@ -3,6 +3,7 @@ package com.yuyi.pts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.cache.LocalDataCounter;
+import com.yuyi.pts.common.cache.OperateIdWithRequestDtoCache;
 import com.yuyi.pts.common.cache.OperateWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
@@ -56,8 +57,8 @@ public class ExecuteServiceImpl implements ExecuteService {
     private RequestType requestType;
 
     @Override
-    public void execute(WebSocketSession session, RequestDataDto dataContent) {
-        boolean isSuccess = checkOperattion(session, dataContent);
+    public void execute(WebSocketSession session, RequestDataDto requestDataDto) {
+        boolean isSuccess = checkOperattion(session, requestDataDto);
         if (isSuccess) {
             scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
@@ -67,12 +68,15 @@ public class ExecuteServiceImpl implements ExecuteService {
                     result.put("totalMemory", JvmMetricsUtil.totalMemory());
                     result.put("maxMemory", JvmMetricsUtil.maxMemory());
                     result.put("freeMemory", JvmMetricsUtil.freeMemory());
-                    log.info("执行发送信息给客户端-->当前服务器性能:" + result);
+                    if (log.isDebugEnabled()) {
+                        log.info("执行发送信息给客户端-->当前服务器性能:{}", result);
+                    }
                     String jsonResult = successWithData(OperationCommand.JVM_METRIC.value(), result);
                     SendMsg2UserUtil.sendTextMsg(session, jsonResult);
                 }
-            }, 0, 1000, TimeUnit.MILLISECONDS);
-            startTest(session, dataContent);
+                // 测试时先关闭
+            }, 0, 3600000, TimeUnit.MILLISECONDS);
+            startTest(session, requestDataDto);
 
             // TODO 把数据放入缓存
             // TODO 设置Socket关闭事件
@@ -146,23 +150,23 @@ public class ExecuteServiceImpl implements ExecuteService {
      * 真正执行测试的地方
      *
      * @param session     会话
-     * @param dataContent 数据
+     * @param requestDataDto 数据
      */
-    private void startTest(WebSocketSession session, RequestDataDto dataContent) {
+    private void startTest(WebSocketSession session, RequestDataDto requestDataDto) {
         // TODO 对请求进行校验 校验通过则根据protocolHandlerDispatcher进行任务分发，校验失败返回false到此处
-        String host = dataContent.getHost();
-        Integer port = dataContent.getPort();
+        String host = requestDataDto.getHost();
+        Integer port = requestDataDto.getPort();
         String operateId = UUID.randomUUID().toString();
         String sessionId = session.getId();
-        dataContent.setId(operateId);
-        dataContent.setId(session.getId());
+        requestDataDto.setId(operateId);
+        requestDataDto.setId(session.getId());
         // 存储需要请求的数量
-        LocalDataCounter.newCounter(operateId, ((long) dataContent.getAverage() * dataContent.getCount()));
-        // 共享WebSocket
+        LocalDataCounter.newCounter(operateId, ((long) requestDataDto.getAverage() * requestDataDto.getCount()));
+        // 共享WebSocketSession
         OperateWithWebSocketSessionCache.put(operateId, session);
         // 共享请求配置
-        LocalDataRequestOptions.put(optionsId, options);
-        protocolHandlerDispatcher.submitRequest(session, host, port, requestType, dataContent);
+        OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
+        protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
         System.out.println("netty启动完成，执行了此处");
 
     }
