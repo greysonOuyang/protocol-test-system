@@ -25,13 +25,13 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.write("欢迎来到" + InetAddress.getLocalHost().getHostName() + "!\r\n");
+        ctx.writeAndFlush("欢迎来到" + InetAddress.getLocalHost().getHostName() + "!\r\n");
         ctx.flush();
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(Unpooled.copiedBuffer("服务端已收到消息", CharsetUtil.UTF_8));
+        ctx.writeAndFlush(Unpooled.copiedBuffer("消息处理完毕", CharsetUtil.UTF_8));
         ctx.flush();
     }
 

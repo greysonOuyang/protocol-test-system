@@ -24,10 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
  *
@@ -105,6 +101,7 @@ public class NettyClient {
     private void doClear(WebSocketSession session) {
         channelFuture.addListener(ctl -> {
             String id = session.getId();
+//            session.close();
             // 各个缓存清除数据
         });
     }

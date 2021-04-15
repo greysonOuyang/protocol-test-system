@@ -4,6 +4,8 @@ import com.yuyi.pts.common.vo.request.RequestDataDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
+
 /**
  *
  *
@@ -19,5 +21,5 @@ public interface ExecuteService {
      * @param session 会话
      * @param dataContent 待发送的数据
      */
-    public void execute(WebSocketSession session, RequestDataDto dataContent);
+    public void execute(WebSocketSession session, RequestDataDto dataContent) throws IOException;
 }

@@ -17,6 +17,9 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 /**
  * 前端与后端进行websocket通信的处理 所有请求的处理入口
+ * 这里列出大方向的 TODO List
+ *  1.批量请求数据
+ *
  *
  * @author greyson
  * @since 2021/4/12

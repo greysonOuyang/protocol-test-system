@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,7 +58,7 @@ public class ExecuteServiceImpl implements ExecuteService {
     private RequestType requestType;
 
     @Override
-    public void execute(WebSocketSession session, RequestDataDto requestDataDto) {
+    public void execute(WebSocketSession session, RequestDataDto requestDataDto) throws IOException {
         boolean isSuccess = checkOperattion(session, requestDataDto);
         if (isSuccess) {
             scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
@@ -157,7 +158,6 @@ public class ExecuteServiceImpl implements ExecuteService {
         String host = requestDataDto.getHost();
         Integer port = requestDataDto.getPort();
         String operateId = UUID.randomUUID().toString();
-        String sessionId = session.getId();
         requestDataDto.setId(operateId);
         requestDataDto.setId(session.getId());
         // 存储需要请求的数量
@@ -167,7 +167,6 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
         protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
-        System.out.println("netty启动完成，执行了此处");
 
     }
 

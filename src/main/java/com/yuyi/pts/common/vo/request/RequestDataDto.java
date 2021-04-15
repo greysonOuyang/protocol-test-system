@@ -23,7 +23,7 @@ import java.util.List;
 public class RequestDataDto {
 
 
-    /** 当前请求配置的id通常对应客户端WebSocket的写id */
+    /** UUID生成，唯一ID，每一次请求的标识 */
     @JsonProperty("id")
     private String id;
 

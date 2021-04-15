@@ -4,9 +4,6 @@ import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.net.URI;
-import java.net.URL;
-
 /**
  * 协议handler分发处理器
  *
@@ -26,6 +23,8 @@ public interface ProtocolHandlerDispatcher {
      * @param dataContent 请求数据
      */
     void submitRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent);
+
+
     void submitHttpRequest(WebSocketSession session, RequestType type, RequestDataDto dataContent);
 
 }
