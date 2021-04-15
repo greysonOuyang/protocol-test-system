@@ -147,7 +147,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 把url的字符串进行截取，拼接host和port
         String url = dataContent.getUrl();
         String target = url.substring(0,7);
-        // 校验前6位
+        // 校验前7位
         if("http://".equals(target)){
             flag=true;
         }else if ("https:/".equals(target)){
