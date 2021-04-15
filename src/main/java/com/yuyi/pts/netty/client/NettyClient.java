@@ -82,14 +82,30 @@ public class NettyClient {
             }
             bootstrap.handler(nettyClientInitializer);
             doConnect(session, dataContent);
-            //注册关闭事件
             doClose();
+            doClear(session);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
             log.error("Something occurs error in Netty Client: {}", e.getMessage());
         }
     }
 
+    /**
+     * 关闭或者结束时清理请求
+     *
+     * @param session
+     */
+    private void doClear(WebSocketSession session) {
+        channelFuture.addListener(ctl -> {
+            String id = session.getId();
+            // 各个缓存清除数据
+        });
+    }
+
+    /**
+     * 注册关闭事件
+     */
     private void doClose() {
         channelFuture.channel().closeFuture().addListener(cfl -> {
             if(clientChannel!=null){
@@ -103,6 +119,13 @@ public class NettyClient {
         });
     }
 
+    /**
+     * 处理连接事件，及连接后的业务处理
+     *
+     * @param session 会话
+     * @param dataContent 数据
+     * @throws InterruptedException 异常
+     */
     private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException {
         channelFuture = bootstrap.connect(getHost(), getPort()).sync();
 

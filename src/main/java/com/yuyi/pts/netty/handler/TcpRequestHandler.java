@@ -53,10 +53,10 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf in = (ByteBuf) msg;
         String content = in.toString(CharsetUtil.UTF_8);
-        CtxWithResponseMsgCache.put(ctx, content);
+//        CtxWithResponseMsgCache.put(ctx, content);
         WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
-        processResponseService.receiveDataAndSend2User(session, msg);
-        log.info("CtxWithResponseMsgCache的放置结果：key--{}, value--{}", ctx.hashCode(), CtxWithResponseMsgCache.get(ctx));
+        processResponseService.receiveDataAndSend2User(session, content);
+//        log.info("CtxWithResponseMsgCache的放置结果：key--{}, value--{}", ctx.hashCode(), CtxWithResponseMsgCache.get(ctx));
     }
 
 }

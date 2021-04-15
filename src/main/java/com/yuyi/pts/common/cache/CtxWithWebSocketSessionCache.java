@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * ChannelHandlerContext-->websocket会话的缓存
+ *
  * @author : wzl
  * @date : 2021/4/14/15:47
- * @description:
  */
 public class CtxWithWebSocketSessionCache {
     /** 数据 */

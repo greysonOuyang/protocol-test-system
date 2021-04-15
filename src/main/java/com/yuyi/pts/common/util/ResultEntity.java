@@ -21,7 +21,7 @@ public class ResultEntity {
     public static final String FAILED ="FAILED";
 
     /**
-     * 操作指令
+     * 响应指令码
      */
     private int code;
 
@@ -36,7 +36,7 @@ public class ResultEntity {
     private String message;
 
     /**
-     * 要返回的数据
+     * 要返回的数据 在多批次请求的时候，响应信息用ResponseInfo进行封装隔离
      */
     private Object data;
 

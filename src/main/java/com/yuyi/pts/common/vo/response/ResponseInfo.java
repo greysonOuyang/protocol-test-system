@@ -3,12 +3,12 @@ package com.yuyi.pts.common.vo.response;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * 响应信息
+ * 响应前端组织的信息
  * 
- * @author <a href="http://mirrentools.org">Mirren</a>
- *
+ * @author greyson
+ * @since 2021/4/15
  */
-public class OstResponseInfo {
+public class ResponseInfo {
 	/** 服务器响应的状态码 */
 	private int code;
 	/** 属于第几批请求 */
@@ -52,7 +52,7 @@ public class OstResponseInfo {
 	 * @param code
 	 * @return
 	 */
-	public OstResponseInfo setCode(int code) {
+	public ResponseInfo setCode(int code) {
 		this.code = code;
 		return this;
 	}
@@ -72,7 +72,7 @@ public class OstResponseInfo {
 	 * @param count
 	 * @return
 	 */
-	public OstResponseInfo setCount(int count) {
+	public ResponseInfo setCount(int count) {
 		this.count = count;
 		return this;
 	}
@@ -101,7 +101,7 @@ public class OstResponseInfo {
 	 * @param index
 	 * @return
 	 */
-	public OstResponseInfo setIndex(int index) {
+	public ResponseInfo setIndex(int index) {
 		this.index = index;
 		return this;
 	}
@@ -113,7 +113,7 @@ public class OstResponseInfo {
 	 *          0=失败,1=成功
 	 * @return
 	 */
-	public OstResponseInfo setState(int state) {
+	public ResponseInfo setState(int state) {
 		this.state = state;
 		return this;
 	}
@@ -133,7 +133,7 @@ public class OstResponseInfo {
 	 * @param body
 	 * @return
 	 */
-	public OstResponseInfo setBody(String body) {
+	public ResponseInfo setBody(String body) {
 		this.body = body;
 		return this;
 	}

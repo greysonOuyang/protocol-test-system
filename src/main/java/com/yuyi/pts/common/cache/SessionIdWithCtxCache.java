@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author greyson
  * @since 2021/4/13
  */
-public class CtxWithSessionIdCache {
+public class SessionIdWithCtxCache {
     /** 数据 */
     public static Map<String, ChannelHandlerContext> sessionAndCtxMap = new ConcurrentHashMap<>();
 

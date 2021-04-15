@@ -11,9 +11,10 @@ import org.springframework.web.socket.WebSocketSession;
 public interface ProcessResponseService {
 
     /**
+     * 响应消息到前端
      *
-     * @param session
-     * @param msg
+     * @param session websocket会话
+     * @param msg 响应信息
      */
     void receiveDataAndSend2User(WebSocketSession session, Object msg);
 }
