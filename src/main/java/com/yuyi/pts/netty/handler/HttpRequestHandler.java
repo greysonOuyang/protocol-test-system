@@ -12,6 +12,8 @@ import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -84,6 +86,19 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        IdleStateEvent event = (IdleStateEvent) evt;
+        // 触发了读空闲事件
+        if (event.state() == IdleState.READER_IDLE) {
+            log.debug("已经 3s 没有读到数据了");
+            WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
+            session.close();
+            ctx.channel().close();
+        }
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();

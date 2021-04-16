@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.net.URI;
-import java.net.URL;
-
 /**
  * description
  *
@@ -84,10 +81,8 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         if (type == RequestType.TCP) {
             nettyClientInitializer = new TcpRequestInitializer();
         } else if (type == RequestType.HTTP) {
-            // TODO 同上 指定currentCtx
             nettyClientInitializer = new HttpRequestInitializer();
         } else if (type == RequestType.WebSocket) {
-            // TODO 同上 指定currentCtx
             nettyClientInitializer = new WebSocketInitializer();
         }
     }
