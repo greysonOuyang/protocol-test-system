@@ -2,8 +2,8 @@ package com.yuyi.pts.netty.client;
 
 import com.alibaba.fastjson.JSON;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.handler.NettyClientHandler;
-import com.yuyi.pts.netty.client.handler.TcpHandler;
+import com.yuyi.pts.netty.handler.NettyClientHandler;
+import com.yuyi.pts.netty.handler.TcpHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

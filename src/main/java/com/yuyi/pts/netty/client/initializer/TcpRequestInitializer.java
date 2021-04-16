@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.client.handler;
+package com.yuyi.pts.netty.client.initializer;
 
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import io.netty.channel.socket.SocketChannel;
