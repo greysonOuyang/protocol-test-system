@@ -1,6 +1,7 @@
 package com.yuyi.pts.common.util;
 
 import com.alibaba.fastjson.JSON;
+import com.yuyi.pts.common.enums.OperationCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,8 +46,8 @@ public class ResultEntity {
      * @param <Type>
      * @return
      */
-    public static String successWithoutData(int operationCommand) {
-        return getJsonResult(new ResultEntity(operationCommand, SUCCESS,null,  null));
+    public static String successWithoutData(OperationCommand operationCommand) {
+        return getJsonResult(new ResultEntity(operationCommand.value(), SUCCESS,null,  null));
     }
 
     /**
@@ -55,8 +56,8 @@ public class ResultEntity {
      * @param <Type>
      * @return
      */
-    public static String successWithData(int operationCommand, Object data) {
-        return getJsonResult(new ResultEntity(operationCommand, SUCCESS, null, data));
+    public static String successWithData(OperationCommand operationCommand, Object data) {
+        return getJsonResult(new ResultEntity(operationCommand.value(), SUCCESS, null, data));
     }
     /**
      * 请求处理失败后使用的工具方法，返回指令类型，失败消息
@@ -64,8 +65,8 @@ public class ResultEntity {
      * @param <Type>
      * @return
      */
-    public static String failedWithMsg(int operationCommand, String message) {
-        return getJsonResult(new ResultEntity(operationCommand, FAILED, message, null));
+    public static String failedWithMsg(OperationCommand operationCommand, String message) {
+        return getJsonResult(new ResultEntity(operationCommand.value(), FAILED, message, null));
     }
 
     /**
@@ -77,8 +78,8 @@ public class ResultEntity {
      * @param <Type>
      * @return
      */
-    public static String failedWithMsgAndData(int operationCommand, String message, Object data) {
-        return getJsonResult(new ResultEntity(operationCommand, FAILED, message, data));
+    public static String failedWithMsgAndData(OperationCommand operationCommand, String message, Object data) {
+        return getJsonResult(new ResultEntity(operationCommand.value(), FAILED, message, data));
     }
 
     /**
@@ -87,8 +88,8 @@ public class ResultEntity {
      * @param operationCommand
      * @return
      */
-    public static String failedWithoutNothing(int operationCommand) {
-        return getJsonResult(new ResultEntity(operationCommand, FAILED, null, null));
+    public static String failedWithoutNothing(OperationCommand operationCommand) {
+        return getJsonResult(new ResultEntity(operationCommand.value(), FAILED, null, null));
     }
 
     /**

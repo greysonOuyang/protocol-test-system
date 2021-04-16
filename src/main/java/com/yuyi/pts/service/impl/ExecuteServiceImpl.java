@@ -71,7 +71,7 @@ public class ExecuteServiceImpl implements ExecuteService {
                     if (log.isDebugEnabled()) {
                         log.info("执行发送信息给客户端-->当前服务器性能:{}", result);
                     }
-                    String jsonResult = successWithData(OperationCommand.JVM_METRIC.value(), result);
+                    String jsonResult = successWithData(OperationCommand.JVM_METRIC, result);
                     SendMsg2UserUtil.sendTextMsg(session, jsonResult);
                 }
                 // 测试时先关闭
@@ -82,7 +82,7 @@ public class ExecuteServiceImpl implements ExecuteService {
             // TODO 设置Socket关闭事件
         } else {
             log.info("请求参数校验失败");
-            String responseMsg = ResultEntity.failedWithoutNothing(OperationCommand.MISSING_PARAMETER.value());
+            String responseMsg = ResultEntity.failedWithoutNothing(OperationCommand.MISSING_PARAMETER);
             SendMsg2UserUtil.sendTextMsg(session, responseMsg);
         }
     }
@@ -153,7 +153,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         }else if ("https:/".equals(target)){
             flag=true;
         }else {
-            String responseData = ResultEntity.failedWithMsg(OperationCommand.MISSING_PARAMETER.value(), "请输入正确的Ip地址");
+            String responseData = ResultEntity.failedWithMsg(OperationCommand.MISSING_PARAMETER, "请输入正确的Ip地址");
             try {
                 session.sendMessage(new TextMessage(responseData));
             } catch (IOException e) {
@@ -182,15 +182,11 @@ public class ExecuteServiceImpl implements ExecuteService {
         OperateWithWebSocketSessionCache.put(operateId, session);
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
-     //   protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
-        if("TCP".equals(requestType.name())){
+        if(requestType == RequestType.TCP){
             protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
-        }else if("HTTP".equals(requestType.name())){
+        }else if(requestType == RequestType.HTTP){
             protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
         }
-
-        System.out.println("netty启动完成，执行了此处");
-
     }
 
 

@@ -4,6 +4,7 @@ import com.yuyi.pts.common.cache.CtxWithRequestDataCCache;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.service.ProcessRequestService;
 import com.yuyi.pts.service.ProcessResponseService;
 import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
@@ -56,6 +57,7 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ResponseInfo responseInfo = new ResponseInfo();
         ByteBuf in = (ByteBuf) msg;
         String content = in.toString(CharsetUtil.UTF_8);
         WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
