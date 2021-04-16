@@ -7,7 +7,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.timeout.IdleStateHandler;
 
 /**
- * description
+ * HTTP/S请求处理器初始化
  *
  * @author greyson
  * @since 2021/4/13

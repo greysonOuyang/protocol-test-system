@@ -1,6 +1,5 @@
 package com.yuyi.pts.netty.client;
 
-import com.yuyi.pts.common.cache.CtxWithRequestDataCCache;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.initializer.HttpRequestInitializer;
@@ -85,12 +84,25 @@ public class NettyClient {
             }
             bootstrap.handler(nettyClientInitializer);
             doConnect(session, dataContent);
+            chooseChannelHandlerContext(nettyClientInitializer);
+            doProcess(session, dataContent);
             doClose();
             doClear(session);
         } catch (InterruptedException e) {
             e.printStackTrace();
             log.error("Something occurs error in Netty Client: {}", e.getMessage());
         }
+    }
+
+    /**
+     * 业务处理
+     *
+     * @param session
+     * @param dataContent
+     */
+    private void doProcess(WebSocketSession session, RequestDataDto dataContent) {
+        processRequestService.sendBinMessage(currentCtx, dataContent);
+        CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
 
     /**
@@ -130,15 +142,19 @@ public class NettyClient {
      * @throws InterruptedException 异常
      */
     private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException {
+//        log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接前");
         channelFuture = bootstrap.connect(getHost(), getPort()).sync();
+        log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
 
         //注册连接事件
         channelFuture.addListener((ChannelFutureListener)future -> {
             //如果连接成功
             if (future.isSuccess()) {
-                chooseChannelHandlerContext(nettyClientInitializer);
-                CtxWithWebSocketSessionCache.put(currentCtx, session);
-                CtxWithRequestDataCCache.put(currentCtx, dataContent);
+                if (currentCtx != null) {
+                    log.info("拿到ctx了");
+                } else {
+                    log.info("拿不到ctx");
+                }
                 log.info("服务端[" + channelFuture.channel().localAddress().toString() + "]已连接...");
                 clientChannel = channelFuture.channel();
             }

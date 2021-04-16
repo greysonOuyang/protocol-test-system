@@ -11,6 +11,12 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public interface ProcessRequestService {
 
+    /**
+     * 往第三方接口系统发送二进制数据、即序列化后的结果
+     *
+     * @param currentCtx
+     * @param dataContent
+     */
     void sendBinMessage(ChannelHandlerContext currentCtx, RequestDataDto dataContent);
 
 }

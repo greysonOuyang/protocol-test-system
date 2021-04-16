@@ -6,7 +6,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.stereotype.Service;
 
 /**
- * description
+ * TCP请求处理器初始化
  *
  * @author greyson
  * @since 2021/4/13
