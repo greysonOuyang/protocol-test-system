@@ -6,12 +6,11 @@ import com.yuyi.pts.common.cache.ObjCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.common.vo.response.ResponseInfo;
-import com.yuyi.pts.service.ProcessResponseService;
-import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
+import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -31,15 +30,14 @@ import org.springframework.web.socket.WebSocketSession;
 @Component
 @Slf4j
 public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
-    private static ProcessResponseService processResponseService;
+
+    public static ChannelHandlerContext myCtx;
+
+    public static com.yuyi.pts.service.ResponseService ResponseService;
 
     static {
-        processResponseService = SpringUtils.getBean(ProcessResponseServiceImpl.class);
+        ResponseService = SpringUtils.getBean(ResponseServiceImpl.class);
     }
-    public static ChannelHandlerContext myCtx;
-    public static ChannelFuture future;
-    private ChannelPromise promise;
-    private RequestDataDto response;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

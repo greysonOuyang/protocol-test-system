@@ -13,6 +13,8 @@ public interface Constant {
     public final static String MSG = "msg";
     /** 常量data */
     public final static String DATA = "data";
+    /** 常量result */
+    public final static String RESULT = "result";
     /** 请求成功数量的前缀,通常跟请求id配合使用 */
     public final static String REQUEST_SUCCEEDED_PREFIX = "request://succeeded";
     /** 请求失败数量的前缀,通常跟请求id配合使用 */

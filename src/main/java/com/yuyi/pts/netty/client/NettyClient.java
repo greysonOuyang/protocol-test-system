@@ -8,7 +8,7 @@ import com.yuyi.pts.netty.client.initializer.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.initializer.WebSocketInitializer;
 import com.yuyi.pts.netty.handler.HttpRequestHandler;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
-import com.yuyi.pts.service.ProcessRequestService;
+import com.yuyi.pts.service.RequestService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -47,7 +47,7 @@ public class NettyClient {
     private TcpRequestHandler tcpRequestHandler;
 
     @Autowired
-    private ProcessRequestService processRequestService;
+    private RequestService requestService;
 
     private ChannelHandlerContext currentCtx;
 
@@ -86,6 +86,7 @@ public class NettyClient {
             doConnect(session, dataContent);
             chooseChannelHandlerContext(nettyClientInitializer);
             doProcess(session, dataContent);
+            // TODO 对关闭事件进一步处理 和用户行为关联起来
             doClose();
             doClear(session);
         } catch (InterruptedException e) {
@@ -101,7 +102,7 @@ public class NettyClient {
      * @param dataContent
      */
     private void doProcess(WebSocketSession session, RequestDataDto dataContent) {
-        processRequestService.sendBinMessage(currentCtx, dataContent);
+        requestService.sendBinMessage(currentCtx, dataContent);
         CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
 
@@ -142,7 +143,6 @@ public class NettyClient {
      * @throws InterruptedException 异常
      */
     private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException {
-//        log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接前");
         channelFuture = bootstrap.connect(getHost(), getPort()).sync();
         log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
 

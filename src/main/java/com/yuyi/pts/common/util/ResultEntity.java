@@ -1,6 +1,7 @@
 package com.yuyi.pts.common.util;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.common.enums.OperationCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,33 +42,43 @@ public class ResultEntity {
      */
     private Object data;
 
+
+    public static JSONObject setResultEntity(OperationCommand cmd, String result, String message, Object data) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constant.CODE, cmd.value());
+        jsonObject.put(Constant.MSG, message);
+        jsonObject.put(Constant.RESULT, result);
+        jsonObject.put(Constant.DATA, data);
+        return jsonObject;
+    }
+
+
     /**
      * 请求处理成功且不需要返回数据时使用的工具方法
-     * @param <Type>
+     * @param
      * @return
      */
     public static String successWithoutData(OperationCommand operationCommand) {
-        return getJsonResult(new ResultEntity(operationCommand.value(), SUCCESS,null,  null));
+        return setResultEntity(operationCommand, SUCCESS, null, null).toString();
     }
 
     /**
      * 请求处理成功且需要返回数据时使用的工具方法
-     *
      * @param operationCommand
      * @param data
      * @return
      */
     public static String successWithData(OperationCommand operationCommand, Object data) {
-        return getJsonResult(new ResultEntity(operationCommand.value(), SUCCESS, null, data));
+        return setResultEntity(operationCommand, SUCCESS, null, data).toString();
     }
     /**
      * 请求处理失败后使用的工具方法，返回指令类型，失败消息
      * @param message
-     * @param <Type>
+     * @param
      * @return
      */
     public static String failedWithMsg(OperationCommand operationCommand, String message) {
-        return getJsonResult(new ResultEntity(operationCommand.value(), FAILED, message, null));
+        return setResultEntity(operationCommand, FAILED, message, null).toString();
     }
 
     /**
@@ -76,11 +87,11 @@ public class ResultEntity {
      * @param operationCommand
      * @param message
      * @param data
-     * @param <Type>
+     * @param
      * @return
      */
     public static String failedWithMsgAndData(OperationCommand operationCommand, String message, Object data) {
-        return getJsonResult(new ResultEntity(operationCommand.value(), FAILED, message, data));
+        return setResultEntity(operationCommand, FAILED, message, data).toString();
     }
 
     /**
@@ -90,17 +101,7 @@ public class ResultEntity {
      * @return
      */
     public static String failedWithoutNothing(OperationCommand operationCommand) {
-        return getJsonResult(new ResultEntity(operationCommand.value(), FAILED, null, null));
-    }
-
-    /**
-     * 将响应结果转成json
-     *
-     * @param obj
-     * @return
-     */
-    public static String getJsonResult(Object obj) {
-        return JSON.toJSONString(obj);
+        return setResultEntity(operationCommand, FAILED, null, null).toString();
     }
 
 }

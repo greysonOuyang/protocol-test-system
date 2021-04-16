@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
  * @author greyson
  * @since 2021/4/15
  */
-public interface ProcessRequestService {
+public interface RequestService {
 
     /**
      * 往第三方接口系统发送二进制数据、即序列化后的结果

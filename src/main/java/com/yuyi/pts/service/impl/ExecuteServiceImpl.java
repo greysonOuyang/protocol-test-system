@@ -2,7 +2,9 @@ package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.cache.*;
+import com.yuyi.pts.common.cache.LocalDataCounter;
+import com.yuyi.pts.common.cache.OperateIdWithRequestDtoCache;
+import com.yuyi.pts.common.cache.OperateWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
@@ -10,10 +12,9 @@ import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SendMsg2UserUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.NettyClient;
-import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
+import com.yuyi.pts.service.ResponseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,13 +41,11 @@ public class ExecuteServiceImpl implements ExecuteService {
 
 
     @Autowired
-    private NettyClient nettyClient;
-
-    @Autowired
     private ProtocolHandlerDispatcher protocolHandlerDispatcher;
 
     @Autowired
-    private TcpRequestHandler tcpRequestHandler;
+    private ResponseService responseService;
+
 
     private ScheduledExecutorService scheduledExecutorService= Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
@@ -71,8 +70,8 @@ public class ExecuteServiceImpl implements ExecuteService {
                     if (log.isDebugEnabled()) {
                         log.info("执行发送信息给客户端-->当前服务器性能:{}", result);
                     }
-                    String jsonResult = successWithData(OperationCommand.JVM_METRIC, result);
-                    SendMsg2UserUtil.sendTextMsg(session, jsonResult);
+                    String response = successWithData(OperationCommand.JVM_METRIC, result);
+                    responseService.sendTextMsg(session, response);
                 }
                 // 测试时先关闭
             }, 0, 3600000, TimeUnit.MILLISECONDS);
@@ -82,8 +81,8 @@ public class ExecuteServiceImpl implements ExecuteService {
             // TODO 设置Socket关闭事件
         } else {
             log.info("请求参数校验失败");
-            String responseMsg = ResultEntity.failedWithoutNothing(OperationCommand.MISSING_PARAMETER);
-            SendMsg2UserUtil.sendTextMsg(session, responseMsg);
+            String response = ResultEntity.failedWithoutNothing(OperationCommand.MISSING_PARAMETER);
+            responseService.sendTextMsg(session, response);
         }
     }
 

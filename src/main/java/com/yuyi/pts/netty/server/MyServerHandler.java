@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
+public class MyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -42,9 +42,7 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println(msg);
-
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String content = JSON.toJSONString(msg);
         HashMap<String, String> map = new HashMap<>();
         map.put("server", ctx.channel().remoteAddress().toString());
@@ -58,4 +56,5 @@ public class MyServerHandler extends SimpleChannelInboundHandler<Object> {
         log.info("服务端往客户端发送的数据：" + result);
         ctx.writeAndFlush(buffer);
     }
+
 }

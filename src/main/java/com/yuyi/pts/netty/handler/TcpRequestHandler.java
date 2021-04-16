@@ -1,16 +1,16 @@
 package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.enums.OperationCommand;
+import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.response.ResponseInfo;
-import com.yuyi.pts.service.ProcessResponseService;
-import com.yuyi.pts.service.impl.ProcessResponseServiceImpl;
-import io.netty.buffer.ByteBuf;
+import com.yuyi.pts.service.ResponseService;
+import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
@@ -26,13 +26,13 @@ import org.springframework.web.socket.WebSocketSession;
 @Slf4j
 public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
-    private static ProcessResponseService processResponseService;
+    public static ChannelHandlerContext myCtx;
+
+    public static ResponseService responseService;
 
     static {
-        processResponseService = SpringUtils.getBean(ProcessResponseServiceImpl.class);
+        responseService = SpringUtils.getBean(ResponseServiceImpl.class);
     }
-
-    public static ChannelHandlerContext myCtx;
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -51,11 +51,12 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        log.info("服务端发回的数据：{}", msg);
         ResponseInfo responseInfo = new ResponseInfo();
-        ByteBuf in = (ByteBuf) msg;
-        String content = in.toString(CharsetUtil.UTF_8);
-        WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
-        processResponseService.receiveDataAndSend2User(session, content);
+        responseInfo.setState(1);
+        responseInfo.setBody((String) msg);
+        String result = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
+        responseService.sendTextMsg(ctx, result);
 
     }
 
