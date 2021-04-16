@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 统一处理响应结果
+ * 统一处理响应结果 所有返回前端的信息拿此类进行封装 如果服务端有返回响应数据data，一定要拿ResponseInfo封装到body
  *
  * @author greyson
  * @since 2021/4/11
@@ -37,7 +37,7 @@ public class ResultEntity {
     private String message;
 
     /**
-     * 要返回的数据 在多批次请求的时候，响应信息用ResponseInfo进行封装隔离
+     * 要返回的数据 服务端返回的响应信息用ResponseInfo进行封装隔离
      */
     private Object data;
 
@@ -52,8 +52,9 @@ public class ResultEntity {
 
     /**
      * 请求处理成功且需要返回数据时使用的工具方法
+     *
+     * @param operationCommand
      * @param data
-     * @param <Type>
      * @return
      */
     public static String successWithData(OperationCommand operationCommand, Object data) {

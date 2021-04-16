@@ -12,7 +12,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @author greyson
  * @since 2021/4/13
  */
-public class HttpRequestInitializer extends NettyClientInitializer{
+public class HttpRequestInitializer extends NettyClientInitializer {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
