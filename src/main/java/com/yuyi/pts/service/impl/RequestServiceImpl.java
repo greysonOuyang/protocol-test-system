@@ -2,7 +2,7 @@ package com.yuyi.pts.service.impl;
 
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.service.ProcessRequestService;
+import com.yuyi.pts.service.RequestService;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class ProcessRequestServiceImpl implements ProcessRequestService {
+public class RequestServiceImpl implements RequestService {
 
     @Override
     public void sendBinMessage(ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
