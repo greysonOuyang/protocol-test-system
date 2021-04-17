@@ -1,5 +1,6 @@
 package com.yuyi.pts.service;
 
+import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -17,6 +18,6 @@ public interface RequestService {
      * @param currentCtx
      * @param dataContent
      */
-    void sendBinMessage(ChannelHandlerContext currentCtx, RequestDataDto dataContent);
+    void sendBinMessage(RequestType type,ChannelHandlerContext currentCtx, RequestDataDto dataContent);
 
 }

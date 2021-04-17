@@ -1,6 +1,7 @@
 package com.yuyi.pts.service.impl;
 
 import com.yuyi.pts.common.cache.ObjCache;
+import com.yuyi.pts.common.cache.xxObj;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
@@ -9,6 +10,9 @@ import com.yuyi.pts.netty.client.initializer.NettyClientInitializer;
 import com.yuyi.pts.netty.client.initializer.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.initializer.WebSocketInitializer;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +42,7 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         nettyClient.setHost(host);
         nettyClient.setPort(port);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(session, dataContent);
+        nettyClient.start(type,session, dataContent);
     }
 
 
@@ -54,20 +58,15 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
              nettyClient.setHost(host);
              String port = url.substring(18,22);
              nettyClient.setPort(Integer.parseInt(port));
-             String uri = url.substring(22);
-             ObjCache.put("uri",uri);
          }else {
              String host = url.substring(7,16);
              nettyClient.setHost(host);
              String port = url.substring(17,21);
              nettyClient.setPort(Integer.parseInt(port));
-             String uri = url.substring(21);
-             ObjCache.put("uri",uri);
          }
-        ObjCache.put("method",dataContent.getMethod());
         chooseInitializer(type);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(session, dataContent);
+        nettyClient.start(type,session, dataContent);
         System.out.println("test---------");
     }
 

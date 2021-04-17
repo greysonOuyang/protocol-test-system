@@ -43,12 +43,16 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println(msg);
+
+        ByteBuf buf = (ByteBuf) msg;
+        String result1 = buf.toString(CharsetUtil.UTF_8);
         String content = JSON.toJSONString(msg);
         HashMap<String, String> map = new HashMap<>();
         map.put("server", ctx.channel().remoteAddress().toString());
         map.put("responseData", "我是服务器返回的数据");
         String result = JSON.toJSONString(map);
-        log.debug("服务端{}收到客户端消息：{}", ctx.channel().remoteAddress(), content);
+        log.debug("服务端{}收到客户端消息：{}", ctx.channel().remoteAddress(), result1);
 
         byte[] bytes = result.getBytes(StandardCharsets.UTF_8);
         ByteBuf buffer = ctx.alloc().buffer();

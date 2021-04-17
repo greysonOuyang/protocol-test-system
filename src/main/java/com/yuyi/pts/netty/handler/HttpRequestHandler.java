@@ -3,8 +3,10 @@ package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.cache.ObjCache;
+import com.yuyi.pts.common.cache.xxObj;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
@@ -42,14 +44,6 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         myCtx = ctx;
-        FullHttpRequest request = null;
-        Object url = ObjCache.get("uri");
-        // 获取到发送请求方式
-        HttpMethod method = HttpMethod.valueOf(ObjCache.get("method").toString());
-        request= new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, url.toString());
-        request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
-        request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
-        ctx.writeAndFlush(request);
         super.channelActive(ctx);
         log.info("客户端已经被激活:" + ctx.channel().remoteAddress().toString());
         ctx.flush();

@@ -1,12 +1,11 @@
 package com.yuyi.pts.netty.client;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.initializer.HttpRequestInitializer;
-import com.yuyi.pts.netty.client.initializer.NettyClientInitializer;
-import com.yuyi.pts.netty.client.initializer.TcpRequestInitializer;
-import com.yuyi.pts.netty.client.initializer.WebSocketInitializer;
+import com.yuyi.pts.netty.client.initializer.*;
 import com.yuyi.pts.netty.handler.HttpRequestHandler;
+import com.yuyi.pts.netty.handler.ModbusRequestHandler;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import com.yuyi.pts.service.RequestService;
 import io.netty.bootstrap.Bootstrap;
@@ -75,7 +74,7 @@ public class NettyClient {
      * @param session 会话
      * @param dataContent 数据
      */
-    public void start(WebSocketSession session, RequestDataDto dataContent) {
+    public void start(RequestType type,WebSocketSession session, RequestDataDto dataContent) {
         try {
             if (nettyClientInitializer == null) {
                 log.error("未能成功初始化NettyClientInitializer");
@@ -85,8 +84,8 @@ public class NettyClient {
             bootstrap.handler(nettyClientInitializer);
             doConnect(session, dataContent);
             chooseChannelHandlerContext(nettyClientInitializer);
-            doProcess(session, dataContent);
             // TODO 对关闭事件进一步处理 和用户行为关联起来
+            doProcess(type,session, dataContent);
             doClose();
             doClear(session);
         } catch (InterruptedException e) {
@@ -101,8 +100,9 @@ public class NettyClient {
      * @param session
      * @param dataContent
      */
-    private void doProcess(WebSocketSession session, RequestDataDto dataContent) {
-        requestService.sendBinMessage(currentCtx, dataContent);
+
+    private void doProcess(RequestType type,WebSocketSession session, RequestDataDto dataContent) {
+        requestService.sendBinMessage(type,currentCtx, dataContent);
         CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
 
@@ -176,6 +176,8 @@ public class NettyClient {
         }
         else if (nettyClientInitializer instanceof HttpRequestInitializer) {
           currentCtx = HttpRequestHandler.myCtx;
+        }else if (nettyClientInitializer instanceof ModbusRequestInitializer) {
+            currentCtx = ModbusRequestHandler.myCtx;
         }
     }
 
