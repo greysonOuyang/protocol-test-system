@@ -103,6 +103,6 @@ public class RequestDataDto {
     @JsonProperty("interval")
     private Long interval;
 
-    private RequestProtocolDTO requestProtocolDTO;
+    private SmartCarProtocol smartCarProtocol;
 
 }

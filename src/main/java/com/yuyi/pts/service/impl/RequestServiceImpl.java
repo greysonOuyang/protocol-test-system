@@ -3,7 +3,7 @@ package com.yuyi.pts.service.impl;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.common.vo.request.RequestProtocolDTO;
+import com.yuyi.pts.common.vo.request.SmartCarProtocol;
 import com.yuyi.pts.service.RequestService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -66,7 +66,7 @@ public class RequestServiceImpl implements RequestService {
      * @return void
      */
     private void getRequestProtocolDTO(ChannelHandlerContext currentCtx,ByteBuf buffer,RequestDataDto dataContent) {
-        RequestProtocolDTO request = dataContent.getRequestProtocolDTO();
+        SmartCarProtocol request = dataContent.getSmartCarProtocol();
         byte[] total = intToByteArray(request.getTotal());
         byte[] index = intToByteArray(request.getIndex());
         byte[] dataLength = intToByteArray(request.getData_len());

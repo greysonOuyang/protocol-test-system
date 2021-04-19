@@ -29,7 +29,7 @@ import java.util.Arrays;
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
-public class RequestProtocolDTO {
+public class SmartCarProtocol {
 
     /**
      * 消息头
@@ -69,7 +69,7 @@ public class RequestProtocolDTO {
      */
     private short data_tail = ConstanValue.TAIL_DATA;
 
-    public RequestProtocolDTO(int total, int index, short data_len, int type, byte[] content) {
+    public SmartCarProtocol(int total, int index, short data_len, int type, byte[] content) {
         this.total = total;
         this.index = index;
         this.data_len = data_len;
