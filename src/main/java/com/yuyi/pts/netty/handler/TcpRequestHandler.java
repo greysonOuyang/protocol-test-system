@@ -79,6 +79,5 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error("Tcphandler出现错误：{}", cause.getMessage());
-
     }
 }

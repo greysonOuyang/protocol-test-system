@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageBody {
+public class ModBusMessageBody {
 	private ByteBuf code;
 	private ByteBuf body;
 
