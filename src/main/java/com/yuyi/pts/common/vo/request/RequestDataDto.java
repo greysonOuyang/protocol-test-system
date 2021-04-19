@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.net.httpserver.Headers;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
+import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -103,6 +104,7 @@ public class RequestDataDto {
     @JsonProperty("interval")
     private Long interval;
 
-    private SmartCarProtocol smartCarProtocol;
+    private ModBusMessage modBusMessage;
+
 
 }

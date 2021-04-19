@@ -1,11 +1,13 @@
 package com.yuyi.pts.protocol.modbus.codec;
 
 import com.yuyi.pts.common.constant.ConstanValue;
+import com.yuyi.pts.common.util.SerializeUtil;
+import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.common.vo.request.SmartCarProtocol;
 import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageCodec;
+import io.netty.handler.codec.ByteToMessageCodec;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
  * @author greyson/wzl
  * @since 2021/4/16
  */
-public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBusMessage> {
+public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
 
     /**
      * <pre>
@@ -30,10 +32,28 @@ public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBusMessage> {
 
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ModBusMessage modBus, List<Object> list) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
+        ModBusMessage modBusMessage = requestDataDto.getModBusMessage();
+        byte[] affairIdentification = SerializeUtil.serialize(modBusMessage.getAffairIdentification());
+        // 业务标识符 两个字节
+        out.writeBytes(affairIdentification);
+
+        // 协议标识符 两个字节
+        out.writeBytes();
+
+        //长度标识符
+
+        //单元标识码
+
+        //功能码
+
+        // 写入数据
+        Object body = requestDataDto.getBody();
+        byte[] data = SerializeUtil.serialize(body);
+        out.writeBytes(data);
+
 
     }
-
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer,
