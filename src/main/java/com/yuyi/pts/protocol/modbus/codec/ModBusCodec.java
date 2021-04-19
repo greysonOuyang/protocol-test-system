@@ -1,8 +1,8 @@
 package com.yuyi.pts.protocol.modbus.codec;
 
 import com.yuyi.pts.common.constant.ConstanValue;
-import com.yuyi.pts.protocol.ModBus;
-import com.yuyi.pts.protocol.SmartCarProtocol;
+import com.yuyi.pts.common.vo.request.RequestProtocolDTO;
+import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author greyson/wzl
  * @since 2021/4/16
  */
-public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBus> {
+public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBusMessage> {
 
     /**
      * <pre>
@@ -30,7 +30,7 @@ public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBus> {
 
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ModBus modBus, List<Object> list) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ModBusMessage modBus, List<Object> list) throws Exception {
 
     }
 
@@ -91,7 +91,7 @@ public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBus> {
             //data_tail为帧尾两个字节
 /*            byte [] data_tail=new byte[2];
             buffer.readBytes(data_tail);*/
-            SmartCarProtocol protocol = new SmartCarProtocol(total, index, dataLength, typeLow, contentBytes);
+            RequestProtocolDTO protocol = new RequestProtocolDTO(total, index, dataLength, typeLow, contentBytes);
             out.add(protocol);
             // 回收已读字节
             buffer.discardReadBytes();
