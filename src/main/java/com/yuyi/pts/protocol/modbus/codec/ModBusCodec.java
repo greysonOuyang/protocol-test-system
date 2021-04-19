@@ -36,13 +36,17 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
         ModBusMessage modBusMessage = requestDataDto.getModBusMessage();
         // 业务标识符 两个字节
-        byte[] affairIdentification = SerializeUtil.serialize(modBusMessage.getAffairIdentification());
+        byte[] affairIdentification = new byte[2];
+        affairIdentification = SerializeUtil.serialize(modBusMessage.getAffairIdentification());
         // 协议标识符 两个字节
-        byte[] protocolIdentification = SerializeUtil.serialize(modBusMessage.getProtocolIdentification());
-        //  单元标识码
-        byte[] unitIdentification = SerializeUtil.serialize(modBusMessage.getUnitIdentification());
-        //  功能码
-        byte[] code = SerializeUtil.serialize(modBusMessage.getCode());
+        byte[] protocolIdentification = new byte[2];
+        protocolIdentification = SerializeUtil.serialize(modBusMessage.getProtocolIdentification());
+        //  单元标识码  一个字节
+        byte[] unitIdentification = new byte[1];
+         unitIdentification = SerializeUtil.serialize(modBusMessage.getUnitIdentification());
+        //  功能码 一个字节
+        byte[] code = new byte[1];
+         code = SerializeUtil.serialize(modBusMessage.getCode());
         //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);
@@ -51,11 +55,11 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
 
 
         // 注意！写入顺序不可调整
-        out.writeShort(affairIdentification);
-        out.writeShort(protocolIdentification);
+        out.writeBytes(affairIdentification);
+        out.writeBytes(protocolIdentification);
         out.writeShort(length);
-        out.writeByte(unitIdentification);
-        out.writeByte(code);
+        out.writeBytes(unitIdentification);
+        out.writeBytes(code);
         out.writeBytes(data);
 
 
