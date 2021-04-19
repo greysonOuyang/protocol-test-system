@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.client.initializer;
 
+import com.yuyi.pts.netty.handler.ModbusRequestHandler;
 import com.yuyi.pts.protocol.SmartCarDecoder;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -18,6 +19,6 @@ public class ModbusRequestInitializer extends NettyClientInitializer{
                         // 自定义解码
                         new SmartCarDecoder(),
                         //自定义的
-                        new SmartCarDecoder());
+                        new ModbusRequestHandler());
     }
 }
