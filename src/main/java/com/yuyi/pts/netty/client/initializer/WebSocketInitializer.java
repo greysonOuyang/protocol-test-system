@@ -10,6 +10,6 @@ import io.netty.channel.socket.SocketChannel;
  */
 public class WebSocketInitializer extends NettyClientInitializer{
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
+    protected void  initChannel(SocketChannel ch) throws Exception {
     }
 }
