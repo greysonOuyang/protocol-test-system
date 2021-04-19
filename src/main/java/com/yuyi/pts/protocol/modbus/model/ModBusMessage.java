@@ -13,9 +13,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ModBusMessage {
 
+    /**
+     * 业务标识符
+     */
+    private String affairIdentification;
+    /**
+     * 协议标识符
+     */
+    private String protocolIdentification;
+    /**
+     * 长度标识符
+     */
+    private String length;
+    /**
+     * 单元标识符
+     */
+    private String unitIdentification;
 
-    private ModBusMessageHeader header;
-    private ModBusMessageBody body;
-
+    /**
+     * 功能码字段
+     */
+    private String code;
 
 }
