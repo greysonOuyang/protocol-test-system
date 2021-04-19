@@ -35,19 +35,21 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
         ModBusMessage modBusMessage = requestDataDto.getModBusMessage();
         byte[] affairIdentification = SerializeUtil.serialize(modBusMessage.getAffairIdentification());
-        // 业务标识符 两个字节
+        byte[] unitIdentification = SerializeUtil.serialize(modBusMessage.getUnitIdentification());
+        byte[] code = SerializeUtil.serialize(modBusMessage.getCode());
+        byte[] length = SerializeUtil.serialize(modBusMessage.getLength());
+        byte[] protocolIdentification = SerializeUtil.serialize(modBusMessage.getProtocolIdentification());
+        //  业务标识符 两个字节
         out.writeBytes(affairIdentification);
-
-        // 协议标识符 两个字节
-        out.writeBytes();
-
-        //长度标识符
-
-        //单元标识码
-
-        //功能码
-
-        // 写入数据
+        //  协议标识符 两个字节
+        out.writeBytes(protocolIdentification);
+        //  长度标识符
+        out.writeBytes(length);
+        //  单元标识码
+        out.writeBytes(unitIdentification);
+        //  功能码
+        out.writeBytes(code);
+        //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);
         out.writeBytes(data);
