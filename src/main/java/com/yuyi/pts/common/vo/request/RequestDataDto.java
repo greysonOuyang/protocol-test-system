@@ -2,8 +2,8 @@ package com.yuyi.pts.common.vo.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.net.httpserver.Headers;
-import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.common.enums.SslCertType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -102,5 +102,7 @@ public class RequestDataDto {
     private Integer average;
     @JsonProperty("interval")
     private Long interval;
+
+    private RequestProtocolDTO requestProtocolDTO;
 
 }

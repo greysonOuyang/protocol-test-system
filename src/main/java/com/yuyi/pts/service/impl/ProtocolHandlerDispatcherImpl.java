@@ -1,7 +1,5 @@
 package com.yuyi.pts.service.impl;
 
-import com.yuyi.pts.common.cache.ObjCache;
-import com.yuyi.pts.common.cache.xxObj;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
@@ -10,9 +8,6 @@ import com.yuyi.pts.netty.client.initializer.NettyClientInitializer;
 import com.yuyi.pts.netty.client.initializer.TcpRequestInitializer;
 import com.yuyi.pts.netty.client.initializer.WebSocketInitializer;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +31,7 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
 
     @Override
-    public void submitRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
+    public void submitTCPRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
         // TODO 此处可根据不同类型进行任务分发
         chooseInitializer(type);
         nettyClient.setHost(host);
@@ -82,6 +77,8 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         } else if (type == RequestType.HTTP) {
             nettyClientInitializer = new HttpRequestInitializer();
         } else if (type == RequestType.WebSocket) {
+            nettyClientInitializer = new WebSocketInitializer();
+        } else if (type == RequestType.ModBus) {
             nettyClientInitializer = new WebSocketInitializer();
         }
     }

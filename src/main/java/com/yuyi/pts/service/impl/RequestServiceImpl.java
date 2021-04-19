@@ -3,6 +3,7 @@ package com.yuyi.pts.service.impl;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.common.vo.request.RequestProtocolDTO;
 import com.yuyi.pts.service.RequestService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -53,10 +54,59 @@ public class RequestServiceImpl implements RequestService {
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
             currentCtx.writeAndFlush(request);
+        }else if(type == RequestType.ModBus){
+            ByteBuf buffer = currentCtx.alloc().buffer();
+            getRequestProtocolDTO(currentCtx,buffer,dataContent);
         }
-        // ModBus协议给第三方发送数据
-        else if (type == RequestType.ModBus) {
-        }
+    }
 
+    /**
+     * 处理数据，封装消息
+     * @param currentCtx buffer  dataContent
+     * @return void
+     */
+    private void getRequestProtocolDTO(ChannelHandlerContext currentCtx,ByteBuf buffer,RequestDataDto dataContent) {
+        RequestProtocolDTO request = dataContent.getRequestProtocolDTO();
+        byte[] total = intToByteArray(request.getTotal());
+        byte[] index = intToByteArray(request.getIndex());
+        byte[] dataLength = intToByteArray(request.getData_len());
+        byte[] status = intToByteArray(request.getStatus());
+        byte[] dataType = intToByteArray(request.getType());
+        byte[] content = request.getContent();
+        buffer.writeBytes(total);
+        buffer.writeBytes(index);
+        buffer.writeBytes(dataLength);
+        buffer.writeBytes(status);
+        buffer.writeBytes(dataType);
+        buffer.writeBytes(content);
+        currentCtx.writeAndFlush(buffer);
+    }
+
+    /**
+     * int到byte[] 由高位到低位
+     * @param i 需要转换为byte数组的整行值。
+     * @return byte数组
+     */
+    public static byte[] intToByteArray(int i) {
+        byte[] result = new byte[4];
+        result[0] = (byte)((i >> 24) & 0xFF);
+        result[1] = (byte)((i >> 16) & 0xFF);
+        result[2] = (byte)((i >> 8) & 0xFF);
+        result[3] = (byte)(i & 0xFF);
+        return result;
+    }
+
+    /**
+     * byte[]转int
+     * @param bytes 需要转换成int的数组
+     * @return int值
+     */
+    public static int byteArrayToInt(byte[] bytes) {
+        int value=0;
+        for(int i = 0; i < 4; i++) {
+            int shift= (3-i) * 8;
+            value +=(bytes[i] & 0xFF) << shift;
+        }
+        return value;
     }
 }

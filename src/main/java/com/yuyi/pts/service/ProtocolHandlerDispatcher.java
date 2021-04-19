@@ -22,7 +22,7 @@ public interface ProtocolHandlerDispatcher {
      * @param type 请求类型
      * @param dataContent 请求数据
      */
-    void submitRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent);
+    void submitTCPRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent);
 
 
     void submitHttpRequest(WebSocketSession session, RequestType type, RequestDataDto dataContent);

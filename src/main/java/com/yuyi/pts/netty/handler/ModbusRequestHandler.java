@@ -67,6 +67,7 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("服务端返回的数据：{}", msg);
+        // 处理数据返回给前端
         if (msg instanceof ModBusMessage) {
             ModBusMessage result = (ModBusMessage) msg;
             int code = result.getBody().getCode();

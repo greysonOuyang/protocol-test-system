@@ -1,6 +1,12 @@
-package com.yuyi.pts.protocol;
+package com.yuyi.pts.common.vo.request;
 
 import com.yuyi.pts.common.constant.ConstanValue;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.Arrays;
 
 /**
  * 自定义协议类的封装
@@ -8,7 +14,6 @@ import com.yuyi.pts.common.constant.ConstanValue;
  * @author wzl
  * @since 2021/4/16
  */
-import java.util.Arrays;
 
 /**
  * 自定义协议类的封装
@@ -21,8 +26,10 @@ import java.util.Arrays;
  * data部分：Type(2b)content((n-2)b)Type：消息种类，2BYTE，低位在前Content：具体消息内容，根据不同消息种类不同而不同，长度(n-2)b；；
  * data_tail为帧尾，两个字节，固定为0xFD,0xFD
  */
-
-public class SmartCarProtocol {
+@NoArgsConstructor
+@Data
+@AllArgsConstructor
+public class RequestProtocolDTO {
 
     /**
      * 消息头
@@ -31,22 +38,27 @@ public class SmartCarProtocol {
     /**
      * 总帧数
      */
+    @Value("${user.protocol.total}")
     private int total;
     /**
      * 当前帧
      */
+    @Value("${user.protocol.index}")
     private int index;
     /**
      * 数据长度
      */
+    @Value("${user.protocol.datalength}")
     private short data_len;
     /**
      * 主备机状态
      */
+    @Value("${user.protocol.status}")
     private int status;
     /**
      * 消息种类
      */
+    @Value("${user.protocol.type}")
     private int type;
     /**
      * 消息内容
@@ -57,7 +69,7 @@ public class SmartCarProtocol {
      */
     private short data_tail = ConstanValue.TAIL_DATA;
 
-    public SmartCarProtocol(int total, int index, short data_len, int type, byte[] content) {
+    public RequestProtocolDTO(int total, int index, short data_len, int type, byte[] content) {
         this.total = total;
         this.index = index;
         this.data_len = data_len;
@@ -131,7 +143,7 @@ public class SmartCarProtocol {
 
     @Override
     public String toString() {
-        return "SmartCarProtocol{" +
+        return "RequestProtocolDTO{" +
                 "head_data=" + head_data +
                 ", total=" + total +
                 ", index=" + index +

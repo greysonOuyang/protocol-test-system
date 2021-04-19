@@ -10,7 +10,6 @@ import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
-import com.yuyi.pts.common.util.SendMsg2UserUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
@@ -182,9 +181,12 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
         if(requestType == RequestType.TCP){
-            protocolHandlerDispatcher.submitRequest(session, host, port, requestType, requestDataDto);
+            protocolHandlerDispatcher.submitTCPRequest(session, host, port, requestType, requestDataDto);
         }else if(requestType == RequestType.HTTP){
             protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
+        }
+        else if(requestType == RequestType.ModBus){
+            protocolHandlerDispatcher.submitTCPRequest(session, host, port, requestType, requestDataDto);
         }
     }
 
