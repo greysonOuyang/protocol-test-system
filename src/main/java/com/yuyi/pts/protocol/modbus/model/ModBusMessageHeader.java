@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.message;
+package com.yuyi.pts.protocol.modbus.model;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;

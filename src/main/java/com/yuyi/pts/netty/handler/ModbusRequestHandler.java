@@ -5,7 +5,7 @@ import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.response.ResponseInfo;
-import com.yuyi.pts.netty.message.ModBusMessage;
+import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.channel.ChannelHandlerContext;

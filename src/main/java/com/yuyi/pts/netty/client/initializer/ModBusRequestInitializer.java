@@ -1,8 +1,8 @@
 package com.yuyi.pts.netty.client.initializer;
 
 import com.yuyi.pts.netty.handler.ModbusRequestHandler;
-import com.yuyi.pts.protocol.ModBusCodec;
-import com.yuyi.pts.protocol.ProcotolFrameDecoder;
+import com.yuyi.pts.protocol.modbus.codec.ModBusCodec;
+import com.yuyi.pts.protocol.modbus.codec.ProcotolFrameDecoder;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 

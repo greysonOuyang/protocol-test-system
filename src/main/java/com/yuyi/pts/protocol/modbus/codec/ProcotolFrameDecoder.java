@@ -1,4 +1,4 @@
-package com.yuyi.pts.protocol;
+package com.yuyi.pts.protocol.modbus.codec;
 
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 

@@ -1,7 +1,8 @@
-package com.yuyi.pts.protocol;
+package com.yuyi.pts.protocol.modbus.codec;
 
 import com.yuyi.pts.common.constant.ConstanValue;
 import com.yuyi.pts.common.vo.request.RequestProtocolDTO;
+import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author greyson/wzl
  * @since 2021/4/16
  */
-public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBus> {
+public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBusMessage> {
 
     /**
      * <pre>
@@ -29,7 +30,7 @@ public class ModBusCodec extends MessageToMessageCodec<ByteBuf, ModBus> {
 
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ModBus modBus, List<Object> list) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ModBusMessage msg, List<Object> list) throws Exception {
 
     }
 
