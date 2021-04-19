@@ -1,6 +1,5 @@
 package com.yuyi.pts.protocol.modbus.codec;
 
-import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
@@ -68,7 +67,7 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in,
                           List<Object> out) throws Exception {
-    log.in
+        log.info("ModBus协议接收到服务端数据--解码前：{}", in);
     }
 
 }

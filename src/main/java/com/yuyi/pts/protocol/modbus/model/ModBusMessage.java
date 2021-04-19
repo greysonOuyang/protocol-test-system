@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 @AllArgsConstructor
 public class ModBusMessage {
 
+    private ModBusMessageHeader modBusMessageHeader;
+
+    private ModBusMessageBody modBusMessageBody;
+
     /**
      * 业务标识符
      */
@@ -41,7 +45,9 @@ public class ModBusMessage {
     @Value("${user.protocol.code}")
     private String code;
 
-
+    /**
+     * 数据字段
+     */
     private String body;
 
 }

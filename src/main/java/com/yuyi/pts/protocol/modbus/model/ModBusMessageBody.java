@@ -11,10 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModBusMessageBody {
-
+	/**
+	 * 功能码字段
+	 */
+	private int code;
 
 	/**
-	 * 	数据字段
+	 * 数据字段
 	 */
 	private String body;
 

@@ -1,6 +1,5 @@
 package com.yuyi.pts.protocol.modbus.model;
 
-import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ModBusMessageHeader {
 
-
-
+    /**
+     * 业务标识符
+     */
+    private String affairIdentification;
+    /**
+     * 协议标识符
+     */
+    private String protocolIdentification;
+    /**
+     * 长度标识符
+     */
+    private String length;
+    /**
+     * 单元标识符
+     */
+    private String unitIdentification;
 
 }

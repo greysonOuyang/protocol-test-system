@@ -70,8 +70,8 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         // 处理数据返回给前端
         if (msg instanceof ModBusMessage) {
             ModBusMessage result = (ModBusMessage) msg;
-            int code = result.getBody().getCode();
-            String body = result.getBody().getBody();
+            int code = result.getModBusMessageBody().getCode();
+            String body = result.getModBusMessageBody().getBody();
             ResponseInfo responseInfo = new ResponseInfo();
             responseInfo.setCode(code);
             responseInfo.setBody(body);
