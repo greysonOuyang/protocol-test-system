@@ -1,14 +1,11 @@
 package com.yuyi.pts.service.impl;
 
-import com.yuyi.pts.common.cache.ObjCache;
-import com.yuyi.pts.common.cache.xxObj;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import com.yuyi.pts.service.RequestService;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
@@ -56,6 +53,9 @@ public class RequestServiceImpl implements RequestService {
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
             currentCtx.writeAndFlush(request);
+        }
+        // ModBus协议给第三方发送数据
+        else if (type == RequestType.ModBus) {
         }
 
     }

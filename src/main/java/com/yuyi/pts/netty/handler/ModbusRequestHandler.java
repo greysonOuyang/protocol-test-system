@@ -1,8 +1,13 @@
 package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.enums.OperationCommand;
+import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.netty.message.ModBusMessage;
+import com.yuyi.pts.service.ResponseService;
+import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
@@ -21,6 +26,12 @@ import org.springframework.web.socket.WebSocketSession;
 public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
 
     public static ChannelHandlerContext myCtx;
+
+    public static ResponseService responseService;
+
+    static {
+        responseService = SpringUtils.getBean(ResponseServiceImpl.class);
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -57,9 +68,15 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("服务端返回的数据：{}", msg);
         if (msg instanceof ModBusMessage) {
-            ModBusMessage response = (ModBusMessage) msg;
-
+            ModBusMessage result = (ModBusMessage) msg;
+            int code = result.getBody().getCode();
+            String body = result.getBody().getBody();
             ResponseInfo responseInfo = new ResponseInfo();
+            responseInfo.setCode(code);
+            responseInfo.setBody(body);
+            responseInfo.setState(ResponseInfo.SUCCESS);
+            String response = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
+            responseService.sendTextMsg(ctx, response);
         }
     }
 

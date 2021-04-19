@@ -12,5 +12,7 @@ public enum RequestType {
     /** WebSocket类型 */
     WebSocket,
     /** TCP类型 */
-    TCP;
+    TCP,
+    /** ModBus类型 */
+    ModBus;
 }

@@ -2,18 +2,15 @@ package com.yuyi.pts.netty.handler;
 
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
-import com.yuyi.pts.common.cache.ObjCache;
-import com.yuyi.pts.common.cache.xxObj;
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
-import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
@@ -75,7 +72,7 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
                 WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
                 session.sendMessage(new TextMessage(responseData));
             }
-            System.out.println("response -> "+result);
+            log.info("response -> {}", result);
         }
     }
 

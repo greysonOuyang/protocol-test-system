@@ -24,6 +24,16 @@ public class ResponseInfo {
 	private String body;
 	/**响应头信息*/
     private HttpHeaders headers;
+
+	/**
+	 * state 状态：1，成功
+	 */
+	public static final Integer SUCCESS = 1;
+
+	/**
+	 * state 状态：0，失败
+	 */
+	public static final Integer FAILED = 1;
 	/**
 	 * 将当前对象转换为JsonObject
 	 * 
