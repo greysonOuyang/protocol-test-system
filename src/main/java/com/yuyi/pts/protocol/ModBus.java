@@ -7,4 +7,5 @@ package com.yuyi.pts.protocol;
  * @since 2021/4/16
  */
 public class ModBus {
+
 }

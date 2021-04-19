@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.handler;
 
+import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.protocol.SmartCarProtocol;
 import com.yuyi.pts.netty.client.NettyClient;
 import io.netty.buffer.ByteBuf;
@@ -7,9 +8,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -70,22 +73,13 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent e = (IdleStateEvent) evt;
-            switch (e.state()) {
-                case WRITER_IDLE://为写超时时间（即测试端一定时间内向被测试端发送消息（设置的超时时间内没有触发channelRead就执行心跳）
-                    //发送心跳到服务器
-                    ctx.writeAndFlush(heart());
-                    break;
-                case READER_IDLE://为读超时时间（即测试端一定时间内向被测试端发送消息（设置的超时时间内没有触发channelRead就执行心跳）
-                    //发送心跳到服务器
- //                   client.doConnect();
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            super.userEventTriggered(ctx, evt);
+        IdleStateEvent event = (IdleStateEvent) evt;
+        // 触发了读空闲事件
+        if (event.state() == IdleState.READER_IDLE) {
+            log.debug("已经 3s 没有读到数据了");
+            WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
+            session.close();
+            ctx.channel().close();
         }
     }
 
