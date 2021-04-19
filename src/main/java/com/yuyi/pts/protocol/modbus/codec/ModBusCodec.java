@@ -1,5 +1,6 @@
 package com.yuyi.pts.protocol.modbus.codec;
 
+import com.yuyi.pts.common.util.ByteBufUtils;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
@@ -43,16 +44,16 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
 //        modBusMessage = requestDataDto.getModBusMessage();
         // 业务标识符 两个字节
         byte[] affairIdentification = new byte[2];
-        affairIdentification = SerializeUtil.serialize(modBusMessage.getAffairIdentification());
+        affairIdentification = ByteBufUtils.hexToByteArray(modBusMessage.getAffairIdentification());
         // 协议标识符 两个字节
         byte[] protocolIdentification = new byte[2];
-        protocolIdentification = SerializeUtil.serialize(modBusMessage.getProtocolIdentification());
+        protocolIdentification = ByteBufUtils.hexToByteArray(modBusMessage.getProtocolIdentification());
         //  单元标识码  一个字节
         byte[] unitIdentification = new byte[1];
-         unitIdentification = SerializeUtil.serialize(modBusMessage.getUnitIdentification());
+         unitIdentification = ByteBufUtils.hexToByteArray(modBusMessage.getUnitIdentification());
         //  功能码 一个字节
         byte[] code = new byte[1];
-         code = SerializeUtil.serialize(modBusMessage.getCode());
+         code = ByteBufUtils.hexToByteArray(modBusMessage.getCode());
         //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);
