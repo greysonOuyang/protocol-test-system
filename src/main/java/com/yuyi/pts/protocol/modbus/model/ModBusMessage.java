@@ -35,4 +35,7 @@ public class ModBusMessage {
      */
     private String code;
 
+
+    private String body;
+
 }
