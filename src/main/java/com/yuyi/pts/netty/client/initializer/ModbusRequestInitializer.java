@@ -18,7 +18,7 @@ public class ModbusRequestInitializer extends NettyClientInitializer{
                         new IdleStateHandler(3, 0, 0),
                         // 自定义解码
                         new SmartCarDecoder(),
-                        //自定义的
+                        //自定义的处理器
                         new ModbusRequestHandler());
     }
 }
