@@ -176,7 +176,7 @@ public class NettyClient {
         }
         else if (nettyClientInitializer instanceof HttpRequestInitializer) {
           currentCtx = HttpRequestHandler.myCtx;
-        }else if (nettyClientInitializer instanceof ModbusRequestInitializer) {
+        }else if (nettyClientInitializer instanceof ModBusRequestInitializer) {
             currentCtx = ModbusRequestHandler.myCtx;
         }
     }
