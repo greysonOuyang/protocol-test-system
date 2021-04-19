@@ -1,6 +1,7 @@
 package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
+import com.yuyi.pts.common.vo.response.ResponseInfo;
 import com.yuyi.pts.netty.message.ModBusMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -57,6 +58,8 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         log.info("服务端返回的数据：{}", msg);
         if (msg instanceof ModBusMessage) {
             ModBusMessage response = (ModBusMessage) msg;
+
+            ResponseInfo responseInfo = new ResponseInfo();
         }
     }
 

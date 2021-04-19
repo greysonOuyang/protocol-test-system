@@ -1,8 +1,6 @@
 package com.yuyi.pts.netty.message;
 
-import com.yuyi.pts.common.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,13 +30,4 @@ public class ModBusMessageHeader {
 	 */
 	private ByteBuf unitIdentification;
 
-	public ByteBuf getBuf() {
-		ByteBuf buffer = Unpooled.buffer();
-		buffer.writeBytes(ByteBufUtils.getByteBuf(affairIdentification));
-		buffer.writeBytes(ByteBufUtils.getByteBuf(protocolIdentification));
-		buffer.writeBytes(ByteBufUtils.getByteBuf(length));
-		buffer.writeBytes(ByteBufUtils.getByteBuf(unitIdentification));
-		return buffer;
-	}
-	
 }
