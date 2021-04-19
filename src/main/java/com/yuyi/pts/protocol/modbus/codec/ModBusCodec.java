@@ -30,10 +30,17 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
      */
     private static final int HEAD_LENGTH = 7;
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        log.info("modbuscodec激活了");
+    }
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
-        ModBusMessage modBusMessage = requestDataDto.getModBusMessage();
+        log.info("进入了modBus编码");
+        ModBusMessage modBusMessage = new ModBusMessage();
+//        modBusMessage = requestDataDto.getModBusMessage();
         // 业务标识符 两个字节
         byte[] affairIdentification = new byte[2];
         affairIdentification = SerializeUtil.serialize(modBusMessage.getAffairIdentification());
@@ -60,7 +67,6 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         out.writeBytes(unitIdentification);
         out.writeBytes(code);
         out.writeBytes(data);
-
 
     }
 

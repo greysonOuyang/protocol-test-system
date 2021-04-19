@@ -100,7 +100,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 往下是对输入的参数合法性校验 也许不需要
         if (requestType == RequestType.HTTP) {
            return checkHttpRequest(session,dataContent);
-        } else if (requestType == RequestType.TCP) {
+        } else if (requestType == RequestType.TCP | requestType == RequestType.ModBus) {
            return checkTcpRequest(dataContent);
 
         } else if (requestType == RequestType.WebSocket) {

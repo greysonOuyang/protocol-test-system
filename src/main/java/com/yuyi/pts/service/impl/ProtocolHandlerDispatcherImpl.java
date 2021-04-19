@@ -3,10 +3,7 @@ package com.yuyi.pts.service.impl;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
-import com.yuyi.pts.netty.client.initializer.HttpRequestInitializer;
-import com.yuyi.pts.netty.client.initializer.NettyClientInitializer;
-import com.yuyi.pts.netty.client.initializer.TcpRequestInitializer;
-import com.yuyi.pts.netty.client.initializer.WebSocketInitializer;
+import com.yuyi.pts.netty.client.initializer.*;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +76,7 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         } else if (type == RequestType.WebSocket) {
             nettyClientInitializer = new WebSocketInitializer();
         } else if (type == RequestType.ModBus) {
-            nettyClientInitializer = new WebSocketInitializer();
+            nettyClientInitializer = new ModBusRequestInitializer();
         }
     }
 }
