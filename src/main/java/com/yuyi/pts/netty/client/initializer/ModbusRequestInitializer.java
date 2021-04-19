@@ -1,11 +1,7 @@
 package com.yuyi.pts.netty.client.initializer;
 
-import com.yuyi.pts.common.util.SmartCarDecoder;
-import com.yuyi.pts.netty.handler.HttpRequestHandler;
-import com.yuyi.pts.netty.handler.ModbusRequestHandler;
+import com.yuyi.pts.protocol.SmartCarDecoder;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.timeout.IdleStateHandler;
 
 /**

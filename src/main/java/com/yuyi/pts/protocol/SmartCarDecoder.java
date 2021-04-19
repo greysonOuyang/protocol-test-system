@@ -1,4 +1,4 @@
-package com.yuyi.pts.common.util;
+package com.yuyi.pts.protocol;
 
 import com.yuyi.pts.common.constant.ConstanValue;
 import io.netty.buffer.ByteBuf;

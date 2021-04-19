@@ -1,6 +1,5 @@
-package com.yuyi.pts.netty.handler;
+package com.yuyi.pts.protocol;
 
-import com.yuyi.pts.protocol.ModBus;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
