@@ -7,7 +7,6 @@ import java.math.BigInteger;
  */
 
 /**
- * 
  * <pre>
  * 基本数据类型转换(主要是byte和其它类型之间的互转).
  * </pre>
@@ -16,13 +15,12 @@ import java.math.BigInteger;
  * @version $Id: ByteUtils.java, v 0.1 2014年11月9日 下午11:23:21 F.Fang Exp $
  */
 public class ByteUtils {
-    
+
     /**
-     * 
      * <pre>
      * 将4个byte数字组成的数组合并为一个float数.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -33,24 +31,25 @@ public class ByteUtils {
         int i = byte4ToInt(arr);
         return Float.intBitsToFloat(i);
     }
-    
+
     /**
      * 二进制字符串转换成数字
+     *
      * @param sr
      * @return
      */
-    public static int binaryStringToInt(String sr){
+    public static int binaryStringToInt(String sr) {
         StringBuffer stringBuffer = new StringBuffer(sr);
         String s = stringBuffer.reverse().toString();
         char[] chars = s.toCharArray();
         int alarmnum = 0;
-        for (int i = 0;i<chars.length;i++){
+        for (int i = 0; i < chars.length; i++) {
             char aChar = chars[i];
-            if(aChar=='1'){
+            if (aChar == '1') {
                 int j = i;
                 int plus = 1;
-                while(j-->0){
-                    plus *=2;
+                while (j-- > 0) {
+                    plus *= 2;
                 }
                 alarmnum += plus;
             }
@@ -59,11 +58,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将一个float数字转换为4个byte数字组成的数组.
      * </pre>
-     * 
+     *
      * @param f
      * @return
      */
@@ -73,11 +71,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将八个byte数字组成的数组转换为一个double数字.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -90,11 +87,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将一个double数字转换为8个byte数字组成的数组.
      * </pre>
-     * 
+     *
      * @param i
      * @return
      */
@@ -104,11 +100,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将一个char字符转换为两个byte数字转换为的数组.
      * </pre>
-     * 
+     *
      * @param c
      * @return
      */
@@ -120,11 +115,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将2个byte数字组成的数组转换为一个char字符.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -136,11 +130,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将一个16位的short转换为长度为2的8位byte数组.
      * </pre>
-     * 
+     *
      * @param s
      * @return
      */
@@ -151,12 +144,17 @@ public class ByteUtils {
         return arr;
     }
 
-    // 16进制打印
-    public static String binaryFormat(byte[] bytes){
+    /**
+     * 16进制打印
+     *
+     * @param bytes
+     * @return
+     */
+    public static String binaryFormat(byte[] bytes) {
         char[] chars = "0123456789ABCDEF".toCharArray();
         int bit;
         StringBuffer sb = new StringBuffer();
-        for (int i = 0;i<bytes.length;i++){
+        for (int i = 0; i < bytes.length; i++) {
             byte aByte = bytes[i];
             bit = (bytes[i] & 0x0f0) >> 4;
             sb.append(chars[bit]);
@@ -164,16 +162,36 @@ public class ByteUtils {
             sb.append(chars[bit]);
             sb.append(" ");
         }
-        return sb.toString();// 这里的1代表正数
+        // 这里的1代表正数
+        return sb.toString();
     }
 
+    /**
+     * byte 与 int 的相互转换
+     *
+     * @param x
+     * @return
+     */
+    public static byte intToByte(int x) {
+        return (byte) x;
+    }
 
     /**
-     * 
+     * byte 与 int 的相互转换
+     *
+     * @param b
+     * @return
+     */
+    public static int byteToInt(byte b) {
+        //Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
+        return b & 0xFF;
+    }
+
+    /**
      * <pre>
      * 长度为2的8位byte数组转换为一个16位short数字.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -185,13 +203,12 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将short转换为长度为16的byte数组.
      * 实际上每个8位byte只存储了一个0或1的数字
      * 比较浪费.
      * </pre>
-     * 
+     *
      * @param s
      * @return
      */
@@ -204,6 +221,10 @@ public class ByteUtils {
         return arr;
     }
 
+    /**
+     * @param arr arr
+     * @return short
+     */
     public static short byte16ToShort(byte[] arr) {
         if (arr == null || arr.length != 16) {
             throw new IllegalArgumentException("byte数组必须不为空,并且长度为16!");
@@ -216,11 +237,10 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将32位int转换为由四个8位byte数字.
      * </pre>
-     * 
+     *
      * @param sum
      * @return
      */
@@ -238,7 +258,7 @@ public class ByteUtils {
      * <pre>
      * 将长度为4的8位byte数组转换为32位int.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -250,14 +270,13 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将长度为8的8位byte数组转换为64位long.
      * </pre>
-     * 
+     * <p>
      * 0xff对应16进制,f代表1111,0xff刚好是8位 byte[]
      * arr,byte[i]&0xff刚好满足一位byte计算,不会导致数据丢失. 如果是int计算. int[] arr,arr[i]&0xffff
-     * 
+     *
      * @param arr
      * @return
      */
@@ -266,8 +285,8 @@ public class ByteUtils {
             throw new IllegalArgumentException("byte数组必须不为空,并且是8位!");
         }
         return (long) (((long) (arr[0] & 0xff) << 56) | ((long) (arr[1] & 0xff) << 48) | ((long) (arr[2] & 0xff) << 40)
-                        | ((long) (arr[3] & 0xff) << 32) | ((long) (arr[4] & 0xff) << 24)
-                        | ((long) (arr[5] & 0xff) << 16) | ((long) (arr[6] & 0xff) << 8) | ((long) (arr[7] & 0xff)));
+                | ((long) (arr[3] & 0xff) << 32) | ((long) (arr[4] & 0xff) << 24)
+                | ((long) (arr[5] & 0xff) << 16) | ((long) (arr[6] & 0xff) << 8) | ((long) (arr[7] & 0xff)));
     }
 
     /**
@@ -287,13 +306,12 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将int转换为32位byte.
      * 实际上每个8位byte只存储了一个0或1的数字
      * 比较浪费.
      * </pre>
-     * 
+     *
      * @param num
      * @return
      */
@@ -309,12 +327,11 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将长度为32的byte数组转换为一个int类型值.
      * 每一个8位byte都只存储了0或1的数字.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -330,12 +347,45 @@ public class ByteUtils {
     }
 
     /**
-     * 
+     * byte数组转字符串
+     *
+     * @param byteArray
+     * @return
+     */
+    public static String byteArrayToStr(byte[] byteArray) {
+        if (byteArray == null) {
+            return null;
+        }
+        String str = new String(byteArray);
+        return str;
+    }
+
+    /**
+     * byte[]转十六进制String
+     *
+     * @param byteArray
+     * @return
+     */
+    public static String byteArrayToHexStr(byte[] byteArray) {
+        if (byteArray == null) {
+            return null;
+        }
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[byteArray.length * 2];
+        for (int j = 0; j < byteArray.length; j++) {
+            int v = byteArray[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+    /**
      * <pre>
      * 将长度为64的byte数组转换为一个long类型值.
      * 每一个8位byte都只存储了0或1的数字.
      * </pre>
-     * 
+     *
      * @param arr
      * @return
      */
@@ -351,12 +401,11 @@ public class ByteUtils {
     }
 
     /**
-     * 
      * <pre>
      * 将一个long值转换为长度为64的8位byte数组.
      * 每一个8位byte都只存储了0或1的数字.
      * </pre>
-     * 
+     *
      * @param sum
      * @return
      */
@@ -369,7 +418,7 @@ public class ByteUtils {
         return arr;
     }
 
-    public static String binary(byte[] bytes, int radix){  
+    public static String binary(byte[] bytes, int radix) {
         return new BigInteger(1, bytes).toString(radix);// 这里的1代表正数  
     }
 
@@ -377,48 +426,37 @@ public class ByteUtils {
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < b.length; i++) {
             byte b1 = b[i];
-            for(int j = 7;j>=0;j--){
-                int a = (b1>>j)&0x01;
+            for (int j = 7; j >= 0; j--) {
+                int a = (b1 >> j) & 0x01;
                 result.append(a);
             }
         }
         return result.toString();
     }
-    /*public static byte[] valueToBytes(Object value){
-        byte[] bytes;
-        if (value instanceof Integer) {
-            return intToByte4((int) value);
-        }else if (value instanceof Short) {
-            return shortToByte2((short) value);
-        }else if (value instanceof Byte) {
-            bytes = new byte[1];
-            bytes[0] = (byte) value;
-            return bytes;
-        }
-        return null;
-    }*/
-    public static Object bytesToObject(byte[] bytes){
+
+    public static Object bytesToObject(byte[] bytes) {
         if (bytes.length == 2) {
             byte[] valueByte = new byte[2];
             valueByte[0] = bytes[1];
             valueByte[1] = bytes[0];
             return byte2ToShort(valueByte);
-        }else if (bytes.length == 4) {
+        } else if (bytes.length == 4) {
             return byte4ToInt(bytes);
-        }else if (bytes.length == 1) {
+        } else if (bytes.length == 1) {
             return bytes[0];
         }
         return bytes;
     }
 
-    public static String bytesToASCII(byte[] bytes){
+    public static String bytesToASCII(byte[] bytes) {
         StringBuilder buffer = new StringBuilder();
         for (byte var : bytes) {
             buffer.append((char) var);
         }
         return buffer.toString();
     }
-    public static String bytesToDate(byte[] bytes){
+
+    public static String bytesToDate(byte[] bytes) {
         byte[] yearBytes = new byte[2];
         yearBytes[0] = bytes[1];
         yearBytes[1] = bytes[0];
@@ -430,49 +468,54 @@ public class ByteUtils {
         byte second = bytes[6];
         return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
     }
-    /**  
- * Convert hex string to byte[]  
- * @param hexString the hex string  
- * @return byte[]  
- */  
-public static byte[] hexStringToBytes(String hexString) {   
-    if (hexString == null || hexString.equals("")) {   
-        return null;   
-    }   
-    hexString = hexString.toUpperCase();   
-    int length = hexString.length() / 2;   
-    char[] hexChars = hexString.toCharArray();   
-    byte[] d = new byte[length];   
-    for (int i = 0; i < length; i++) {   
-        int pos = i * 2;   
-        d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
-    }   
-    return d;   
-}
-    public  static int binarystr2Int(char[] chars){
+
+    /**
+     * Convert hex string to byte[]
+     *
+     * @param hexString the hex string
+     * @return byte[]
+     */
+    public static byte[] hexStringToBytes(String hexString) {
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+
+    public static int binarystr2Int(char[] chars) {
         StringBuffer stringBuffer = new StringBuffer();
 
         int res = 0;
         int length = chars.length;
-        for (int i=0;i<length;i++){
+        for (int i = 0; i < length; i++) {
             int plus = 1;
             int j = i;
-            while(j-->0){
-                plus *=2;
+            while (j-- > 0) {
+                plus *= 2;
             }
-            if(chars[i]=='1'){
+            if (chars[i] == '1') {
                 res += plus;
             }
         }
         return res;
     }
-/**  
- * Convert char to byte  
- * @param c char  
- * @return byte  
- */   
-private static byte charToByte(char c) {   
-    return (byte) "0123456789ABCDEF".indexOf(c);   
-}  
+
+    /**
+     * Convert char to byte
+     *
+     * @param c char
+     * @return byte
+     */
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
 
 }

@@ -58,7 +58,7 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     /**
-     * 获取到接口系统返回的数据，将其返回至前端
+     * 获取到接口系统返回的数据，将其返回至前端  TODO 将数据按功能码组织进行响应 前端对应展示信息
      *
      * @param ctx
      * @param msg
