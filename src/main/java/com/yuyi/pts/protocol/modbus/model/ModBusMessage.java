@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author greyson
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Configuration
 public class ModBusMessage {
 
     private ModBusMessageHeader modBusMessageHeader;

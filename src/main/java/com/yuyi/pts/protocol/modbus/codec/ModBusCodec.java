@@ -2,12 +2,14 @@ package com.yuyi.pts.protocol.modbus.codec;
 
 import com.yuyi.pts.common.util.ByteBufUtils;
 import com.yuyi.pts.common.util.SerializeUtil;
+import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
  * @since 2021/4/16
  */
 @Slf4j
+@Component
 public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
 
     /**
@@ -31,6 +34,11 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
      */
     private static final int HEAD_LENGTH = 7;
 
+    private static ModBusMessage modBusMessage;
+    static {
+        modBusMessage = SpringUtils.getBean(ModBusMessage.class);
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -40,20 +48,20 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
         log.info("进入了modBus编码");
-        ModBusMessage modBusMessage = new ModBusMessage();
+//        ModBusMessage modBusMessage = new ModBusMessage();
 //        modBusMessage = requestDataDto.getModBusMessage();
         // 业务标识符 两个字节
         byte[] affairIdentification = new byte[2];
-        affairIdentification = ByteBufUtils.hexToByteArray(modBusMessage.getAffairIdentification());
+        affairIdentification = ByteBufUtils.toByteArray(modBusMessage.getAffairIdentification());
         // 协议标识符 两个字节
         byte[] protocolIdentification = new byte[2];
-        protocolIdentification = ByteBufUtils.hexToByteArray(modBusMessage.getProtocolIdentification());
+        protocolIdentification = ByteBufUtils.toByteArray(modBusMessage.getProtocolIdentification());
         //  单元标识码  一个字节
         byte[] unitIdentification = new byte[1];
-         unitIdentification = ByteBufUtils.hexToByteArray(modBusMessage.getUnitIdentification());
+         unitIdentification = ByteBufUtils.toByteArray(modBusMessage.getUnitIdentification());
         //  功能码 一个字节
         byte[] code = new byte[1];
-         code = ByteBufUtils.hexToByteArray(modBusMessage.getCode());
+         code = ByteBufUtils.toByteArray(modBusMessage.getCode());
         //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);
