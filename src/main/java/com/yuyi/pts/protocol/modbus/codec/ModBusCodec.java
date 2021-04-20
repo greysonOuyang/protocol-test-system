@@ -52,16 +52,16 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
 //        modBusMessage = requestDataDto.getModBusMessage();
         // 业务标识符 两个字节
         byte[] affairIdentification = new byte[2];
-        affairIdentification = ByteBufUtils.toByteArray(modBusMessage.getAffairIdentification());
+        affairIdentification = ByteBufUtils.hexString2Bytes(modBusMessage.getAffairIdentification());
         // 协议标识符 两个字节
         byte[] protocolIdentification = new byte[2];
-        protocolIdentification = ByteBufUtils.toByteArray(modBusMessage.getProtocolIdentification());
+        protocolIdentification = ByteBufUtils.hexString2Bytes(modBusMessage.getProtocolIdentification());
         //  单元标识码  一个字节
         byte[] unitIdentification = new byte[1];
-         unitIdentification = ByteBufUtils.toByteArray(modBusMessage.getUnitIdentification());
+         unitIdentification = ByteBufUtils.hexString2Bytes(modBusMessage.getUnitIdentification());
         //  功能码 一个字节
         byte[] code = new byte[1];
-         code = ByteBufUtils.toByteArray(modBusMessage.getCode());
+         code = ByteBufUtils.hexString2Bytes(modBusMessage.getCode());
         //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);
