@@ -181,12 +181,11 @@ public class ExecuteServiceImpl implements ExecuteService {
         OperateWithWebSocketSessionCache.put(operateId, session);
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
-        if(requestType == RequestType.TCP){
+        if (requestType == RequestType.TCP) {
             protocolHandlerDispatcher.submitTCPRequest(session, host, port, requestType, requestDataDto);
-        }else if(requestType == RequestType.HTTP){
+        } else if (requestType == RequestType.HTTP) {
             protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
-        }
-        else if(requestType == RequestType.ModBus){
+        } else if (requestType == RequestType.ModBus) {
             protocolHandlerDispatcher.submitTCPRequest(session, host, port, requestType, requestDataDto);
         }
     }

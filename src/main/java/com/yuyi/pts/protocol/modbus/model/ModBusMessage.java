@@ -16,10 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModBusMessage {
 
-    private ModBusMessageHeader modBusMessageHeader;
-
-    private ModBusMessageBody modBusMessageBody;
-
     /**
      * 业务标识符
      */
@@ -40,6 +36,8 @@ public class ModBusMessage {
      */
     @Value("${user.protocol.unitIdentification}")
     private String unitIdentification;
+
+    // --------分割线 上部分为Header、下部分为body数据字段 -----------------------------
 
     /**
      * 功能码字段

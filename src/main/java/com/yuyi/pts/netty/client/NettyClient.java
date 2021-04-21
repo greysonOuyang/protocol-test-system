@@ -86,6 +86,7 @@ public class NettyClient {
             chooseChannelHandlerContext(nettyClientInitializer);
             // TODO 对关闭事件进一步处理 和用户行为关联起来
             doProcess(type,session, dataContent);
+            // TODO 何时调用关闭待确定
             doClose();
             doClear(session);
         } catch (InterruptedException e) {
