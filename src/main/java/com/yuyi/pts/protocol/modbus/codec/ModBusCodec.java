@@ -118,7 +118,7 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         //功能码
         byte[] code = new byte[1];
         code[0] = body[0];
-        modBusMessage.setCode(ByteUtils.byteArrayToStr(code));
+        modBusMessage.setCode(ByteUtils.byteArrayToHexStr(code));
 
         // 数据
         byte[] data = new byte[bodylength-1];
