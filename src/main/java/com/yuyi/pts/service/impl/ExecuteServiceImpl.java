@@ -145,10 +145,11 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 把url的字符串进行截取，拼接host和port
         String url = dataContent.getUrl();
         String target = url.substring(0,7);
+        String targets = url.substring(0,8);
         // 校验前7位
         if("http://".equals(target)){
             flag=true;
-        }else if ("https:/".equals(target)){
+        }else if ("https://".equals(targets)){
             flag=true;
         }else {
             String responseData = ResultEntity.failedWithMsg(OperationCommand.MISSING_PARAMETER, "请输入正确的Ip地址");

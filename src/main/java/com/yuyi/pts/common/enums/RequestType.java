@@ -14,5 +14,7 @@ public enum RequestType {
     /** TCP类型 */
     TCP,
     /** ModBus类型 */
-    ModBus;
+    ModBus,
+    /** 自定义 */
+    Custom;
 }
