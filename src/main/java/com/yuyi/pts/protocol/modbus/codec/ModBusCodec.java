@@ -6,8 +6,6 @@ import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.vo.request.RequestDataDto;
 import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
-import com.yuyi.pts.protocol.modbus.model.ModBusMessageBody;
-import com.yuyi.pts.protocol.modbus.model.ModBusMessageHeader;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
@@ -86,7 +84,7 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf,
                           List<Object> out) throws Exception {
         log.info("ModBus协议接收到服务端数据--解码前：{}", byteBuf);
-        ModBusMessageHeader messageHeader = new ModBusMessageHeader();
+        ModBusMessage modBusMessage = new ModBusMessage();
         int headlength = 7;
         int bodylength = byteBuf.readableBytes()-7;
         byte[] head = new byte[headlength];
@@ -98,13 +96,13 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         byte[] bussnessident = new byte[2];
         bussnessident[0]=head[0];
         bussnessident[1]=head[1];
-        messageHeader.setAffairIdentification(ByteUtils.byteArrayToHexStr(bussnessident));
+        modBusMessage.setAffairIdentification(ByteUtils.byteArrayToHexStr(bussnessident));
 
         //协议标识符
         byte[] protocalident = new byte[2];
         protocalident[0]=head[2];
         protocalident[1]=head[3];
-        messageHeader.setProtocolIdentification(ByteUtils.byteArrayToHexStr(protocalident));
+        modBusMessage.setProtocolIdentification(ByteUtils.byteArrayToHexStr(protocalident));
 
         //长度标识符
         byte[] lengthArr = new byte[2];
@@ -112,17 +110,14 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         lengthArr[1]=head[5];
         String lengthStr = ByteUtils.byteArrayToHexStr(lengthArr);
         int length = Integer.parseInt(lengthStr);
-        messageHeader.setLength(lengthStr);
+        modBusMessage.setLength(lengthStr);
 
         // 读取剩余数据
         byte[] bytes = new byte[length];
         byteBuf.readBytes(bytes, 0, length);
 
-        ModBusMessageBody messageBody = SerializeUtil.deserialize(ModBusMessageBody.class, bytes);
-        ModBusMessage modBusMessage = new ModBusMessage();
-        modBusMessage.setModBusMessageHeader(messageHeader);
-        modBusMessage.setModBusMessageBody(messageBody);
-
+        String messageBody = SerializeUtil.deserialize(String.class, bytes);
+        modBusMessage.setBody(messageBody);
 //        //单元标识码
 //        byte[] unit = new byte[1];
 //        unit[0]=head[6];
