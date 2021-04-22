@@ -1,7 +1,7 @@
 package com.yuyi.pts.common.cache;
 
 
-import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

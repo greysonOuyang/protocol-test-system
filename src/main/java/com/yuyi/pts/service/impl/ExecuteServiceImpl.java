@@ -10,7 +10,7 @@ import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
 import com.yuyi.pts.service.ResponseService;
@@ -58,21 +58,18 @@ public class ExecuteServiceImpl implements ExecuteService {
     public void execute(WebSocketSession session, RequestDataDto requestDataDto) throws IOException {
         boolean isSuccess = checkOperattion(session, requestDataDto);
         if (isSuccess) {
-            scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject result = new JSONObject();
-                    result.put("processors", JvmMetricsUtil.availableProcessors());
-                    result.put("totalMemory", JvmMetricsUtil.totalMemory());
-                    result.put("maxMemory", JvmMetricsUtil.maxMemory());
-                    result.put("freeMemory", JvmMetricsUtil.freeMemory());
-                    if (log.isDebugEnabled()) {
-                        log.info("执行发送信息给客户端-->当前服务器性能:{}", result);
-                    }
-                    String response = successWithData(OperationCommand.JVM_METRIC, result);
-                    responseService.sendTextMsg(session, response);
+            // 测试时先关闭
+            scheduledExecutorService.scheduleAtFixedRate(() -> {
+                JSONObject result = new JSONObject();
+                result.put("processors", JvmMetricsUtil.availableProcessors());
+                result.put("totalMemory", JvmMetricsUtil.totalMemory());
+                result.put("maxMemory", JvmMetricsUtil.maxMemory());
+                result.put("freeMemory", JvmMetricsUtil.freeMemory());
+                if (log.isDebugEnabled()) {
+                    log.info("执行发送信息给客户端-->当前服务器性能:{}", result);
                 }
-                // 测试时先关闭
+                String response = successWithData(OperationCommand.JVM_METRIC, result);
+                responseService.sendTextMsg(session, response);
             }, 0, 3600000, TimeUnit.MILLISECONDS);
             startTest(session, requestDataDto);
 

@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.handler;
+package com.yuyi.pts.netty.client.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

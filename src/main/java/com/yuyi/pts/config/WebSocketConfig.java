@@ -1,6 +1,6 @@
-package com.yuyi.pts.websocket.config;
+package com.yuyi.pts.config;
 
-import com.yuyi.pts.websocket.handler.HandlerDispatcher;
+import com.yuyi.pts.service.impl.HandlerDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

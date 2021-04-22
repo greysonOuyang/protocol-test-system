@@ -469,8 +469,9 @@ public class ByteUtils {
         return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
     }
 
+
     /**
-     * Convert hex string to byte[]
+     * 十六进制字符串转byte数组
      *
      * @param hexString the hex string
      * @return byte[]
@@ -490,6 +491,12 @@ public class ByteUtils {
         return d;
     }
 
+    /**
+     * 二进制字符串转int
+     *
+     * @param chars
+     * @return
+     */
     public static int binarystr2Int(char[] chars) {
         StringBuffer stringBuffer = new StringBuffer();
 

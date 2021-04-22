@@ -1,6 +1,6 @@
 package com.yuyi.pts.netty.client.initializer;
 
-import com.yuyi.pts.netty.handler.TcpRequestHandler;
+import com.yuyi.pts.netty.client.handler.TcpRequestHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;

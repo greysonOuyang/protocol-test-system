@@ -1,8 +1,9 @@
 package com.yuyi.pts.service.impl;
 
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.common.util.SerializeUtil;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.service.RequestService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -11,6 +12,10 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * description
@@ -22,17 +27,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class RequestServiceImpl implements RequestService {
 
+    private ScheduledExecutorService scheduledExecutorService= Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
+
     private FullHttpRequest request = null;
     @Override
     public void sendBinMessage(RequestType type,ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
+        // 发送时间间隔
+        long interval = dataContent.getInterval();
+        int value = new Long(interval).intValue();
+        
         // tcp请求发数据给第三方
         if(type == RequestType.TCP){
-            Object body = dataContent.getBody();
-            byte[] bytes = SerializeUtil.serialize(body);
-            log.info("客户端往服务端发送的数据：" + body);
-            ByteBuf buffer = currentCtx.alloc().buffer();
-            buffer.writeBytes(bytes);
-            currentCtx.writeAndFlush(bytes);
+            // 发送一次
+//            Object body = dataContent.getBody();
+//            byte[] bytes = SerializeUtil.serialize(body);
+//            log.info("客户端往服务端发送的数据：" + body);
+//            ByteBuf buffer = currentCtx.alloc().buffer();
+//            buffer.writeBytes(bytes);
+//            currentCtx.writeAndFlush(bytes);
+            int count = dataContent.getCount();
+            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
+                Object body = dataContent.getBody();
+                String result = (String) body;
+                byte[] bytes = SerializeUtil.serialize(body);
+                log.info("客户端往服务端发送的数据：" + result);
+                currentCtx.writeAndFlush(result);
+            }, 0, value, count, TimeUnit.MILLISECONDS);
         }
         // http给第三方发数据
         else if (type == RequestType.HTTP){

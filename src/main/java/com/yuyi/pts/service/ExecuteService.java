@@ -1,6 +1,6 @@
 package com.yuyi.pts.service;
 
-import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 

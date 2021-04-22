@@ -20,6 +20,8 @@ import io.netty.util.CharsetUtil;
  * @since 2021/4/11
  */
 public class MyServer {
+
+
     public static void main(String[] args) {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -37,6 +39,7 @@ public class MyServer {
                               socketChannel.pipeline()
                                .addLast("decoder", new StringDecoder(CharsetUtil.UTF_8))
                                 .addLast("encoder", new StringEncoder(CharsetUtil.UTF_8))
+                               .addLast(new LoggingHandler(LogLevel.DEBUG))
 
 //                                      .addLast(new JsonObjectDecoder())
 //                                      .addLast(new StringDecoder(Charset.forName("utf-8")))

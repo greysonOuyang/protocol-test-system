@@ -1,4 +1,4 @@
-package com.yuyi.pts.common.vo.request;
+package com.yuyi.pts.model.vo.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

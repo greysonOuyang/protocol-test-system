@@ -1,11 +1,10 @@
-package com.yuyi.pts.protocol.modbus.codec;
+package com.yuyi.pts.netty.client.codec;
 
-import com.yuyi.pts.common.util.ByteBufUtils;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.util.SpringUtils;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.protocol.modbus.model.ModBusMessage;
+import com.yuyi.pts.model.protocol.ModBusMessage;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
@@ -49,20 +48,18 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
         log.info("进入了modBus编码");
-//        ModBusMessage modBusMessage = new ModBusMessage();
-//        modBusMessage = requestDataDto.getModBusMessage();
         // 业务标识符 两个字节
         byte[] affairIdentification = new byte[2];
-        affairIdentification = ByteBufUtils.hexString2Bytes(modBusMessage.getAffairIdentification());
+        affairIdentification = ByteUtils.hexStringToBytes(modBusMessage.getAffairIdentification());
         // 协议标识符 两个字节
         byte[] protocolIdentification = new byte[2];
-        protocolIdentification = ByteBufUtils.hexString2Bytes(modBusMessage.getProtocolIdentification());
+        protocolIdentification = ByteUtils.hexStringToBytes(modBusMessage.getProtocolIdentification());
         //  单元标识码  一个字节
         byte[] unitIdentification = new byte[1];
-         unitIdentification = ByteBufUtils.hexString2Bytes(modBusMessage.getUnitIdentification());
+         unitIdentification = ByteUtils.hexStringToBytes(modBusMessage.getUnitIdentification());
         //  功能码 一个字节
         byte[] code = new byte[1];
-         code = ByteBufUtils.hexString2Bytes(modBusMessage.getCode());
+         code = ByteUtils.hexStringToBytes(modBusMessage.getCode());
         //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);

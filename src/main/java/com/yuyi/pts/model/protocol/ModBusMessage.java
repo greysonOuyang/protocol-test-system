@@ -1,4 +1,4 @@
-package com.yuyi.pts.protocol.modbus.model;
+package com.yuyi.pts.model.protocol;
 
 
 import lombok.AllArgsConstructor;

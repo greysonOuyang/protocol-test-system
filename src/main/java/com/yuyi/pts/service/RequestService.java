@@ -1,7 +1,7 @@
 package com.yuyi.pts.service;
 
 import com.yuyi.pts.common.enums.RequestType;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

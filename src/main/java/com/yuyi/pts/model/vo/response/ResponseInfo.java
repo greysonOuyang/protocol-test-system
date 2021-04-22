@@ -1,4 +1,4 @@
-package com.yuyi.pts.common.vo.response;
+package com.yuyi.pts.model.vo.response;
 
 import com.alibaba.fastjson.JSONObject;
 import io.netty.handler.codec.http.HttpHeaders;

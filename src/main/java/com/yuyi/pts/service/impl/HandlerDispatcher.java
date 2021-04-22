@@ -1,10 +1,10 @@
-package com.yuyi.pts.websocket.handler;
+package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.common.vo.request.RequestDataDto;
-import com.yuyi.pts.common.vo.request.RequestMainDTO;
+import com.yuyi.pts.model.vo.request.RequestDataDto;
+import com.yuyi.pts.model.vo.request.RequestMainDTO;
 import com.yuyi.pts.service.ExecuteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,9 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
  * 前端与后端进行websocket通信的处理 所有请求的处理入口
  * 这里列出大方向的 TODO List
  *  1.批量请求数据
+ *  2. 往服务端发送byteBuf或者二进制或者json或者字符串 默认都是用bytebuf通信、所以需要使用各种codec
+ *  3.
+ *
  *
  *
  * @author greyson
