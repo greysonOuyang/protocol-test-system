@@ -141,7 +141,6 @@ public class ExecuteServiceImpl implements ExecuteService {
      */
     private boolean checkHttpRequest(WebSocketSession session,RequestDataDto dataContent) {
         boolean flag = false;
-        // TODO 参数校验
         // 把url的字符串进行截取，拼接host和port
         String url = dataContent.getUrl();
         String target = url.substring(0,7);

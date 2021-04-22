@@ -7,6 +7,7 @@ import com.yuyi.pts.netty.client.initializer.*;
 import com.yuyi.pts.netty.handler.HttpRequestHandler;
 import com.yuyi.pts.netty.handler.ModbusRequestHandler;
 import com.yuyi.pts.netty.handler.TcpRequestHandler;
+import com.yuyi.pts.netty.handler.WebSocketRequestHandler;
 import com.yuyi.pts.service.RequestService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -82,13 +83,14 @@ public class NettyClient {
                 log.info("当前NettyClientInitializer类型为：" + nettyClientInitializer);
             }
             bootstrap.handler(nettyClientInitializer);
-            doConnect(session, dataContent);
-            chooseChannelHandlerContext(nettyClientInitializer);
-            // TODO 对关闭事件进一步处理 和用户行为关联起来
-            doProcess(type,session, dataContent);
-            // TODO 何时调用关闭待确定
-            doClose();
-            doClear(session);
+            for (int i = 0; i < dataContent.getCount(); i++) {
+                doConnect(session, dataContent);
+                chooseChannelHandlerContext(nettyClientInitializer);
+                doProcess(type,session, dataContent);
+                // TODO 何时调用关闭待确定
+                doClose();
+                doClear(session);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
             log.error("Something occurs error in Netty Client: {}", e.getMessage());
@@ -172,8 +174,7 @@ public class NettyClient {
         if (nettyClientInitializer instanceof TcpRequestInitializer) {
             currentCtx = TcpRequestHandler.myCtx;
         } else if (nettyClientInitializer instanceof WebSocketInitializer) {
-            // TODO 同上判断类型 以及http
-//            currentCtx = WebSocketHandler.myCtx;
+            currentCtx = WebSocketRequestHandler.myCtx;
         }
         else if (nettyClientInitializer instanceof HttpRequestInitializer) {
           currentCtx = HttpRequestHandler.myCtx;
