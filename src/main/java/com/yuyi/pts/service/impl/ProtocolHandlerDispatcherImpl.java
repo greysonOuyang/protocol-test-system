@@ -29,7 +29,6 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
     @Override
     public void submitTCPRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
-        // TODO 此处可根据不同类型进行任务分发
         chooseInitializer(type);
         nettyClient.setHost(host);
         nettyClient.setPort(port);

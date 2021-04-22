@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class WebSocketRequestHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
-
+    public static ChannelHandlerContext myCtx;
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
 

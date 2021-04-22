@@ -58,7 +58,7 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
     }
 
     /**
-     * 获取到接口系统返回的数据，将其返回至前端  TODO 将数据按功能码组织进行响应 前端对应展示信息
+     * 获取到接口系统返回的数据，将其返回至前端
      *
      * @param ctx
      * @param msg
@@ -68,7 +68,6 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("服务端返回的数据：{}", msg);
         // 处理数据返回给前端
-        if (msg instanceof ModBusMessage) {
             ModBusMessage result = (ModBusMessage) msg;
             int code = Integer.parseInt(result.getCode());
             String body = result.getBody();
@@ -78,7 +77,6 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
             responseInfo.setState(ResponseInfo.SUCCESS);
             String response = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
             responseService.sendTextMsg(ctx, response);
-        }
     }
 
     @Override

@@ -73,9 +73,15 @@ public class RequestServiceImpl implements RequestService {
             request= new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, urlResult, buf);
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
-            currentCtx.writeAndFlush(request);
+            for (int i = 0; i < dataContent.getAverage(); i++) {
+                // TODO 这里行多次发送消息给服务端
+                currentCtx.writeAndFlush(request);
+            }
         }else if(type == RequestType.ModBus){
-            currentCtx.writeAndFlush(dataContent);
+            // TODO 这里行多次发送消息给服务端
+            for (int i = 0; i < dataContent.getAverage(); i++) {
+                currentCtx.writeAndFlush(dataContent);
+            }
         }
     }
 }
