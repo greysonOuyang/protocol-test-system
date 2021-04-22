@@ -3,10 +3,6 @@ package com.yuyi.pts.common.util;
 import java.math.BigInteger;
 
 /**
- * ByteUtils
- */
-
-/**
  * <pre>
  * 基本数据类型转换(主要是byte和其它类型之间的互转).
  * </pre>
@@ -15,6 +11,40 @@ import java.math.BigInteger;
  * @version $Id: ByteUtils.java, v 0.1 2014年11月9日 下午11:23:21 F.Fang Exp $
  */
 public class ByteUtils {
+
+    /**
+     * 16进制字符串转字节数组
+     */
+    public static byte[] hexString2Bytes(String hex) {
+        if ((hex == null) || ("".equals(hex))){
+            return null;
+        }
+        else if (hex.length()%2 != 0){
+            return null;
+        }
+        else{
+            hex = hex.toUpperCase();
+            if ("0X".equals(hex.substring(0, 2))) {
+                hex = hex.substring(2);
+            }
+            int len = hex.length()/2;
+            byte[] b = new byte[len];
+            char[] hc = hex.toCharArray();
+            for (int i=0; i<len; i++){
+                int p=2*i;
+                b[i] = (byte) (charToByte(hc[p]) << 4 | charToByte(hc[p+1]));
+            }
+            return b;
+        }
+    }
+
+    /**
+     * 将一个float数字转换为4个byte数字组成的数组.
+     */
+    public static byte[] floatToByte4(float f) {
+        int i = Float.floatToIntBits(f);
+        return intToByte4(i);
+    }
 
     /**
      * <pre>
@@ -57,18 +87,7 @@ public class ByteUtils {
         return alarmnum;
     }
 
-    /**
-     * <pre>
-     * 将一个float数字转换为4个byte数字组成的数组.
-     * </pre>
-     *
-     * @param f
-     * @return
-     */
-    public static byte[] floatToByte4(float f) {
-        int i = Float.floatToIntBits(f);
-        return intToByte4(i);
-    }
+
 
     /**
      * <pre>
@@ -469,27 +488,45 @@ public class ByteUtils {
         return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
     }
 
-
     /**
-     * 十六进制字符串转byte数组
+     * 将一个数组存入另一个数组
      *
-     * @param hexString the hex string
-     * @return byte[]
+     * @param source 原数组
+     * @param target 目标数组
+     * @return 新数组
      */
-    public static byte[] hexStringToBytes(String hexString) {
-        if (hexString == null || hexString.equals("")) {
+    public static byte[] storeInBytes(byte[] source, byte[] target) {
+        if (source == null || target == null) {
             return null;
         }
-        hexString = hexString.toUpperCase();
-        int length = hexString.length() / 2;
-        char[] hexChars = hexString.toCharArray();
-        byte[] d = new byte[length];
-        for (int i = 0; i < length; i++) {
-            int pos = i * 2;
-            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        if (source.length > target.length) {
+            throw new RuntimeException("源数组内容超过目标数组大小");
         }
-        return d;
+        System.arraycopy(source, 0, target, 0, source.length);
+        return target;
     }
+
+    /**
+     * 将byte数组存入指定大小的byte数组
+     * @param source
+     *          原数组
+     * @param size
+     *          指定大小
+     * @return 新数组
+     */
+    public static byte[] storeInBytes(byte[] source, int size) {
+       byte[] target = new byte[size];
+       return storeInBytes(source, target);
+    }
+
+
+    /**
+     * 字符转换为字节
+     */
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
 
     /**
      * 二进制字符串转int
@@ -513,16 +550,6 @@ public class ByteUtils {
             }
         }
         return res;
-    }
-
-    /**
-     * Convert char to byte
-     *
-     * @param c char
-     * @return byte
-     */
-    private static byte charToByte(char c) {
-        return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
 }

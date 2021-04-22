@@ -49,23 +49,24 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
         log.info("进入了modBus编码");
         // 业务标识符 两个字节
-        byte[] affairIdentification = new byte[2];
-        affairIdentification = ByteUtils.hexStringToBytes(modBusMessage.getAffairIdentification());
+        byte[] affairIdentification = ByteUtils.storeInBytes(
+                ByteUtils.hexString2Bytes(
+                        modBusMessage.getAffairIdentification()), 2);
         // 协议标识符 两个字节
-        byte[] protocolIdentification = new byte[2];
-        protocolIdentification = ByteUtils.hexStringToBytes(modBusMessage.getProtocolIdentification());
+        byte[] protocolIdentification = ByteUtils.storeInBytes(
+                ByteUtils.hexString2Bytes(
+                        modBusMessage.getProtocolIdentification()), 2);
         //  单元标识码  一个字节
-        byte[] unitIdentification = new byte[1];
-         unitIdentification = ByteUtils.hexStringToBytes(modBusMessage.getUnitIdentification());
+        byte[] unitIdentification = ByteUtils.storeInBytes(
+                ByteUtils.hexString2Bytes(modBusMessage.getUnitIdentification()), 1);
         //  功能码 一个字节
-        byte[] code = new byte[1];
-         code = ByteUtils.hexStringToBytes(modBusMessage.getCode());
+        byte[] code = ByteUtils.storeInBytes(
+                ByteUtils.hexString2Bytes(modBusMessage.getCode()), 1);
         //  写入数据
         Object body = requestDataDto.getBody();
         byte[] data = SerializeUtil.serialize(body);
         //  长度两个字节 == 单元标识符一个字节 + 数据长度
         int length = data.length + 1;
-
 
         // 注意！写入顺序不可调整
         out.writeBytes(affairIdentification);
