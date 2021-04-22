@@ -13,12 +13,10 @@ import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * description
+ * 发送数据到服务端（测试接口系统）
  *
  * @author greyson
  * @since 2021/4/15
@@ -26,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class RequestServiceImpl implements RequestService {
-
-    private ScheduledExecutorService scheduledExecutorService= Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
 
     private FullHttpRequest request = null;

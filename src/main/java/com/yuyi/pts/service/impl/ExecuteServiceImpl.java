@@ -10,6 +10,7 @@ import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ProtocolHandlerDispatcher;
@@ -22,7 +23,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +46,7 @@ public class ExecuteServiceImpl implements ExecuteService {
     private ResponseService responseService;
 
 
-    private ScheduledExecutorService scheduledExecutorService= Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+    private final ScheduledExecutorService scheduledExecutorService = ScheduledThreadPoolUtil.getInstance();
 
 
     /**
@@ -70,7 +70,7 @@ public class ExecuteServiceImpl implements ExecuteService {
                 }
                 String response = successWithData(OperationCommand.JVM_METRIC, result);
                 responseService.sendTextMsg(session, response);
-            }, 0, 3600000, TimeUnit.MILLISECONDS);
+            }, 0, 360000, TimeUnit.MILLISECONDS);
             startTest(session, requestDataDto);
 
             // TODO 把数据放入缓存

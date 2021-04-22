@@ -21,7 +21,7 @@ public class ScheduledThreadPoolUtil {
 
     private static volatile ScheduledThreadPoolExecutor THREAD_POOL;
 
-    private static ScheduledThreadPoolExecutor getInstance() {
+    public static ScheduledThreadPoolExecutor getInstance() {
         if (THREAD_POOL == null) {
             synchronized (ScheduledThreadPoolUtil.class) {
                 if (THREAD_POOL == null || THREAD_POOL.isShutdown()) {
