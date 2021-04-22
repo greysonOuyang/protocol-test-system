@@ -33,7 +33,7 @@ public enum OperationCommand {
     /** 状态码 */
     private int code;
 
-    private OperationCommand(int code) {
+    OperationCommand(int code) {
         this.code = code;
     }
 
