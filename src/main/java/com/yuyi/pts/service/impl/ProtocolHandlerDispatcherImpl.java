@@ -28,17 +28,17 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
 
     @Override
-    public void submitTCPRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
-        chooseInitializer(type);
-        nettyClient.setHost(host);
-        nettyClient.setPort(port);
+    public void submitTCPRequest(WebSocketSession session, RequestDataDto dataContent) {
+        chooseInitializer(dataContent);
+        nettyClient.setHost(dataContent.getHost());
+        nettyClient.setPort(dataContent.getPort());
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(type,session, dataContent);
+        nettyClient.start(dataContent.getType(),session, dataContent);
     }
 
 
     @Override
-    public void submitHttpRequest(WebSocketSession session,  RequestType type, RequestDataDto dataContent) {
+    public void submitHttpRequest(WebSocketSession session, RequestDataDto dataContent) {
 
         // 把url的字符串进行截取，拼接host和port
         String url = dataContent.getUrl();
@@ -55,9 +55,9 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
              String port = url.substring(17,21);
              nettyClient.setPort(Integer.parseInt(port));
          }
-        chooseInitializer(type);
+        chooseInitializer(dataContent);
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(type,session, dataContent);
+        nettyClient.start(dataContent.getType(),session, dataContent);
         System.out.println("test---------");
     }
 
@@ -65,17 +65,23 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
     /**
      * 根据协议选择对应的处理器初始器
      *
-     * @param type 协议类型
+     * @param dataContent type--协议类型 ProtocolType--协议类型
      */
-    public void chooseInitializer(RequestType type) {
+    public void chooseInitializer(RequestDataDto dataContent) {
+        RequestType type = dataContent.getType();
+        RequestType.ProtocolType protocolType = dataContent.getProtocolType();
         if (type == RequestType.TCP) {
-            nettyClientInitializer = new TcpRequestInitializer();
+            if (protocolType == RequestType.ProtocolType.modbus) {
+                nettyClientInitializer = new ModBusRequestInitializer();
+            } else if (protocolType == RequestType.ProtocolType.none) {
+                nettyClientInitializer = new TcpRequestInitializer();
+            } else {
+                nettyClientInitializer = new TcpRequestInitializer();
+            }
         } else if (type == RequestType.HTTP) {
             nettyClientInitializer = new HttpRequestInitializer();
         } else if (type == RequestType.WebSocket) {
             nettyClientInitializer = new WebSocketInitializer();
-        } else if (type == RequestType.ModBus) {
-            nettyClientInitializer = new ModBusRequestInitializer();
         }
     }
 }

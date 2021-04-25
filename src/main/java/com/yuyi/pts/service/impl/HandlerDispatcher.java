@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
@@ -20,7 +19,7 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
  * 这里列出大方向的 TODO List
  *  1.批量请求数据
  *  2. 往服务端发送byteBuf或者二进制或者json或者字符串 默认都是用bytebuf通信、所以需要使用各种codec
- *  3.
+ *  3. 各个协议的粘包、拆包问题
  *
  *
  *
@@ -43,8 +42,7 @@ public class HandlerDispatcher extends AbstractWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("websockt连接建立了");
-        session.sendMessage(new TextMessage("我在发送消息"));
+        log.info("websockt连接建立了");
         super.afterConnectionEstablished(session);
     }
 

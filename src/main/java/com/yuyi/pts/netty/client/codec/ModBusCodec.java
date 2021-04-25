@@ -1,7 +1,7 @@
 package com.yuyi.pts.netty.client.codec;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.util.ByteUtils;
-import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
@@ -23,16 +23,6 @@ import java.util.List;
 @Component
 public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
 
-    /**
-     * <pre>
-     * data_head为帧头；两个字节，固定为0xEF,0xEF
-     * Total:总帧数；1个字节
-     * Index:当前帧，1个字节；
-     * data_len 表示后接的应用数据（data部分）的长度；两个字节，低字节在前，高字节在后
-     * Dev_Status表示设备当前主/备机状态，0x01:当前为主机，0x02:当前为备机1个字节；
-     * </pre>
-     */
-    private static final int HEAD_LENGTH = 7;
 
     private static ModBusMessage modBusMessage;
     static {
@@ -59,22 +49,33 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         //  单元标识码  一个字节
         byte[] unitIdentification = ByteUtils.storeInBytes(
                 ByteUtils.hexString2Bytes(modBusMessage.getUnitIdentification()), 1);
-        //  功能码 一个字节
-        byte[] code = ByteUtils.storeInBytes(
-                ByteUtils.hexString2Bytes(modBusMessage.getCode()), 1);
-        //  写入数据
-        Object body = requestDataDto.getBody();
-        byte[] data = SerializeUtil.serialize(body);
-        //  长度两个字节 == 单元标识符一个字节 + 数据长度
-        int length = data.length + 1;
 
+        // 发送数据方式：1.直接发送body  2. 构造后再发送 待测试 TODO 长度包含哪些值待确定
+        Object body = requestDataDto.getBody();
+        String jsonString = JSONObject.toJSONString(body);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        //  功能码 一个字节
+        String functionCode = (String) jsonObject.get("functionCode");
+        functionCode = functionCode == null ? modBusMessage.getCode() : functionCode;
+        byte[] code = ByteUtils.storeInBytes(
+                ByteUtils.hexString2Bytes(functionCode), 1);
+        //  写入数据
+       String startAddress = (String) jsonObject.get("startAddress");
+        byte[] strAddressBytes = ByteUtils.strToBytes(startAddress);
+        String registerCount = (String) jsonObject.get("registerCount");
+        byte[] registerCountBytes = ByteUtils.strToBytes(registerCount);
+        //  长度两个字节 == 单元标识符一个字节 + 数据长度
+        int length = code.length + strAddressBytes.length + registerCountBytes.length + 1;
+        byte[] lengthBytes = ByteUtils.storeInBytes(
+                ByteUtils.intToBytesLow(length), 2);
         // 注意！写入顺序不可调整
         out.writeBytes(affairIdentification);
         out.writeBytes(protocolIdentification);
-        out.writeShort(length);
+        out.writeBytes(lengthBytes);
         out.writeBytes(unitIdentification);
         out.writeBytes(code);
-        out.writeBytes(data);
+        out.writeBytes(strAddressBytes);
+        out.writeBytes(registerCountBytes);
 
     }
 

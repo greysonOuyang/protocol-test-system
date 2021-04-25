@@ -1,6 +1,6 @@
 package com.yuyi.pts.netty.client.initializer;
 
-import com.yuyi.pts.netty.handler.UdpRequestHandler;
+import com.yuyi.pts.netty.client.handler.UdpRequestHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.timeout.IdleStateHandler;

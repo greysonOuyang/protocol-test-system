@@ -103,4 +103,9 @@ public class RequestDataDto {
     @JsonProperty("interval")
     private Long interval;
 
+    /**
+     * 应用层协议
+     */
+    private RequestType.ProtocolType protocolType;
+
 }

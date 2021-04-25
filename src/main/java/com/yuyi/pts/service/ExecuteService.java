@@ -21,5 +21,5 @@ public interface ExecuteService {
      * @param session 会话
      * @param dataContent 待发送的数据
      */
-    public void execute(WebSocketSession session, RequestDataDto dataContent) throws IOException;
+    void execute(WebSocketSession session, RequestDataDto dataContent) throws IOException;
 }

@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 
 /**
@@ -20,7 +21,7 @@ public class MyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-//        ctx.writeAndFlush("欢迎来到" + InetAddress.getLocalHost().getHostName() + "!\r\n");
+        ctx.writeAndFlush("欢迎来到" + InetAddress.getLocalHost().getHostName() + "!\r\n");
         ctx.flush();
     }
 

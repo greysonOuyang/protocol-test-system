@@ -1,8 +1,8 @@
 package com.yuyi.pts.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
-import com.yuyi.pts.common.util.SerializeUtil;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.service.RequestService;
 import io.netty.buffer.ByteBuf;
@@ -32,23 +32,14 @@ public class RequestServiceImpl implements RequestService {
         // 发送时间间隔
         long interval = dataContent.getInterval();
         int value = new Long(interval).intValue();
-        
+        int count = dataContent.getCount();
+
         // tcp请求发数据给第三方
         if(type == RequestType.TCP){
-            // 发送一次
-//            Object body = dataContent.getBody();
-//            byte[] bytes = SerializeUtil.serialize(body);
-//            log.info("客户端往服务端发送的数据：" + body);
-//            ByteBuf buffer = currentCtx.alloc().buffer();
-//            buffer.writeBytes(bytes);
-//            currentCtx.writeAndFlush(bytes);
-            int count = dataContent.getCount();
             ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
-                Object body = dataContent.getBody();
-                String result = (String) body;
-                byte[] bytes = SerializeUtil.serialize(body);
-                log.info("客户端往服务端发送的数据：" + result);
-                currentCtx.writeAndFlush(result);
+                String jsonString = JSONObject.toJSONString(dataContent);
+                log.debug("客户端往服务端发送的数据：{}", jsonString);
+                currentCtx.writeAndFlush(dataContent);
             }, 0, value, count, TimeUnit.MILLISECONDS);
         }
         // http给第三方发数据
@@ -72,11 +63,6 @@ public class RequestServiceImpl implements RequestService {
             for (int i = 0; i < dataContent.getAverage(); i++) {
                 // TODO 这里行多次发送消息给服务端
                 currentCtx.writeAndFlush(request);
-            }
-        }else if(type == RequestType.ModBus){
-            // TODO 这里行多次发送消息给服务端
-            for (int i = 0; i < dataContent.getAverage(); i++) {
-                currentCtx.writeAndFlush(dataContent);
             }
         }
     }

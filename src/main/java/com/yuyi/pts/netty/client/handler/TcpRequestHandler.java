@@ -7,6 +7,7 @@ import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
@@ -24,6 +25,7 @@ import org.springframework.web.socket.WebSocketSession;
  */
 @Component
 @Slf4j
+@ChannelHandler.Sharable
 public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
 
     public static ChannelHandlerContext myCtx;

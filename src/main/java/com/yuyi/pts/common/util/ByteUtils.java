@@ -1,6 +1,7 @@
 package com.yuyi.pts.common.util;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <pre>
@@ -12,27 +13,29 @@ import java.math.BigInteger;
  */
 public class ByteUtils {
 
+    public static byte[] strToBytes(String str) {
+        return str.getBytes(StandardCharsets.UTF_8);
+    }
+
     /**
      * 16进制字符串转字节数组
      */
     public static byte[] hexString2Bytes(String hex) {
-        if ((hex == null) || ("".equals(hex))){
+        if ((hex == null) || ("".equals(hex))) {
             return null;
-        }
-        else if (hex.length()%2 != 0){
+        } else if (hex.length() % 2 != 0) {
             return null;
-        }
-        else{
+        } else {
             hex = hex.toUpperCase();
             if ("0X".equals(hex.substring(0, 2))) {
                 hex = hex.substring(2);
             }
-            int len = hex.length()/2;
+            int len = hex.length() / 2;
             byte[] b = new byte[len];
             char[] hc = hex.toCharArray();
-            for (int i=0; i<len; i++){
-                int p=2*i;
-                b[i] = (byte) (charToByte(hc[p]) << 4 | charToByte(hc[p+1]));
+            for (int i = 0; i < len; i++) {
+                int p = 2 * i;
+                b[i] = (byte) (charToByte(hc[p]) << 4 | charToByte(hc[p + 1]));
             }
             return b;
         }
@@ -86,7 +89,6 @@ public class ByteUtils {
         }
         return alarmnum;
     }
-
 
 
     /**
@@ -193,6 +195,34 @@ public class ByteUtils {
      */
     public static byte intToByte(int x) {
         return (byte) x;
+    }
+
+    /**
+     * 将int数值转换为占四个字节的byte数组，本方法适用于(低位在前，高位在后)的顺序。 和bytesToInt（）配套使用
+     *
+     * @param value 要转换的int值
+     * @return byte数组
+     */
+    public static byte[] intToBytesLow(int value) {
+        byte[] src = new byte[4];
+        src[3] = (byte) ((value >> 24) & 0xFF);
+        src[2] = (byte) ((value >> 16) & 0xFF);
+        src[1] = (byte) ((value >> 8) & 0xFF);
+        src[0] = (byte) (value & 0xFF);
+        return src;
+    }
+
+    /**
+     * 将int数值转换为占四个字节的byte数组，本方法适用于(高位在前，低位在后)的顺序。  和bytesToInt2（）配套使用
+     */
+    public static byte[] intToBytesHigh(int value) {
+        byte[] src = new byte[4];
+        src[0] = (byte) ((value >> 24) & 0xFF);
+        src[1] = (byte) ((value >> 16) & 0xFF);
+        src[2] = (byte) ((value >> 8) & 0xFF);
+        src[3] = (byte) (value & 0xFF);
+        return src;
+
     }
 
     /**
@@ -489,7 +519,7 @@ public class ByteUtils {
     }
 
     /**
-     * 将一个数组存入另一个数组
+     * 将一个数组存入另一个数组 如果原数组容量大于目标数组，则截取高位
      *
      * @param source 原数组
      * @param target 目标数组
@@ -500,23 +530,23 @@ public class ByteUtils {
             return null;
         }
         if (source.length > target.length) {
-            throw new RuntimeException("源数组内容超过目标数组大小");
+            System.arraycopy(source, 0, target, 0, target.length);
+        } else {
+            System.arraycopy(source, 0, target, 0, source.length);
         }
-        System.arraycopy(source, 0, target, 0, source.length);
         return target;
     }
 
     /**
      * 将byte数组存入指定大小的byte数组
-     * @param source
-     *          原数组
-     * @param size
-     *          指定大小
+     *
+     * @param source 原数组
+     * @param size   指定大小
      * @return 新数组
      */
     public static byte[] storeInBytes(byte[] source, int size) {
-       byte[] target = new byte[size];
-       return storeInBytes(source, target);
+        byte[] target = new byte[size];
+        return storeInBytes(source, target);
     }
 
 

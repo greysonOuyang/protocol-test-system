@@ -97,7 +97,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 往下是对输入的参数合法性校验 也许不需要
         if (requestType == RequestType.HTTP) {
            return checkHttpRequest(session,dataContent);
-        } else if (requestType == RequestType.TCP | requestType == RequestType.ModBus) {
+        } else if (requestType == RequestType.TCP) {
            return checkTcpRequest(dataContent);
 
         } else if (requestType == RequestType.WebSocket) {
@@ -166,8 +166,6 @@ public class ExecuteServiceImpl implements ExecuteService {
      */
     private void startTest(WebSocketSession session, RequestDataDto requestDataDto) {
         // TODO 对请求进行校验 校验通过则根据protocolHandlerDispatcher进行任务分发，校验失败返回false到此处
-        String host = requestDataDto.getHost();
-        Integer port = requestDataDto.getPort();
         String operateId = UUID.randomUUID().toString();
         requestDataDto.setId(operateId);
         requestDataDto.setId(session.getId());
@@ -178,11 +176,9 @@ public class ExecuteServiceImpl implements ExecuteService {
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
         if (requestType == RequestType.TCP) {
-            protocolHandlerDispatcher.submitTCPRequest(session, host, port, requestType, requestDataDto);
+            protocolHandlerDispatcher.submitTCPRequest(session, requestDataDto);
         } else if (requestType == RequestType.HTTP) {
-            protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
-        } else if (requestType == RequestType.ModBus) {
-            protocolHandlerDispatcher.submitTCPRequest(session, host, port, requestType, requestDataDto);
+            protocolHandlerDispatcher.submitHttpRequest(session, requestDataDto);
         }
     }
 
