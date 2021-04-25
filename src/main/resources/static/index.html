@@ -1,12 +1,58 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML >
 <html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <head>
     <title>基础测试websocket</title>
 </head>
 
 <body>
-<input id="ip" type="text" />
-<input id="port" type="text" />
+<input id="ip" type="text"  value="127.0.0.1" οnfοcus="if (value =='127.0.0.1'){value =''}" οnblur="if (value ==''){value='127.0.0.1'}"  />
+<input id="port" type="text"  value="9090" οnfοcus="if (value =='9090'){value =''}" οnblur="if (value ==''){value='9090'}"  />
+<input id="requestType" type="text"  value="UDP" οnfοcus="if (value =='UDP'){value =''}" οnblur="if (value ==''){value='UDP'}" />
+<input id="body" type="text"  value="1111" οnfοcus="if (value =='1111'){value =''}" οnblur="if (value ==''){value='1111'}" />
+<!--requestData: {-->
+<!--//请求的类型-->
+<!--requestType: REQUEST_TYPE_HTTP,-->
+<!--//WebSocket的版本-->
+<!--webSocketVersion: "V13",-->
+<!--//WebSocket子协议-->
+<!--subProtocols: [],-->
+<!--//SNI 服务器名称-->
+<!--serverName: "",-->
+<!--//是否使用SSL-->
+<!--isSSL: false,-->
+<!--//证书的类型-->
+<!--cert: "DEFAULT",-->
+<!--//证书的key-->
+<!--certKey: null,-->
+<!--//证书的value-->
+<!--certValue: null,-->
+<!--//主机地址,TCP时有效-->
+<!--host: "",-->
+<!--//端口号,TCP时有效-->
+<!--port: null,-->
+<!--//http请求的类型-->
+<!--method: "GET",-->
+<!--//请求的header数据-->
+<!--headers: [],-->
+<!--//请求的url-->
+<!--url: "",-->
+<!--//请求的body-->
+<!--body: null,-->
+<!--//请求的总次数-->
+<!--count: null,-->
+<!--//每次请求多数次-->
+<!--average: null,-->
+<!--//请求的间隔-->
+<!--interval: null,-->
+<!--},-->
+<select>
+<option value="值">ats</option>
+<option value="值">拥挤度</option>
+<option value="值">选项内容1</option>
+<option value="值">选项内容2</option>
+</select>
+
 <button onclick="send()">Send</button>
 <button onclick="closeWebSocket()">Close</button>
 <div id="message"></div>
@@ -17,7 +63,7 @@
 
     //判断当前浏览器是否支持WebSocket, 主要此处要更换为自己的地址
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:7090/test/one");
+        websocket = new WebSocket("ws://localhost:7090/ws/ost");
     } else {
         alert('Not support websocket')
     }
@@ -61,11 +107,16 @@
     function send() {
         var ip = document.getElementById('ip').value;
         var port = document.getElementById('port').value;
-        var param={
+        var requestType = document.getElementById('requestType').value;
+        var body = document.getElementById('body').value;
+        var requestData={
             ip:ip,
-            port:port
+            port:port,
+            requestType:requestType,
+            body:body
+
         }
-        websocket.send(JSON.stringify(param))
+        websocket.send(JSON.stringify(requestData))
     }
 </script>
 </html>

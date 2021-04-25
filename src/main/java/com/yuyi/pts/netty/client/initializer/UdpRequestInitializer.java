@@ -2,8 +2,12 @@ package com.yuyi.pts.netty.client.initializer;
 
 import com.yuyi.pts.netty.client.handler.UdpRequestHandler;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.CharsetUtil;
 
 /**
  * @author : wzl
@@ -17,7 +21,9 @@ public class UdpRequestInitializer extends NettyClientInitializer {
                 .addLast(
                         new IdleStateHandler(3, 0, 0),
                         // new HttpRequestDecoder(),new HttpResponseEncoder() 两个类的组合
-                        new HttpClientCodec(),
+                        new DelimiterBasedFrameDecoder(4096, Delimiters.lineDelimiter()),
+                        new StringEncoder(CharsetUtil.UTF_8),
+                        new StringDecoder(CharsetUtil.UTF_8),
                         //自定义的
                         new UdpRequestHandler());
     }

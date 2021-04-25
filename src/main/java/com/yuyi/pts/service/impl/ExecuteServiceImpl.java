@@ -102,7 +102,9 @@ public class ExecuteServiceImpl implements ExecuteService {
 
         } else if (requestType == RequestType.WebSocket) {
            return checkWebSocketRequest(dataContent);
-        } else {
+        } else if (requestType == RequestType.UDP) {
+            return checkWebSocketRequest(dataContent);
+        }else {
             return false;
         }
     }
@@ -178,7 +180,9 @@ public class ExecuteServiceImpl implements ExecuteService {
         if (requestType == RequestType.TCP) {
             protocolHandlerDispatcher.submitTCPRequest(session, requestDataDto);
         } else if (requestType == RequestType.HTTP) {
-            protocolHandlerDispatcher.submitHttpRequest(session, requestDataDto);
+            protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
+        } else if (requestType == RequestType.UDP) {
+            protocolHandlerDispatcher.submitUdpRequest(session, host, port, requestType, requestDataDto);
         }
     }
 

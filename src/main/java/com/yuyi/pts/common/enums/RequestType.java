@@ -16,6 +16,9 @@ public enum RequestType {
     /** UDP */
     UDP,
     /** 自定义 */
+    Custom,
+    /** UDP */
+    UDP;
     Custom;
 
     /**

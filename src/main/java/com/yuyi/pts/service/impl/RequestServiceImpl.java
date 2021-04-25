@@ -64,6 +64,11 @@ public class RequestServiceImpl implements RequestService {
                 // TODO 这里行多次发送消息给服务端
                 currentCtx.writeAndFlush(request);
             }
+        }else if(type == RequestType.UDP){
+            // TODO 这里行多次发送消息给服务端
+            for (int i = 0; i < dataContent.getAverage(); i++) {
+                currentCtx.writeAndFlush(dataContent);
+            }
         }
     }
 }
