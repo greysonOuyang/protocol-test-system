@@ -180,9 +180,9 @@ public class ExecuteServiceImpl implements ExecuteService {
         if (requestType == RequestType.TCP) {
             protocolHandlerDispatcher.submitTCPRequest(session, requestDataDto);
         } else if (requestType == RequestType.HTTP) {
-            protocolHandlerDispatcher.submitHttpRequest(session, requestType,requestDataDto);
+            protocolHandlerDispatcher.submitHttpRequest(session, requestDataDto);
         } else if (requestType == RequestType.UDP) {
-            protocolHandlerDispatcher.submitUdpRequest(session, host, port, requestType, requestDataDto);
+            protocolHandlerDispatcher.submitUdpRequest(session, requestDataDto);
         }
     }
 

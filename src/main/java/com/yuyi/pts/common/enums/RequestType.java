@@ -17,9 +17,7 @@ public enum RequestType {
     UDP,
     /** 自定义 */
     Custom,
-    /** UDP */
-    UDP;
-    Custom;
+   ;
 
     /**
      * 应用层协议类型

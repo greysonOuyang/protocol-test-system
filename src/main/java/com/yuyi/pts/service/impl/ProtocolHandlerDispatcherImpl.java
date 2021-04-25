@@ -62,12 +62,12 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
     }
 
     @Override
-    public void submitUdpRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
-        chooseInitializer(type);
+    public void submitUdpRequest(WebSocketSession session, RequestDataDto dataContent) {
+        chooseInitializer(dataContent);
         nettyClient.setHost("localhost");
-        nettyClient.setPort(port);
+        nettyClient.setPort(dataContent.getPort());
         nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(type,session, dataContent);
+        nettyClient.start(dataContent.getType(),session, dataContent);
     }
 
 
