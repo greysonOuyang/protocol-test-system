@@ -61,6 +61,16 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         System.out.println("test---------");
     }
 
+    @Override
+    public void submitUdpRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent) {
+        chooseInitializer(type);
+        nettyClient.setHost("localhost");
+        nettyClient.setPort(port);
+        nettyClient.setNettyClientInitializer(nettyClientInitializer);
+        nettyClient.start(type,session, dataContent);
+    }
+
+
 
     /**
      * 根据协议选择对应的处理器初始器
@@ -76,6 +86,8 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
             nettyClientInitializer = new WebSocketInitializer();
         } else if (type == RequestType.ModBus) {
             nettyClientInitializer = new ModBusRequestInitializer();
+        } else if (type == RequestType.UDP) {
+            nettyClientInitializer = new UdpRequestInitializer();
         }
     }
 }

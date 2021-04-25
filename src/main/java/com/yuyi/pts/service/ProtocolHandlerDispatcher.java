@@ -27,4 +27,6 @@ public interface ProtocolHandlerDispatcher {
 
     void submitHttpRequest(WebSocketSession session, RequestType type, RequestDataDto dataContent);
 
+    void submitUdpRequest(WebSocketSession session, String host, Integer port, RequestType type, RequestDataDto dataContent);
+
 }

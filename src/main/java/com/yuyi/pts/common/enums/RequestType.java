@@ -16,5 +16,7 @@ public enum RequestType {
     /** ModBus类型 */
     ModBus,
     /** 自定义 */
-    Custom;
+    Custom,
+    /** UDP */
+    UDP;
 }

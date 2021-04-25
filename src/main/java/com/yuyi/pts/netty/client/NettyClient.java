@@ -3,10 +3,7 @@ package com.yuyi.pts.netty.client;
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.handler.HttpRequestHandler;
-import com.yuyi.pts.netty.client.handler.ModbusRequestHandler;
-import com.yuyi.pts.netty.client.handler.TcpRequestHandler;
-import com.yuyi.pts.netty.client.handler.WebSocketRequestHandler;
+import com.yuyi.pts.netty.client.handler.*;
 import com.yuyi.pts.netty.client.initializer.*;
 import com.yuyi.pts.service.RequestService;
 import io.netty.bootstrap.Bootstrap;
@@ -180,9 +177,8 @@ public class NettyClient {
           currentCtx = HttpRequestHandler.myCtx;
         }else if (nettyClientInitializer instanceof ModBusRequestInitializer) {
             currentCtx = ModbusRequestHandler.myCtx;
+        }else if (nettyClientInitializer instanceof UdpRequestInitializer) {
+            currentCtx = UdpRequestHandler.myCtx;
         }
     }
-
-
-
 }
