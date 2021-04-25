@@ -62,7 +62,9 @@ public class HandlerDispatcher extends AbstractWebSocketHandler {
         log.info("receive client request：" + jsonObject.toString());
         int code = requestMainDTO.getCode();
         RequestDataDto data = requestMainDTO.getData();
-        String content = (String) data.getBody();
+        Object body = data.getBody();
+        String content = JSON.toJSONString(body);
+//        String content = (String) body;
         if (log.isDebugEnabled()) {
             log.debug("receive client message:" + content);
         }
