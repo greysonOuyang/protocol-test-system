@@ -99,8 +99,6 @@ public class NettyClient {
             for (int i = 0; i < dataContent.getCount(); i++) {
                 // udp不需要建立连接,其他类型需要建立连接
                 if(RequestType.UDP.equals(type)){
-                    chooseChannelHandlerContext(nettyClientInitializer);
-                    CtxWithWebSocketSessionCache.put(currentCtx, session);
                     doPostAndReceive(session, dataContent);
                 } else {
                     doConnect(session, dataContent);
@@ -134,6 +132,8 @@ public class NettyClient {
                     new InetSocketAddress(
                             dataContent.getHost(),port
                     ))).sync();
+            chooseChannelHandlerContext(nettyClientInitializer);
+            CtxWithWebSocketSessionCache.put(currentCtx, session);
             //如果超过长时间则表示超时
             if(!ch.closeFuture().await(100)){
                 session.close();
