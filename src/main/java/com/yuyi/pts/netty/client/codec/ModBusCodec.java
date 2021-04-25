@@ -38,7 +38,7 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf out) throws Exception {
         log.info("进入了modBus编码");
-        // 业务标识符 两个字节
+        // 业务标识符 两个字节 TODO 批量时考虑生成自增顺序号
         byte[] affairIdentification = ByteUtils.storeInBytes(
                 ByteUtils.hexString2Bytes(
                         modBusMessage.getAffairIdentification()), 2);
@@ -125,7 +125,7 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
             data[i]=body[i+1];
         }
 
-        modBusMessage.setBody(ByteUtils.byteArrayToStr(data));
+        modBusMessage.setBody(ByteUtils.byteArrayToHexStr(data));
 
         out.add(modBusMessage);
     }

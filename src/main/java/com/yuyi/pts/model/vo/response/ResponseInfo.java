@@ -20,6 +20,8 @@ public class ResponseInfo {
 	private int index;
 	/** 请求状态,0=失败,1=成功 */
 	private int state;
+	/** 响应消息 */
+	private String msg;
 	/** 响应的信息 */
 	private String body;
 	/**响应头信息*/
@@ -45,6 +47,7 @@ public class ResponseInfo {
 		result.put("count", getCount());
 		result.put("index", getIndex());
 		result.put("state", getState());
+		result.put("msg", getMsg());
 		result.put("headers",getHeaders());
 		if (getBody() != null) {
 			result.put("body", getBody());

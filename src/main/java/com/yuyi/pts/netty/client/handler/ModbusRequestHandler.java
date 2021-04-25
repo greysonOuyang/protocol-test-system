@@ -68,15 +68,33 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("服务端返回的数据：{}", msg);
         // 处理数据返回给前端
-            ModBusMessage result = (ModBusMessage) msg;
-            int code = Integer.parseInt(result.getCode());
-            String body = result.getBody();
-            ResponseInfo responseInfo = new ResponseInfo();
-            responseInfo.setCode(code);
-            responseInfo.setBody(body);
-            responseInfo.setState(ResponseInfo.SUCCESS);
-            String response = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
-            responseService.sendTextMsg(ctx, response);
+        ModBusMessage result = (ModBusMessage) msg;
+        String codeHexStr = result.getCode();
+        int code = Integer.parseInt(codeHexStr);
+        String body = result.getBody();
+        String returnMsg = "";
+        // TODO 验证大小端模式
+        if ("8004".equals(codeHexStr) || "8010".equals(codeHexStr)) {
+            log.info("服务端返回了异常消息...");
+            if ("00".equals(body)) {
+                returnMsg = "请求超时";
+            } else if ("01".equals(body)) {
+                returnMsg = "接收到的请求中的功能码是主机或从机不允许执行的";
+            } else if ("02".equals(body)) {
+                returnMsg = "收到的数据请求中的数据地址是从机或者主机不允许的值";
+            } else if ("03".equals(body)) {
+                returnMsg = "请求数据字段的值是从机或者主机中不允许的值";
+            } else if ("04".equals(body)) {
+                returnMsg = "从机或者主机试图执行所要求的操作时产生了不可恢复的错误";
+            }
+        }
+        ResponseInfo responseInfo = new ResponseInfo();
+        responseInfo.setCode(code);
+        responseInfo.setMsg(returnMsg);
+        responseInfo.setBody(body);
+        responseInfo.setState(ResponseInfo.SUCCESS);
+        String response = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE,  responseInfo);
+        responseService.sendTextMsg(ctx, response);
     }
 
     @Override

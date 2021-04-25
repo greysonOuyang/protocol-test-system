@@ -71,6 +71,20 @@ public class ResultEntity {
     public static String successWithData(OperationCommand operationCommand, Object data) {
         return setResultEntity(operationCommand, SUCCESS, null, data).toString();
     }
+
+    /**
+     * 请求处理成功且需要返回数据以及消息时使用的工具方法
+     *
+     * @param operationCommand
+     * @param msg
+     * @param data
+     * @return
+     */
+    public static String successWithData(OperationCommand operationCommand, String msg, Object data) {
+        return setResultEntity(operationCommand, SUCCESS, msg, data).toString();
+    }
+
+
     /**
      * 请求处理失败后使用的工具方法，返回指令类型，失败消息
      * @param message
