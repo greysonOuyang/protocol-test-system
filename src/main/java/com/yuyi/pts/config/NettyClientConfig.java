@@ -14,12 +14,12 @@ import org.springframework.context.annotation.Configuration;
 public class NettyClientConfig {
 
     @Bean
-    NettyClient getNettyNoargs() {
+    public NettyClient getNettyNoargs() {
         return new NettyClient();
     }
 
     @Bean
-    NettyClient getNettyUdp() {
+    public static NettyClient getNettyUdp() {
         return new NettyClient("udp");
     }
 }

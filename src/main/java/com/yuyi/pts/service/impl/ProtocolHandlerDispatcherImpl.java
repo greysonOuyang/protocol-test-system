@@ -1,6 +1,7 @@
 package com.yuyi.pts.service.impl;
 
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.config.NettyClientConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.NettyClient;
 import com.yuyi.pts.netty.client.initializer.*;
@@ -22,6 +23,9 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
     @Autowired
     private NettyClient nettyClient;
+
+    @Autowired
+    private NettyClientConfig nettyClientConfig;
 
     @Autowired
     private NettyClientInitializer nettyClientInitializer;
@@ -63,11 +67,13 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
     @Override
     public void submitUdpRequest(WebSocketSession session, RequestDataDto dataContent) {
+//        NettyClient client = new NettyClient(dataContent.getHost());
+        NettyClient client = NettyClientConfig.getNettyUdp();
         chooseInitializer(dataContent);
-        nettyClient.setHost("localhost");
-        nettyClient.setPort(dataContent.getPort());
-        nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(dataContent.getType(),session, dataContent);
+        client.setHost(dataContent.getHost());
+        client.setPort(dataContent.getPort());
+        client.setNettyClientInitializer(nettyClientInitializer);
+        client.start(dataContent.getType(),session, dataContent);
     }
 
 

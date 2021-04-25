@@ -11,7 +11,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @date : 2021/4/16/14:21
  * @description:  modbusTcp的初始化信息
  */
-public class ModBusRequestInitializer extends NettyClientInitializer{
+public class ModBusRequestInitializer extends NettyClientInitializer<SocketChannel>{
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()

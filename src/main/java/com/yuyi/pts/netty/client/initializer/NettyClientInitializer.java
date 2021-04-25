@@ -1,7 +1,7 @@
 package com.yuyi.pts.netty.client.initializer;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
  * @since 2021/4/11
  */
 @Component
-public abstract class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
+public abstract class NettyClientInitializer<T extends Channel> extends ChannelInitializer<T> {
 }

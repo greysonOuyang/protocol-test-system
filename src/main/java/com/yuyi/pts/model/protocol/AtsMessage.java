@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * 自定义协议类的封装
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
+@Component
 public class AtsMessage {
 
     /**

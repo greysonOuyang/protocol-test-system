@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
  * @author greyson
  * @since 2021/4/13
  */
-public class WebSocketInitializer extends NettyClientInitializer{
+public class WebSocketInitializer extends NettyClientInitializer<SocketChannel>{
     @Override
     protected void  initChannel(SocketChannel ch) throws Exception {
     }

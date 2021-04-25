@@ -7,18 +7,22 @@ import com.yuyi.pts.netty.client.handler.*;
 import com.yuyi.pts.netty.client.initializer.*;
 import com.yuyi.pts.service.RequestService;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.CharsetUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -65,7 +69,19 @@ public class NettyClient {
         bootstrap.channel(NioSocketChannel.class);
         bootstrap.group(group);
     }
+    public NettyClient(String str) {
+        group = new NioEventLoopGroup();
+        //开始客户端的服务，和管道的设置
+        bootstrap = new Bootstrap();
+        bootstrap.channel(NioDatagramChannel.class);
+        bootstrap.option(ChannelOption.SO_BROADCAST,true);
+                // 设置UDP读缓冲区为2M
+        bootstrap.option(ChannelOption.SO_RCVBUF, 2048 * 1024);
+                // 设置UDP写缓冲区为1M
+        bootstrap.option(ChannelOption.SO_SNDBUF, 1024 * 1024);
 
+        bootstrap.group(group);
+    }
     /**
      * 启动前需要初始化nettyClientInitializer、host、port
      *
@@ -81,17 +97,54 @@ public class NettyClient {
             }
             bootstrap.handler(nettyClientInitializer);
             for (int i = 0; i < dataContent.getCount(); i++) {
-                doConnect(session, dataContent);
-                chooseChannelHandlerContext(nettyClientInitializer);
-                doProcess(type,session, dataContent);
-                // TODO 何时调用关闭待确定
-                doClose();
-                doClear(session);
+                // udp不需要建立连接,其他类型需要建立连接
+                if(RequestType.UDP.equals(type)){
+                    chooseChannelHandlerContext(nettyClientInitializer);
+                    CtxWithWebSocketSessionCache.put(currentCtx, session);
+                    doPostAndReceive(session, dataContent);
+                } else {
+                    doConnect(session, dataContent);
+                    chooseChannelHandlerContext(nettyClientInitializer);
+                    doProcess(type,session, dataContent);
+                    // TODO 何时调用关闭待确定
+                    doClose();
+                    doClear(session);
+                }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
             log.error("Something occurs error in Netty Client: {}", e.getMessage());
         }
+    }
+
+    /**
+     *  处理udp发送接收数据
+     */
+    private void doPostAndReceive(WebSocketSession session, RequestDataDto dataContent) throws IOException, InterruptedException {
+
+        //创建于服务端就是连接操作，创建线程
+        try {
+            //服务端绑定的管道的端口
+            Channel ch = null;
+            ch = bootstrap.bind(8888).sync().channel();
+            // 向网段类所有机器广播发UDP，这是想客户端发送内容
+            ch.writeAndFlush(new DatagramPacket(
+                    Unpooled.copiedBuffer("我是在客户端写的！！！", CharsetUtil.UTF_8),
+                    //地址
+                    new InetSocketAddress(
+                            dataContent.getHost(),port
+                    ))).sync();
+            //如果超过长时间则表示超时
+            if(!ch.closeFuture().await(100)){
+                session.close();
+                System.out.println("查询超时！！！");
+            }
+        }
+        finally {
+            //优雅的关闭释放内存
+            group.shutdownGracefully();
+        }
+
     }
 
     /**
@@ -142,12 +195,14 @@ public class NettyClient {
      * @param dataContent 数据
      * @throws InterruptedException 异常
      */
-    private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException {
-        channelFuture = bootstrap.connect(getHost(), getPort()).sync();
+    private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException, IOException {
+
+       channelFuture = bootstrap.connect(getHost(), getPort()).sync();
+
         log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
 
         //注册连接事件
-        channelFuture.addListener((ChannelFutureListener)future -> {
+        channelFuture.addListener((ChannelFutureListener) future -> {
             //如果连接成功
             if (future.isSuccess()) {
                 if (currentCtx != null) {
@@ -165,6 +220,7 @@ public class NettyClient {
                 bootstrap.connect(getHost(), getPort());
             }
         });
+
     }
 
     /**
@@ -187,4 +243,5 @@ public class NettyClient {
             currentCtx = GzIscsRequestHandler.myCtx;
         }
     }
+
 }

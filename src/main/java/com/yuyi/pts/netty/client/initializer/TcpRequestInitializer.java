@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @since 2021/4/13
  */
 @Service
-public class TcpRequestInitializer extends NettyClientInitializer {
+public class TcpRequestInitializer extends NettyClientInitializer<SocketChannel> {
 
     public TcpRequestHandler TCP_HANDLER = new TcpRequestHandler();
 

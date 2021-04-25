@@ -10,7 +10,7 @@ import io.netty.channel.socket.SocketChannel;
  * @author greyson
  * @since 2021/4/25
  */
-public class GzIscsInitializer extends NettyClientInitializer {
+public class GzIscsInitializer extends NettyClientInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
