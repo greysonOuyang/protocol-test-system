@@ -50,7 +50,7 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         byte[] unitIdentification = ByteUtils.storeInBytes(
                 ByteUtils.hexString2Bytes(modBusMessage.getUnitIdentification()), 1);
 
-        // 发送数据方式：1.直接发送body  2. 构造后再发送 待测试 TODO 长度包含哪些值待确定
+        // TODO 长度包含哪些值待确定 发送数据方式：  1.直接发送body  2. 构造后再发送 现在选择的方式是2 对数据有严格要求，对1的支持后续再处理
         Object body = requestDataDto.getBody();
         String jsonString = JSONObject.toJSONString(body);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
