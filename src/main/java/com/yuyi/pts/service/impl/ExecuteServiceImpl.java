@@ -87,50 +87,14 @@ public class ExecuteServiceImpl implements ExecuteService {
             log.info("执行参数检查并加载请求信息，请求数据为--》{}", JSON.toJSONString(dataContent));
         }
         requestType = dataContent.getType();
+        // TODO 证书校验
         SslCertType cert = dataContent.getCert();
-//        if (cert != null && cert != SslCertType.DEFAULT) {
-//            if (SslCertType.PFX == cert) {
-//                // TODO 证书校验
-//            }
-//        }
-
-        // 往下是对输入的参数合法性校验 也许不需要
+        // 往下是对输入的参数合法性校验
         if (requestType == RequestType.HTTP) {
            return checkHttpRequest(session,dataContent);
-        } else if (requestType == RequestType.TCP) {
-           return checkTcpRequest(dataContent);
-
-        } else if (requestType == RequestType.WebSocket) {
-           return checkWebSocketRequest(dataContent);
-        } else if (requestType == RequestType.UDP) {
-            return checkWebSocketRequest(dataContent);
-        }else {
-            return false;
+        } else {
+            return true;
         }
-    }
-
-    /**
-     * 检查 TCP 请求
-     *
-     * @param dataContent
-     * @return
-     */
-    private boolean checkTcpRequest(RequestDataDto dataContent) {
-        return true;
-        // TODO 参数校验
-
-    }
-
-    /**
-     * 检查websocket请求
-     *
-     * @param dataContent
-     * @return
-     */
-    private boolean checkWebSocketRequest(RequestDataDto dataContent) {
-        return true;
-        // TODO 参数校验
-
     }
 
     /**

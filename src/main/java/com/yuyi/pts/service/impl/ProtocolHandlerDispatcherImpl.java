@@ -73,7 +73,7 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
 
     /**
-     * 根据协议选择对应的处理器初始器
+     * 根据协议选择对应的处理器初始器 在nettyClient中还要通过chooseChannelHandlerContext()选择channelHandlerContext
      *
      * @param dataContent type--协议类型 ProtocolType--协议类型
      */
@@ -85,6 +85,8 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
                 nettyClientInitializer = new ModBusRequestInitializer();
             } else if (protocolType == RequestType.ProtocolType.none) {
                 nettyClientInitializer = new TcpRequestInitializer();
+            } else if (protocolType == RequestType.ProtocolType.gzIscs) {
+                nettyClientInitializer = new GzIscsInitializer();
             } else {
                 nettyClientInitializer = new TcpRequestInitializer();
             }

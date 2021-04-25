@@ -167,18 +167,24 @@ public class NettyClient {
         });
     }
 
+    /**
+     * 选择真正处理请求的协议处理器
+     *
+     * @param nettyClientInitializer 处理器加载器
+     */
     private void chooseChannelHandlerContext(NettyClientInitializer nettyClientInitializer) {
         if (nettyClientInitializer instanceof TcpRequestInitializer) {
             currentCtx = TcpRequestHandler.myCtx;
         } else if (nettyClientInitializer instanceof WebSocketInitializer) {
             currentCtx = WebSocketRequestHandler.myCtx;
-        }
-        else if (nettyClientInitializer instanceof HttpRequestInitializer) {
+        } else if (nettyClientInitializer instanceof HttpRequestInitializer) {
           currentCtx = HttpRequestHandler.myCtx;
-        }else if (nettyClientInitializer instanceof ModBusRequestInitializer) {
+        } else if (nettyClientInitializer instanceof ModBusRequestInitializer) {
             currentCtx = ModbusRequestHandler.myCtx;
         }else if (nettyClientInitializer instanceof UdpRequestInitializer) {
             currentCtx = UdpRequestHandler.myCtx;
+        } else if (nettyClientInitializer instanceof GzIscsInitializer) {
+            currentCtx = GzIscsRequestHandler.myCtx;
         }
     }
 }
