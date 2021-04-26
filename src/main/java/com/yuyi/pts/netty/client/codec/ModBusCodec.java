@@ -6,6 +6,8 @@ import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import lombok.extern.slf4j.Slf4j;
@@ -115,13 +117,24 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
         modBusMessage.setUnitIdentification(ByteUtils.byteArrayToHexStr(unit));
 
         //功能码
-        byte[] code = new byte[1];
-        code[0] = body[0];
-        modBusMessage.setCode(ByteUtils.byteArrayToHexStr(code));
+        ByteBuf buffer = Unpooled.buffer();
+        buffer.writeByte(body[0]);
+        if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"06".equals(ByteBufUtil.hexDump(buffer))){
+            buffer.writeByte(body[1]);
+        }
+        modBusMessage.setCode(ByteBufUtil.hexDump(buffer));
 
-        // 数据
-        byte[] data = new byte[bodylength-1];
-        for(int i=0;i<bodylength-1;i++){
+// 数据
+        byte[] data = null ;
+        int length;
+        if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"06".equals(ByteBufUtil.hexDump(buffer))){
+            data = new byte[bodylength-2];
+            length=bodylength-2;
+        }else {
+            data = new byte[bodylength-1];
+            length=bodylength-1;
+        }
+        for(int i=0;i<length;i++){
             data[i]=body[i+1];
         }
 

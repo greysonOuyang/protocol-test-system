@@ -69,12 +69,12 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         log.info("服务端返回的数据：{}", msg);
         // 处理数据返回给前端
         ModBusMessage result = (ModBusMessage) msg;
-        String codeHexStr = result.getCode();
+        String codeHexStr = result.getCode();//80
         int code = Integer.parseInt(codeHexStr);
-        String body = result.getBody();
+        String body = result.getBody();//05
         String returnMsg = "";
         // TODO 验证大小端模式
-        if ("8004".equals(codeHexStr) || "8010".equals(codeHexStr)) {
+        if (!"04".equals(codeHexStr) && !"10".equals(codeHexStr)) {
             log.info("服务端返回了异常消息...");
             if ("00".equals(body)) {
                 returnMsg = "请求超时";
@@ -86,6 +86,8 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
                 returnMsg = "请求数据字段的值是从机或者主机中不允许的值";
             } else if ("04".equals(body)) {
                 returnMsg = "从机或者主机试图执行所要求的操作时产生了不可恢复的错误";
+            }else {
+                returnMsg = "未知错误";
             }
         }
         ResponseInfo responseInfo = new ResponseInfo();
