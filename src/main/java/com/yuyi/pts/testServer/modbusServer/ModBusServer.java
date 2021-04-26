@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.server.modbusServer;
+package com.yuyi.pts.testServer.modbusServer;
 
 /**
  * @author : wzl
