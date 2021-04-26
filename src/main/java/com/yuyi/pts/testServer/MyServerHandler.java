@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.server;
+package com.yuyi.pts.testServer;
 
 import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.ChannelHandler;

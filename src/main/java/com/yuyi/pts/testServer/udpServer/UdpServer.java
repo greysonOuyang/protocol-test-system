@@ -1,6 +1,6 @@
-package com.yuyi.pts.netty.server.udpServer;
+package com.yuyi.pts.testServer.udpServer;
 
-import com.yuyi.pts.netty.server.udpServer.handler.UdpServerHandler;
+import com.yuyi.pts.testServer.udpServer.handler.UdpServerHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

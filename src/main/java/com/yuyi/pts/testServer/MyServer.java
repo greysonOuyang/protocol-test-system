@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.server;
+package com.yuyi.pts.testServer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

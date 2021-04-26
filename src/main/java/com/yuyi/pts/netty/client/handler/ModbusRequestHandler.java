@@ -97,10 +97,11 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         responseService.sendTextMsg(ctx, response);
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("ModbusRequestHandler出现错误：{}", cause.getMessage());
-    }
+
+//    @Override
+//    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+//        log.error("ModbusRequestHandler出现错误：{}", cause.getMessage());
+//    }
 
 
 }

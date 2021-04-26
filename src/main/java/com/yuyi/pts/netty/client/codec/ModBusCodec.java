@@ -61,9 +61,9 @@ public class ModBusCodec extends ByteToMessageCodec<RequestDataDto> {
                 ByteUtils.hexString2Bytes(functionCode), 1);
         //  写入数据
        String startAddress = (String) jsonObject.get("startAddress");
-        byte[] strAddressBytes = ByteUtils.strToBytes(startAddress);
+        byte[] strAddressBytes = ByteUtils.hexString2Bytes(startAddress);
         String registerCount = (String) jsonObject.get("registerCount");
-        byte[] registerCountBytes = ByteUtils.strToBytes(registerCount);
+        byte[] registerCountBytes = ByteUtils.hexString2Bytes(registerCount);
         //  长度两个字节 == 单元标识符一个字节 + 数据长度
         int length = code.length + strAddressBytes.length + registerCountBytes.length + 1;
         byte[] lengthBytes = ByteUtils.storeInBytes(
