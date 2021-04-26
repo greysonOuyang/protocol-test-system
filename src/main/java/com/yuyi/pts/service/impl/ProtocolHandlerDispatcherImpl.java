@@ -1,5 +1,6 @@
 package com.yuyi.pts.service.impl;
 
+import com.yuyi.pts.common.enums.ProtocolType;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.config.NettyClientConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
@@ -85,13 +86,13 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
      */
     public void chooseInitializer(RequestDataDto dataContent) {
         RequestType type = dataContent.getType();
-        RequestType.ProtocolType protocolType = dataContent.getProtocolType();
+        ProtocolType protocolType = dataContent.getProtocolType();
         if (type == RequestType.TCP) {
-            if (protocolType == RequestType.ProtocolType.modbus) {
+            if (protocolType == ProtocolType.modbus) {
                 nettyClientInitializer = new ModBusRequestInitializer();
-            } else if (protocolType == RequestType.ProtocolType.none) {
+            } else if (protocolType == ProtocolType.none) {
                 nettyClientInitializer = new TcpRequestInitializer();
-            } else if (protocolType == RequestType.ProtocolType.gzIscs) {
+            } else if (protocolType == ProtocolType.gzIscs) {
                 nettyClientInitializer = new GzIscsInitializer();
             } else {
                 nettyClientInitializer = new TcpRequestInitializer();

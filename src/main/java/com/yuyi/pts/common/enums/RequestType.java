@@ -19,26 +19,4 @@ public enum RequestType {
     Custom,
    ;
 
-    /**
-     * 应用层协议类型
-     */
-    public enum ProtocolType {
-        /**
-         *
-         */
-        none,
-        /**
-         * modbus
-         */
-        modbus,
-        /**
-         * 广州综合监控
-         */
-        gzIscs,
-        /**
-         * 清远ATS
-         */
-        qyAts;
-
-    }
 }

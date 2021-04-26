@@ -2,6 +2,7 @@ package com.yuyi.pts.model.vo.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.net.httpserver.Headers;
+import com.yuyi.pts.common.enums.ProtocolType;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
 import lombok.AllArgsConstructor;
@@ -106,6 +107,6 @@ public class RequestDataDto {
     /**
      * 应用层协议
      */
-    private RequestType.ProtocolType protocolType;
+    private ProtocolType protocolType;
 
 }
