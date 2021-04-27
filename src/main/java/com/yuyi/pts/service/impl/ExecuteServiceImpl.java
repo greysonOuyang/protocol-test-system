@@ -82,6 +82,10 @@ public class ExecuteServiceImpl implements ExecuteService {
         }
     }
 
+    private void doCheck(WebSocketSession session, RequestDataDto requestDataDto) {
+        // todo 选择服务端  客户端
+    }
+
     private boolean checkOperattion(WebSocketSession session, RequestDataDto dataContent) {
         if (log.isDebugEnabled()) {
             log.info("执行参数检查并加载请求信息，请求数据为--》{}", JSON.toJSONString(dataContent));
@@ -141,6 +145,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         OperateWithWebSocketSessionCache.put(operateId, session);
         // 共享请求配置
         OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
+        doCheck(session, requestDataDto);
         if (requestType == RequestType.TCP) {
             protocolHandlerDispatcher.submitTCPRequest(session, requestDataDto);
         } else if (requestType == RequestType.HTTP) {
