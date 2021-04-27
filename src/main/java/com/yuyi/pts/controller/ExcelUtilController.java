@@ -6,10 +6,7 @@ import com.yuyi.pts.model.excel.ExcelLogs;
 import com.yuyi.pts.model.excel.ExcelUtil;
 import com.yuyi.pts.model.vo.response.PlanInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.*;
@@ -19,8 +16,7 @@ import java.util.*;
  * @date : 2021/4/27/11:11
  * @description:
  */
-@Controller
-@RequestMapping("/api/excelUtil")
+@RestController("/api/excelUtil")
 @Slf4j
 public class ExcelUtilController {
     /**
@@ -28,7 +24,7 @@ public class ExcelUtilController {
      * 下载excel
      * @throws IOException
      */
-    @RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
+    @PostMapping("/exportExcel")
     public void exportExcel(@RequestBody String json)  throws IOException {
         JSONObject object = JSONObject.parseObject(json);
         getExportExcel(object);
@@ -88,7 +84,7 @@ public class ExcelUtilController {
      * 上传excel
      * @throws IOException
      */
-    @RequestMapping(value = "/importExcel", method = RequestMethod.GET)
+    @GetMapping("/importExcel")
     public void importXls() throws FileNotFoundException {
         getImportExcel();
     }
@@ -109,3 +105,4 @@ public class ExcelUtilController {
         }
     }
 }
+
