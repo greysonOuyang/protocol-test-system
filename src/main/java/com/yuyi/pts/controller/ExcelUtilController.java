@@ -2,6 +2,7 @@ package com.yuyi.pts.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.constant.ExcelConstant;
+import com.yuyi.pts.common.constant.MapAndListConstant;
 import com.yuyi.pts.model.excel.ExcelLogs;
 import com.yuyi.pts.model.excel.ExcelUtil;
 import com.yuyi.pts.model.vo.response.PlanInfo;
@@ -34,49 +35,20 @@ public class ExcelUtilController {
         // 获取到接口名称，根据接口名称去配置对应的excel文件
         String interfaceName = object.get("interfaceName").toString();
         if(ExcelConstant.PLAN_INFO.equals(interfaceName)){
-            // 填充planInfo对象数据
-            PlanInfo planInfo = new PlanInfo();
-            PlanInfo planInfo1 = new PlanInfo();
-            // todo  给PlanInfo赋初始值
+            //   给PlanInfo赋初始值 表格内容赋值
+            PlanInfo planInfo = MapAndListConstant.PLANINFO;
+            Collection<Object> dataset=new ArrayList<Object>();
+            for (int i = 0; i < planInfo.getModelList().size(); i++) {
+                dataset.add(planInfo.getModelList().get(i));
+            }
             File f= new File("test.xls");
-            List<Map<String,PlanInfo>> list = new ArrayList<>();
-            Map<String,PlanInfo> map = new HashMap<>();
-            map.put("planInfo",planInfo);
-            map.put("planInfo1",planInfo1);
-            list.add(map);
             OutputStream out = new FileOutputStream(f);
-            Map<String,String> headerMap = new LinkedHashMap<>();
-            // todo  给map 赋值
-            ExcelUtil.exportExcel(headerMap, list,out);
+            //  给表头加数据
+            Map map = MapAndListConstant.getPlanModel();
+            ExcelUtil.exportExcel(map, dataset,out);
+            out.close();
         }
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map =new LinkedHashMap<>();
-        map.put("name", "");
-        map.put("age", "");
-        map.put("birthday","");
-        map.put("sex","");
-        Map<String,Object> map2 =new LinkedHashMap<String, Object>();
-        map2.put("name", "测试是否是中文长度不能自动宽度.测试是否是中文长度不能自动宽度.");
-        map2.put("age", null);
-        map2.put("sex", null);
-        map.put("birthday",null);
-        Map<String,Object> map3 =new LinkedHashMap<String, Object>();
-        map3.put("name", "张三");
-        map3.put("age", 12);
-        map3.put("sex", "男");
-        map3.put("birthday",new Date());
-        list.add(map);
-        list.add(map2);
-        list.add(map3);
-        Map<String,String> map1 = new LinkedHashMap<>();
-        map1.put("name","姓名");
-        map1.put("age","年龄");
-        map1.put("birthday","出生日期");
-        map1.put("sex","性别");
-        File f= new File("test.xls");
-        OutputStream out = new FileOutputStream(f);
-        ExcelUtil.exportExcel(map1,list, out );
-        out.close();
+
     }
 
     /**
