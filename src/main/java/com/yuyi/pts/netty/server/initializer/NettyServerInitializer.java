@@ -1,14 +1,42 @@
 package com.yuyi.pts.netty.server.initializer;
 
-import io.netty.channel.Channel;
+import com.yuyi.pts.common.constant.Constant;
+import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.netty.client.codec.ModBusCodec;
+import com.yuyi.pts.netty.server.handler.NettyServerHandler;
 import io.netty.channel.ChannelInitializer;
-import org.springframework.stereotype.Component;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
- * @author : wzl
- * @date : 2021/4/27/9:28
- * @description: 抽象类，为了帮助根据协议类型选择Initializer，即协议处理器
+ * NettyServerInitializer
+ *
+ * @author greyson
+ * @since 2021/4/27
  */
-@Component
-public abstract class NettyServerInitializer<T extends Channel> extends ChannelInitializer<T> {
+public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
+
+    ServiceInterface serviceInterface = null;
+
+    public NettyServerInitializer(ServiceInterface serviceInterface){
+        this.serviceInterface = serviceInterface;
+    }
+
+    @Override
+    protected void initChannel(SocketChannel socketChannel) throws Exception {
+        ChannelPipeline pipeline = socketChannel.pipeline();
+        pipeline.addLast(new IdleStateHandler(
+                Constant.SERVER_READ_IDLE_TIME_OUT,
+                Constant.SERVER_WRITE_IDLE_TIME_OUT,
+                Constant.SERVER_ALL_IDLE_TIME_OUT,
+                TimeUnit.SECONDS));
+
+//        pipeline.addLast(new StringEncoder());
+//        pipeline.addLast(new ByteArrayEncoder());
+        pipeline.addLast(new ModBusCodec());
+        pipeline.addLast(new NettyServerHandler(serviceInterface));
+    }
 }

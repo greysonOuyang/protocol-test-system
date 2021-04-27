@@ -23,4 +23,9 @@ public class Constant {
      * 自定义协议头
      */
     public static final int TAIL_DATA = -515;
+
+    public static final int SERVER_READ_IDLE_TIME_OUT = 3;
+    public static final int SERVER_WRITE_IDLE_TIME_OUT = 0;
+
+    public static final int SERVER_ALL_IDLE_TIME_OUT = 0;
 }

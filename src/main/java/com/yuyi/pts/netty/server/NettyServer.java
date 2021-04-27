@@ -1,9 +1,102 @@
 package com.yuyi.pts.netty.server;
 
+import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollChannelOption;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.PreDestroy;
+
 /**
- * @author : wzl
- * @date : 2021/4/27/9:07
- * @description: 模拟信号发送给客户端
+ * 模拟信号发送给客户端
+ *
+ * @author  wzl
+ * @date  2021/4/27/9:07
  */
+@Slf4j
 public class NettyServer {
+    ServerBootstrap serverBootstrap =  new ServerBootstrap();
+    EventLoopGroup boss =null;
+    EventLoopGroup worker =null;
+    ChannelFuture future = null;
+
+    ServiceInterface serviceInterface;
+
+    boolean epoll=true;
+    int port;
+
+    public NettyServer(ServiceInterface service, int port){
+        this.serviceInterface = service;
+        this.port = port;
+    }
+
+    @PreDestroy
+    public void stop(){
+        if(future!=null){
+            future.channel().close().addListener(ChannelFutureListener.CLOSE);
+            future.awaitUninterruptibly();
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+            future=null;
+            log.info(" 服务关闭 ");
+        }
+    }
+    public void start(){
+        log.info(" nettyServer 正在启动");
+
+        if(epoll){
+            log.info(" nettyServer 使用epoll模式");
+            boss = new EpollEventLoopGroup();
+            worker = new EpollEventLoopGroup();
+        }
+        else{
+            log.info(" nettyServer 使用nio模式");
+            boss = new NioEventLoopGroup();
+            worker = new NioEventLoopGroup();
+        }
+
+        log.info("netty服务器在["+this.port+"]端口启动监听");
+
+        serverBootstrap.group(boss,worker)
+                .option(ChannelOption.SO_BACKLOG,1024)
+                .option(EpollChannelOption.SO_REUSEPORT, true)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .option(ChannelOption.TCP_NODELAY,true)
+                .childOption(ChannelOption.SO_KEEPALIVE,true)
+                .childHandler(new NettyServerInitializer(serviceInterface));
+
+        if(epoll){
+            serverBootstrap.channel(EpollServerSocketChannel.class);
+        }else{
+            serverBootstrap.channel(NioServerSocketChannel.class);
+        }
+
+
+        try{
+            future = serverBootstrap.bind(this.port).sync();
+            if(future.isSuccess()){
+                log.info("nettyServer 完成启动 ");
+            }
+            // 等待服务端监听端口关闭
+            future.channel().closeFuture().sync();
+        }catch (Exception e){
+            log.info("nettyServer 启动时发生异常---------------{}", e.getMessage());
+            log.info(e.getMessage());
+        }finally {
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+        }
+    }
+
 }
