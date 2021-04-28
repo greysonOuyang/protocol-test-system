@@ -43,9 +43,18 @@ public class ResultEntity {
     private Object data;
 
 
+
     public static JSONObject setResultEntity(OperationCommand cmd, String result, String message, Object data) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.CODE, cmd.value());
+        jsonObject.put(Constant.MSG, message);
+        jsonObject.put(Constant.RESULT, result);
+        jsonObject.put(Constant.DATA, data);
+        return jsonObject;
+    }
+
+    public static JSONObject setResultEntityWithOperation(String result, String message, Object data) {
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.MSG, message);
         jsonObject.put(Constant.RESULT, result);
         jsonObject.put(Constant.DATA, data);
@@ -60,6 +69,10 @@ public class ResultEntity {
      */
     public static String successWithoutData(OperationCommand operationCommand) {
         return setResultEntity(operationCommand, SUCCESS, null, null).toString();
+    }
+
+    public static String successWithData(Object data) {
+        return setResultEntityWithOperation( SUCCESS, null, data).toString();
     }
 
     /**
@@ -116,6 +129,15 @@ public class ResultEntity {
      */
     public static String failedWithoutNothing(OperationCommand operationCommand) {
         return setResultEntity(operationCommand, FAILED, null, null).toString();
+    }
+
+    /**
+     * 请求失败
+     *
+     * @return
+     */
+    public static String failedWithMsg(String msg) {
+        return setResultEntityWithOperation( FAILED, msg, null).toString();
     }
 
 }

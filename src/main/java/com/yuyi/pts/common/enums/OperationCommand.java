@@ -28,7 +28,11 @@ public enum OperationCommand {
     /** 超过GC开销限制:501 */
     GC_OVERHEAD_LIMIT(501),
     /** JVM的内存等指标:1000 */
-    JVM_METRIC(1000);
+    JVM_METRIC(1000),
+    /**
+     * 操作服务端接口配置
+     */
+    OPERATE_INTERFACE(101);
 
     /** 状态码 */
     private int code;
