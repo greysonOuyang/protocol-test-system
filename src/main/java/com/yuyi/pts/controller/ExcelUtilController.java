@@ -45,12 +45,11 @@ public class ExcelUtilController {
      */
     @PostMapping("/importExcel")
     public String importXls(HttpServletRequest request) throws IOException {
-        MultipartHttpServletRequest mreq = null;
+        MultipartHttpServletRequest multipartHttpServletRequest = null;
         boolean flag = false;
         if(request instanceof  MultipartHttpServletRequest){
-            mreq = (MultipartHttpServletRequest) request;
-            //flag = excelUtilService.analysisFile(mreq);
-            flag = excelUtilService.upLoadExcel(mreq);
+            multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+            flag = excelUtilService.upLoadExcel(multipartHttpServletRequest);
         }
         if(!flag){
             return "失败了";

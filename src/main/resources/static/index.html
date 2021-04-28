@@ -10,42 +10,10 @@
 <input id="port" type="text"  value="9090" οnfοcus="if (value =='9090'){value =''}" οnblur="if (value ==''){value='9090'}"  />
 <input id="requestType" type="text"  value="UDP" οnfοcus="if (value =='UDP'){value =''}" οnblur="if (value ==''){value='UDP'}" />
 <input id="body" type="text"  value="1111" οnfοcus="if (value =='1111'){value =''}" οnblur="if (value ==''){value='1111'}" />
-<!--requestData: {-->
-<!--//请求的类型-->
-<!--requestType: REQUEST_TYPE_HTTP,-->
-<!--//WebSocket的版本-->
-<!--webSocketVersion: "V13",-->
-<!--//WebSocket子协议-->
-<!--subProtocols: [],-->
-<!--//SNI 服务器名称-->
-<!--serverName: "",-->
-<!--//是否使用SSL-->
-<!--isSSL: false,-->
-<!--//证书的类型-->
-<!--cert: "DEFAULT",-->
-<!--//证书的key-->
-<!--certKey: null,-->
-<!--//证书的value-->
-<!--certValue: null,-->
-<!--//主机地址,TCP时有效-->
-<!--host: "",-->
-<!--//端口号,TCP时有效-->
-<!--port: null,-->
-<!--//http请求的类型-->
-<!--method: "GET",-->
-<!--//请求的header数据-->
-<!--headers: [],-->
-<!--//请求的url-->
-<!--url: "",-->
-<!--//请求的body-->
-<!--body: null,-->
-<!--//请求的总次数-->
-<!--count: null,-->
-<!--//每次请求多数次-->
-<!--average: null,-->
-<!--//请求的间隔-->
-<!--interval: null,-->
-<!--},-->
+<form id="upload-form" action="upload.php" method="post" enctype="multipart/form-data" >
+    　　　<input type="file" id="upload" name="upload" /> <br />
+    　　　<input type="submit" value="上传" onclick="upload()"/>
+</form>
 <select>
 <option value="值">ats</option>
 <option value="值">拥挤度</option>
@@ -117,6 +85,9 @@
 
         }
         websocket.send(JSON.stringify(requestData))
+    }
+    function  upload() {
+
     }
 </script>
 </html>

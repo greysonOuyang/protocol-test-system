@@ -47,10 +47,9 @@ public class MainController {
     }
 
     @PostMapping("interface/delete")
-    public void deleteInterface(@RequestBody String[] idList) {
-        for (String id : idList) {
-            InterfaceCache.remove(id);
-        }
+    public String deleteInterface(@RequestBody List<Map> idList) {
 
+         String response = InterfaceCache.remove(idList);
+          return response;
     }
 }

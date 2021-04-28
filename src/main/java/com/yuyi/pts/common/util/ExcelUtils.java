@@ -1,10 +1,5 @@
 package com.yuyi.pts.common.util;
 
-/**
- * @author : wzl
- * @date : 2021/4/28/9:29
- * @description:
- */
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -18,8 +13,9 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * Excel处理工具
- * @author ASUS
+ * @author : wzl
+ * @date : 2021/4/28/9:29
+ * @description:Excel处理工具
  */
 public class ExcelUtils {
 
