@@ -18,7 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @Component
 public class ServiceInterface {
-    private String name;
+    private String interfaceId;
+    private String interfaceName;
     private List<Param> input;
     private List<Param> output;
 

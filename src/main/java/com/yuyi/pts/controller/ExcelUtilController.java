@@ -16,7 +16,8 @@ import java.util.*;
  * @date : 2021/4/27/11:11
  * @description:
  */
-@RestController("/api/excelUtil")
+@RestController
+@RequestMapping("/api/excelUtil")
 @Slf4j
 public class ExcelUtilController {
     /**
