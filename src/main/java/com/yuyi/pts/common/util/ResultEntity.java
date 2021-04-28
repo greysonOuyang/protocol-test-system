@@ -74,7 +74,9 @@ public class ResultEntity {
     public static String successWithData(Object data) {
         return setResultEntityWithOperation( SUCCESS, null, data).toString();
     }
-
+    public static String failedWithData(Object data) {
+        return setResultEntityWithOperation( FAILED, null, data).toString();
+    }
     /**
      * 请求处理成功且需要返回数据时使用的工具方法
      * @param operationCommand
