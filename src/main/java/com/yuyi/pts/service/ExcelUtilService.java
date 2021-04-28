@@ -2,8 +2,9 @@ package com.yuyi.pts.service;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.FileNotFoundException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -14,10 +15,11 @@ public interface ExcelUtilService {
     /**
      * 下载excel
      */
-     void downLoadExcel(JSONObject object) throws IOException;
+     boolean downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException;
 
     /**
      * 上传excel
      */
-    void upLoadExcel(JSONObject object) throws IOException;
+    void upLoadExcel(MultipartHttpServletRequest mreq) throws IOException;
+     boolean analysisFile(MultipartHttpServletRequest mreq);
 }
