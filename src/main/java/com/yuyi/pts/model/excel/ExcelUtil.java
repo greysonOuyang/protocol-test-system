@@ -11,11 +11,13 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -133,10 +135,10 @@ public class ExcelUtil {
      * @param headers 表格属性列名数组
      * @param dataset 需要显示的数据集合,集合中一定要放置符合javabean风格的类的对象。此方法支持的
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
-     * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
+     * @param filename  与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
-    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset, OutputStream out) {
-        exportExcel(headers, dataset, out, null);
+    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset,  HttpServletResponse response,String filename) throws IOException {
+        exportExcel(headers, dataset,  null,response,filename);
     }
 
     /**
@@ -147,22 +149,23 @@ public class ExcelUtil {
      * @param headers 表格属性列名数组
      * @param dataset 需要显示的数据集合,集合中一定要放置符合javabean风格的类的对象。此方法支持的
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
-     * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
+     * @param response     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      * @param pattern 如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
      */
-    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset, OutputStream out,
-                                       String pattern) {
+    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset,
+                                       String pattern,HttpServletResponse response,String filename) throws IOException {
         // 声明一个工作薄
         HSSFWorkbook workbook = new HSSFWorkbook();
+
         // 生成一个表格
         HSSFSheet sheet = workbook.createSheet();
 
         write2Sheet(sheet, headers, dataset, pattern);
-        try {
-            workbook.write(out);
-        } catch (IOException e) {
-            LG.error(e.toString(), e);
-        }
+        response.setContentType ("application/octet-stream");
+        response.setHeader ("Content-Disposition", "attachment; filename="+ URLEncoder.encode(filename, "UTF-8"));
+        response.setCharacterEncoding("UTF-8");
+        response.flushBuffer ();
+        workbook.write (response.getOutputStream ());
     }
 
     public static void exportExcel(String[][] datalist, OutputStream out,boolean autoColumnWidth) {

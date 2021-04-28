@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
@@ -32,35 +34,8 @@ public class ExcelUtilController {
     @PostMapping("/exportExcel")
     public void exportExcel(@RequestBody String json, HttpServletResponse response)  throws IOException {
         JSONObject object = JSONObject.parseObject(json);
-      // boolean flag = excelUtilService.downLoadExcel(response,object);
-     //  if(flag){
-           try {
-               Thread.sleep(1000);
-               Resource resource = new ClassPathResource("/test.xls");
-               File file = resource.getFile();
-               String filename = resource.getFilename();
-               InputStream inputStream = new FileInputStream(file);
-               //强制下载不打开
-               response.setContentType("application/force-download");
-               OutputStream out = response.getOutputStream();
-               //使用URLEncoder来防止文件名乱码或者读取错误
-               response.setHeader("Content-Disposition", "attachment; filename="+ URLEncoder.encode(filename, "UTF-8"));
-               int b = 0;
-               byte[] buffer = new byte[1000000];
-               while (b != -1) {
-                   b = inputStream.read(buffer);
-                   if(b!=-1) {
-                       out.write(buffer, 0, b);
-                   }
-               }
-               inputStream.close();
-               out.close();
-               out.flush();
-           } catch (IOException | InterruptedException e) {
-               e.printStackTrace();
-           }
-       }
-   // }
+        excelUtilService.downLoadExcel(response,object);
+    }
 
 
     /**
@@ -69,9 +44,18 @@ public class ExcelUtilController {
      * @throws IOException
      */
     @GetMapping("/importExcel")
-    public void importXls(@RequestBody String json) throws IOException {
-        JSONObject object = JSONObject.parseObject(json);
-        excelUtilService.upLoadExcel(object);
+    public String importXls(HttpServletRequest request) throws IOException {
+        MultipartHttpServletRequest mreq = null;
+        boolean flag = false;
+        if(request instanceof  MultipartHttpServletRequest){
+            mreq = (MultipartHttpServletRequest) request;
+            //flag = excelUtilService.analysisFile(mreq);
+            flag = excelUtilService.upLoadExcel(mreq);
+        }
+        if(!flag){
+            return "失败了";
+        }
+        return "成功了";
     }
 }
 
