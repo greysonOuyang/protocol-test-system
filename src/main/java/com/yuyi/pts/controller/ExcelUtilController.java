@@ -1,7 +1,6 @@
 package com.yuyi.pts.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.model.excel.BaseResponse;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +76,8 @@ public class ExcelUtilController {
         boolean flag = false;
         if(request instanceof  MultipartHttpServletRequest){
             mreq = (MultipartHttpServletRequest) request;
-            flag = excelUtilService.analysisFile(mreq);
+            //flag = excelUtilService.analysisFile(mreq);
+            flag = excelUtilService.upLoadExcel(mreq);
         }
         if(!flag){
             return "失败了";

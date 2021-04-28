@@ -19,7 +19,14 @@ public interface ExcelUtilService {
 
     /**
      * 上传excel
+     * @return
      */
-    void upLoadExcel(MultipartHttpServletRequest mreq) throws IOException;
-     boolean analysisFile(MultipartHttpServletRequest mreq);
+    boolean upLoadExcel(MultipartHttpServletRequest mreq) throws IOException;
+
+    /**
+     * 备用  暂时为用到
+     * @param mreq
+     * @return
+     */
+    boolean analysisFile(MultipartHttpServletRequest mreq);
 }

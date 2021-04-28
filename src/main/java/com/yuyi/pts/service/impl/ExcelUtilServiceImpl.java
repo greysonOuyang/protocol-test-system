@@ -50,20 +50,20 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
     }
 
     @Override
-    public void upLoadExcel(MultipartHttpServletRequest mreq) throws IOException {
+    public boolean upLoadExcel(MultipartHttpServletRequest mreq) throws IOException {
         // 将文件解析，存入缓存，在启动服务端程序在拿出来使用
-        File f=new File("src/test/resources/test.xls");
-        getMap(f);
-    }
-    public static void getMap(File f) throws FileNotFoundException {
-        InputStream inputStream= new FileInputStream(f);
-
+        boolean flag = false;
+        InputStream inputStream= null;
+        inputStream = mreq.getFile ("file").getInputStream ();
         ExcelLogs logs =new ExcelLogs();
         Collection<Map> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
-
+         if(!importExcel.isEmpty()){
+                    flag=true;
+           }
         for(Map m : importExcel){
-            System.out.println(m);
+            System.out.println("输出结果为："+m);
         }
+        return flag;
     }
     @Override
     public boolean analysisFile(MultipartHttpServletRequest mreq){
