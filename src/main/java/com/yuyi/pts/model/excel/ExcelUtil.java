@@ -135,10 +135,10 @@ public class ExcelUtil {
      * @param headers 表格属性列名数组
      * @param dataset 需要显示的数据集合,集合中一定要放置符合javabean风格的类的对象。此方法支持的
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
-     * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
+     * @param filename  与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
-    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset, OutputStream out, HttpServletResponse response,String filename) throws IOException {
-        exportExcel(headers, dataset, out, null,response,filename);
+    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset,  HttpServletResponse response,String filename) throws IOException {
+        exportExcel(headers, dataset,  null,response,filename);
     }
 
     /**
@@ -149,36 +149,23 @@ public class ExcelUtil {
      * @param headers 表格属性列名数组
      * @param dataset 需要显示的数据集合,集合中一定要放置符合javabean风格的类的对象。此方法支持的
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
-     * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
+     * @param response     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      * @param pattern 如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
      */
-    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset, OutputStream out,
+    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset,
                                        String pattern,HttpServletResponse response,String filename) throws IOException {
         // 声明一个工作薄
         HSSFWorkbook workbook = new HSSFWorkbook();
-        response.setContentType("application/force-download");
-        out = response.getOutputStream();
-        //使用URLEncoder来防止文件名乱码或者读取错误
-        response.setHeader("Content-Disposition", "attachment; filename="+ URLEncoder.encode(filename, "UTF-8"));
 
         // 生成一个表格
         HSSFSheet sheet = workbook.createSheet();
 
         write2Sheet(sheet, headers, dataset, pattern);
-        Resource resource = new ClassPathResource("/"+filename);
-        File file = resource.getFile();
-        InputStream inputStream = new FileInputStream(file);
-        int b = 0;
-        byte[] buffer = new byte[1000000];
-        while (b != -1) {
-            b = inputStream.read(buffer);
-            if(b!=-1) {
-                out.write(buffer, 0, b);
-            }
-        }
-        inputStream.close();
-        out.close();
-        out.flush();
+        response.setContentType ("application/octet-stream");
+        response.setHeader ("Content-Disposition", "attachment; filename="+ URLEncoder.encode(filename, "UTF-8"));
+        response.setCharacterEncoding("UTF-8");
+        response.flushBuffer ();
+        workbook.write (response.getOutputStream ());
     }
 
     public static void exportExcel(String[][] datalist, OutputStream out,boolean autoColumnWidth) {

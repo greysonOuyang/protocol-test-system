@@ -15,7 +15,7 @@ public interface ExcelUtilService {
     /**
      * 下载excel
      */
-     boolean downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException;
+     void downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException;
 
     /**
      * 上传excel
