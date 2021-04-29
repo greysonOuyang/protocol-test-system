@@ -8,8 +8,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollChannelOption;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
@@ -33,7 +31,6 @@ public class NettyServer {
 
     ServiceInterface serviceInterface;
 
-    boolean epoll=true;
     int port;
 
     public NettyServer(ServiceInterface service, int port){
@@ -55,32 +52,19 @@ public class NettyServer {
     public void start(){
         log.info(" nettyServer 正在启动");
 
-        if(epoll){
-            log.info(" nettyServer 使用epoll模式");
-            boss = new EpollEventLoopGroup();
-            worker = new EpollEventLoopGroup();
-        }
-        else{
-            log.info(" nettyServer 使用nio模式");
-            boss = new NioEventLoopGroup();
-            worker = new NioEventLoopGroup();
-        }
+        boss = new NioEventLoopGroup();
+        worker = new NioEventLoopGroup();
 
         log.info("netty服务器在["+this.port+"]端口启动监听");
 
         serverBootstrap.group(boss,worker)
+                .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG,1024)
                 .option(EpollChannelOption.SO_REUSEPORT, true)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .option(ChannelOption.TCP_NODELAY,true)
                 .childOption(ChannelOption.SO_KEEPALIVE,true)
                 .childHandler(new NettyServerInitializer(serviceInterface));
-
-        if(epoll){
-            serverBootstrap.channel(EpollServerSocketChannel.class);
-        }else{
-            serverBootstrap.channel(NioServerSocketChannel.class);
-        }
 
 
         try{

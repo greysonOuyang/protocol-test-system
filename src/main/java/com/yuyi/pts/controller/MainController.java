@@ -31,7 +31,7 @@ public class MainController {
     int startNum = InterfaceCache.INTERFACE_MAP.size();
 
     @PostMapping("/start/server")
-    public void execute(ServerRequestDto request) {
+    public void execute(@RequestBody ServerRequestDto request) {
         String serviceInterfaceId = request.getInterfaceId();
         ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
         int port = request.getPort();
