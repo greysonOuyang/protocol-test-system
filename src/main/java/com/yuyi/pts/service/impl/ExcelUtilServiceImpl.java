@@ -1,7 +1,7 @@
 package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.cache.PlanInfoCache;
+import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.constant.ExcelConstant;
 import com.yuyi.pts.common.constant.MapAndListConstant;
 import com.yuyi.pts.common.util.DateTimeUtil;
@@ -61,16 +61,19 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 try (InputStream inputStream = file.getInputStream()){
                     ExcelLogs logs =new ExcelLogs();
                     Map<String, List<Param>> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
-                    if(!importExcel.isEmpty()){
-                        // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型 未解析 待启动服务的时候去解析
+                    if(!importExcel.get("sheel1").isEmpty()){
                         serviceInterface.setInput(importExcel.get("sheel1"));
+                        flag=true;
+                    }
+                    if(!importExcel.get("sheel2").isEmpty()){
+                        // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型 未解析 待启动服务的时候去解析
                         serviceInterface.setOutput(importExcel.get("sheel2"));
                         System.out.println("serviceInterface 获取成功");
                         flag=true;
                     }
                     serviceInterface.setInterfaceId(UUID.randomUUID().toString().replace("-",""));
                     serviceInterface.setInterfaceName(file.getOriginalFilename());
-                    PlanInfoCache.put(file.getOriginalFilename(),serviceInterface);
+                    InterfaceCache.put(serviceInterface.getInterfaceId(),serviceInterface);
                 } catch (IOException e) {
                     log.error("读取Excel文件出错：{}", e.getMessage());
                 }
