@@ -48,6 +48,7 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
 
     @Override
     public boolean upLoadExcel(MultipartHttpServletRequest mRequest) throws IOException {
+        // todo 将文件解析，存入缓存，在启动服务端程序在拿出来使用
         boolean flag = false;
         Map<String, MultipartFile> fileMap = mRequest.getFileMap();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {

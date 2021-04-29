@@ -1,6 +1,5 @@
 package com.yuyi.pts.model.excel;
 
-import com.yuyi.pts.model.vo.response.PlanInfo;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ComparatorUtils;
@@ -11,8 +10,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -401,8 +398,8 @@ public class ExcelUtil {
      * @return voList
      * @throws RuntimeException
      */
-    public static <T> Collection<T> importExcel(Class<T> clazz, InputStream inputStream,
-                                                String pattern, ExcelLogs logs, Integer... arrayCount) {
+    public static <T> Collection<Map> importExcel(Class<T> clazz, InputStream inputStream,
+                                                  String pattern, ExcelLogs logs, Integer... arrayCount) {
         Workbook workBook;
         try {
             workBook = WorkbookFactory.create(inputStream);
@@ -410,8 +407,11 @@ public class ExcelUtil {
             LG.error("load excel file error",e);
             return null;
         }
+        Map hashMap = new HashMap();
         List<T> list = new ArrayList<>();
-        Sheet sheet = workBook.getSheetAt(0);
+        List<T> list1 = new ArrayList<>();
+        for (int z = 0; z <workBook.getNumberOfSheets() ; z++) {
+            Sheet sheet = workBook.getSheetAt(z);
         Iterator<Row> rowIterator = sheet.rowIterator();
         try {
             List<ExcelLog> logList = new ArrayList<>();
@@ -462,7 +462,11 @@ public class ExcelUtil {
                             map.put(k, value);
                         }
                     }
-                    list.add((T) map);
+                    if(0==z){
+                        list.add((T) map);
+                    }else {
+                        list1.add((T) map);
+                    }
 
                 } else {
                     T t = clazz.newInstance();
@@ -531,7 +535,11 @@ public class ExcelUtil {
                             cellIndex++;
                         }
                     }
-                    list.add(t);
+                    if(0==z){
+                        list.add(t);
+                    }else {
+                        list1.add(t);
+                    }
                     logList.add(new ExcelLog(t, log.toString(), row.getRowNum() + 1));
                 }
             }
@@ -543,7 +551,10 @@ public class ExcelUtil {
             throw new RuntimeException(MessageFormat.format("can not instance class:{0}",
                     clazz.getSimpleName()), e);
         }
-        return list;
+        }
+        hashMap.put("sheel1",list);
+        hashMap.put("sheel2",list1);
+        return hashMap;
     }
 
     /**
