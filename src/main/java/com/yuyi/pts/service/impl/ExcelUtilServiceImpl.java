@@ -61,19 +61,25 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 try (InputStream inputStream = file.getInputStream()){
                     ExcelLogs logs =new ExcelLogs();
                     Map<String, List<Param>> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
-                    if(!importExcel.get("sheel1").isEmpty()){
-                        serviceInterface.setInput(importExcel.get("sheel1"));
+                    List<Param> input = importExcel.get("Input");
+                    if(!input.isEmpty()){
+
+                        serviceInterface.setInput(input);
                         flag=true;
                     }
-                    if(!importExcel.get("sheel2").isEmpty()){
+                    List<Param> output = importExcel.get("Output");
+                    if(!output.isEmpty()){
                         // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型 未解析 待启动服务的时候去解析
-                        serviceInterface.setOutput(importExcel.get("sheel2"));
+                        serviceInterface.setOutput(output);
                         System.out.println("serviceInterface 获取成功");
                         flag=true;
                     }
                     serviceInterface.setInterfaceId(UUID.randomUUID().toString().replace("-",""));
-                    serviceInterface.setInterfaceName(file.getOriginalFilename());
-                    InterfaceCache.put(serviceInterface.getInterfaceId(),serviceInterface);
+                    String originalFilename = file.getOriginalFilename();
+                    int length = originalFilename.length();
+                    String fileName = originalFilename.substring(0, length - 5);
+                    serviceInterface.setInterfaceName(fileName);
+                    InterfaceCache.put(serviceInterface.getInterfaceId(), serviceInterface);
                 } catch (IOException e) {
                     log.error("读取Excel文件出错：{}", e.getMessage());
                 }

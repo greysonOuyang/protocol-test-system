@@ -71,4 +71,10 @@ public class MainController {
             return ResultEntity.failedWithData("删除失败，请重新尝试");
         }
     }
+
+    @PostMapping("interface/deleteAll")
+    public void deleteAllInterface() {
+        InterfaceCache.INTERFACE_MAP.clear();
+    }
+
 }

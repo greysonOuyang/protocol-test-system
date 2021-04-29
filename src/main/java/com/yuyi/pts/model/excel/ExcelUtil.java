@@ -1,6 +1,5 @@
 package com.yuyi.pts.model.excel;
 
-import com.yuyi.pts.model.server.Param;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ComparatorUtils;
@@ -399,8 +398,8 @@ public class ExcelUtil {
      * @return voList
      * @throws RuntimeException
      */
-    public static <T> Map<String, List<Param>> importExcel(Class<T> clazz, InputStream inputStream,
-                                                           String pattern, ExcelLogs logs, Integer... arrayCount) {
+    public static <T> Map importExcel(Class<T> clazz, InputStream inputStream,
+                                      String pattern, ExcelLogs logs, Integer... arrayCount) {
         Workbook workBook;
         try {
             workBook = WorkbookFactory.create(inputStream);
@@ -408,12 +407,15 @@ public class ExcelUtil {
             LG.error("load excel file error",e);
             return null;
         }
-        Map hashMap = new HashMap();
-        List<T> list = new ArrayList<>();
-        List<T> list1 = new ArrayList<>();
-        for (int z = 0; z <workBook.getNumberOfSheets() ; z++) {
-            Sheet sheet = workBook.getSheetAt(z);
-        Iterator<Row> rowIterator = sheet.rowIterator();
+        /* 最终返回的HashMap */
+        Map resultMap = new HashMap();
+        for (int sheetIndex = 0; sheetIndex < workBook.getNumberOfSheets() ; sheetIndex ++) {
+            // 获取sheet对象
+            Sheet sheet = workBook.getSheetAt(sheetIndex);
+            // 需要返回的sheet对象
+            List<T> sheetList = new ArrayList<>();
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
         try {
             List<ExcelLog> logList = new ArrayList<>();
             // Map<title,index>
@@ -449,6 +451,8 @@ public class ExcelUtil {
                     continue;
                 }
                 StringBuilder log = new StringBuilder();
+
+                // 转换为业务对象
                 if (clazz == Map.class) {
                     Map<String, Object> map = new HashMap<>();
                     for (String k : titleMap.keySet()) {
@@ -463,14 +467,9 @@ public class ExcelUtil {
                             map.put(k, value);
                         }
                     }
-                    if(0==z){
-                        list.add((T) map);
-                    }else {
-                        list1.add((T) map);
-                    }
-
+                    sheetList.add((T) map);
                 } else {
-                    T t = clazz.newInstance();
+                    T javaBean = clazz.newInstance();
                     int arrayIndex = 0;// 标识当前第几个数组了
                     int cellIndex = 0;// 标识当前读到这一行的第几个cell了
                     List<FieldForSortting> fields = sortFieldByAnno(clazz);
@@ -498,7 +497,7 @@ public class ExcelUtil {
                                 }
                                 cellIndex++;
                             }
-                            field.set(t, value);
+                            field.set(javaBean, value);
                             arrayIndex++;
                         } else {
                             Cell cell = row.getCell(cellIndex);
@@ -526,7 +525,7 @@ public class ExcelUtil {
                                         value = annoCell.defaultValue();
                                     }
                                 }
-                                field.set(t, value);
+                                field.set(javaBean, value);
                             }
                             if (isNotBlank(errMsg)) {
                                 log.append(errMsg);
@@ -536,12 +535,8 @@ public class ExcelUtil {
                             cellIndex++;
                         }
                     }
-                    if(0==z){
-                        list.add(t);
-                    }else {
-                        list1.add(t);
-                    }
-                    logList.add(new ExcelLog(t, log.toString(), row.getRowNum() + 1));
+                    sheetList.add(javaBean);
+                    logList.add(new ExcelLog(javaBean, log.toString(), row.getRowNum() + 1));
                 }
             }
             logs.setLogList(logList);
@@ -552,10 +547,9 @@ public class ExcelUtil {
             throw new RuntimeException(MessageFormat.format("can not instance class:{0}",
                     clazz.getSimpleName()), e);
         }
+        resultMap.put(sheet.getSheetName(), sheetList);
         }
-        hashMap.put("sheel1",list);
-        hashMap.put("sheel2",list1);
-        return hashMap;
+        return resultMap;
     }
 
     /**
