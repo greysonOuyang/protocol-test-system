@@ -1,12 +1,15 @@
 package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.cache.PlanInfoCache;
 import com.yuyi.pts.common.constant.ExcelConstant;
 import com.yuyi.pts.common.constant.MapAndListConstant;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.model.excel.ExcelLogs;
 import com.yuyi.pts.model.excel.ExcelUtil;
+import com.yuyi.pts.model.server.Param;
+import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.response.PlanInfo;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +51,7 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
 
     @Override
     public boolean upLoadExcel(MultipartHttpServletRequest mRequest) throws IOException {
-        // todo 将文件解析，存入缓存，在启动服务端程序在拿出来使用
+        ServiceInterface serviceInterface = new ServiceInterface();
         boolean flag = false;
         Map<String, MultipartFile> fileMap = mRequest.getFileMap();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
@@ -57,19 +60,17 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             if (file != null) {
                 try (InputStream inputStream = file.getInputStream()){
                     ExcelLogs logs =new ExcelLogs();
-                    Map<String, List<Map>> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
-                    // todo 将文件解析，存入缓存，在启动服务端程序在拿出来使用
+                    Map<String, List<Param>> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
                     if(!importExcel.isEmpty()){
+                        // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型 未解析 待启动服务的时候去解析
+                        serviceInterface.setInput(importExcel.get("sheel1"));
+                        serviceInterface.setOutput(importExcel.get("sheel2"));
+                        System.out.println("serviceInterface 获取成功");
                         flag=true;
-
                     }
-                    for (Map.Entry<String, List<Map>> entry1 : importExcel.entrySet()) {
-                        // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型
-                        System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                        Map map = entry1.getValue().get(0);
-                        System.out.println("Map ====="+map);
-
-                    }
+                    serviceInterface.setInterfaceId(UUID.randomUUID().toString().replace("-",""));
+                    serviceInterface.setInterfaceName(file.getOriginalFilename());
+                    PlanInfoCache.put(file.getOriginalFilename(),serviceInterface);
                 } catch (IOException e) {
                     log.error("读取Excel文件出错：{}", e.getMessage());
                 }
