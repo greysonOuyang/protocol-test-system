@@ -1,5 +1,6 @@
 package com.yuyi.pts.model.excel;
 
+import com.yuyi.pts.model.server.Param;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ComparatorUtils;
@@ -398,8 +399,8 @@ public class ExcelUtil {
      * @return voList
      * @throws RuntimeException
      */
-    public static <T> Map<String, List<Map>> importExcel(Class<T> clazz, InputStream inputStream,
-                                                         String pattern, ExcelLogs logs, Integer... arrayCount) {
+    public static <T> Map<String, List<Param>> importExcel(Class<T> clazz, InputStream inputStream,
+                                                           String pattern, ExcelLogs logs, Integer... arrayCount) {
         Workbook workBook;
         try {
             workBook = WorkbookFactory.create(inputStream);
