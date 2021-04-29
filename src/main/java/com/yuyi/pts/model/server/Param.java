@@ -32,6 +32,9 @@ public class Param {
      */
     private String value;
 
+    /**
+     * 参数类型
+     */
     private FieldType type;
 
 }

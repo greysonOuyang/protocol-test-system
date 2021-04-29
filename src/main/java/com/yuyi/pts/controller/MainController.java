@@ -1,6 +1,7 @@
 package com.yuyi.pts.controller;
 
 import com.yuyi.pts.common.cache.InterfaceCache;
+import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ServerRequestDto;
 import com.yuyi.pts.netty.server.NettyServer;
@@ -21,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/main")
 public class MainController {
 
-    public static Map<String, ServiceInterface> interfaceMap = new HashMap<>();
+    public static Map<String, Param> PARAM_MAP = new HashMap<>();
 
 
     @PostMapping("/start/server")
@@ -52,4 +53,5 @@ public class MainController {
          String response = InterfaceCache.remove(idList);
           return response;
     }
+
 }
