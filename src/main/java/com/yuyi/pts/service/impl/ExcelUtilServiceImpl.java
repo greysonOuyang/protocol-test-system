@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.constant.ExcelConstant;
 import com.yuyi.pts.common.constant.MapAndListConstant;
+import com.yuyi.pts.common.constant.ParamConstant;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.model.excel.ExcelLogs;
@@ -35,17 +36,26 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
         // 获取到接口名称，根据接口名称去配置对应的excel文件
         String interfaceName = object.get("interfaceName").toString();
         if (ExcelConstant.PLAN_INFO.equals(interfaceName)) {
-            //   给PlanInfo赋初始值 表格内容赋值
-            PlanInfo planInfo = MapAndListConstant.PLANINFO;
-            Collection<Object> dataset = new ArrayList<Object>();
-            for (int i = 0; i < planInfo.getModelList().size(); i++) {
-                dataset.add(planInfo.getModelList().get(i));
+            //   给serviceInterfaceInput赋初始值 表格内容赋值
+            ServiceInterface serviceInterfaceInput = ParamConstant.SERVICE_INTERFACE;
+            Collection<Object> dataInput = new ArrayList<>();
+            // todo 模型设计中 输入参数
+            for (int i = 0; i < serviceInterfaceInput.getInput().size(); i++) {
+                dataInput.add(serviceInterfaceInput.getInput().get(i));
             }
+            // todo  输出参数 暂未设计模型
+            Collection<Object> dataOutput = new ArrayList<>();
+            for (int i = 0; i < serviceInterfaceInput.getOutput().size(); i++) {
+                dataOutput.add(serviceInterfaceInput.getOutput().get(i));
+            }
+            Map mapList = new LinkedHashMap<>();
+            mapList.put("sheel0",dataInput);
+            mapList.put("sheel1",dataOutput);
             String date = DateTimeUtil.getStringDateShort();
             String fileName = interfaceName.toUpperCase()+"_" + date +".xls";
             //  给表头加数据
-            Map map = MapAndListConstant.getPlanModel();
-            ExcelUtil.exportExcel(map, dataset, response,fileName);
+            Map map = ParamConstant.getModel();
+            ExcelUtil.exportExcel(map, mapList, response,fileName);
         }
     }
 

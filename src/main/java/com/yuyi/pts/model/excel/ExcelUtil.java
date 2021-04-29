@@ -134,7 +134,7 @@ public class ExcelUtil {
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
      * @param filename  与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
-    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset,  HttpServletResponse response,String filename) throws IOException {
+    public static <T> void exportExcel(Map<String,String> headers,  Map<String,Collection<T>> dataset,  HttpServletResponse response,String filename) throws IOException {
         exportExcel(headers, dataset,  null,response,filename);
     }
 
@@ -149,15 +149,16 @@ public class ExcelUtil {
      * @param response     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      * @param pattern 如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
      */
-    public static <T> void exportExcel(Map<String,String> headers, Collection<T> dataset,
+    public static <T> void exportExcel(Map<String,String> headers, Map<String,Collection<T>> dataset,
                                        String pattern,HttpServletResponse response,String filename) throws IOException {
         // 声明一个工作薄
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        // 生成一个表格
-        HSSFSheet sheet = workbook.createSheet();
+        for (Map.Entry<String, Collection<T>> entry : dataset.entrySet()) {
+            HSSFSheet sheet = workbook.createSheet();
+            write2Sheet(sheet, headers, entry.getValue(), pattern);
+        }
 
-        write2Sheet(sheet, headers, dataset, pattern);
         response.setContentType ("application/octet-stream");
         response.setHeader ("Content-Disposition", "attachment; filename="+ URLEncoder.encode(filename, "UTF-8"));
         response.setCharacterEncoding("UTF-8");
