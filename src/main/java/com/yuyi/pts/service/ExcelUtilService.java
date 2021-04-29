@@ -2,7 +2,6 @@ package com.yuyi.pts.service;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,10 +18,11 @@ public interface ExcelUtilService {
      void downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException;
 
     /**
-     * 上传excel
+     * 导入excel
+     *
      * @return
      */
-    boolean upLoadExcel(MultipartHttpServletRequest mreq) throws IOException;
+    String upLoadExcel(MultipartHttpServletRequest mreq) throws IOException;
 
     /**
      * 备用  暂时为用到

@@ -74,6 +74,9 @@ public class ResultEntity {
     public static String successWithData(Object data) {
         return setResultEntityWithOperation( SUCCESS, null, data).toString();
     }
+    public static String successWithNothing() {
+        return setResultEntityWithOperation( SUCCESS, null, null).toString();
+    }
     public static String failedWithData(Object data) {
         return setResultEntityWithOperation( FAILED, null, data).toString();
     }

@@ -1,7 +1,6 @@
 package com.yuyi.pts.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -47,18 +40,13 @@ public class ExcelUtilController {
 
 
     /**
-     * 上传excel
+     * 导入excel
      *
      * @throws IOException
      */
     @PostMapping("/importExcel")
     public String importXls(MultipartHttpServletRequest request) throws IOException {
-        boolean flag = false;
-        flag = excelUtilService.upLoadExcel(request);
-        if(!flag){
-            return ResultEntity.successWithData("文件上传成功");
-        }
-        return "成功了";
+        return excelUtilService.upLoadExcel(request);
     }
 }
 
