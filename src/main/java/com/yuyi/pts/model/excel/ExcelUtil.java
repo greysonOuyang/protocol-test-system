@@ -398,8 +398,8 @@ public class ExcelUtil {
      * @return voList
      * @throws RuntimeException
      */
-    public static <T> Collection<Map> importExcel(Class<T> clazz, InputStream inputStream,
-                                                  String pattern, ExcelLogs logs, Integer... arrayCount) {
+    public static <T> Map<String, List<Map>> importExcel(Class<T> clazz, InputStream inputStream,
+                                                         String pattern, ExcelLogs logs, Integer... arrayCount) {
         Workbook workBook;
         try {
             workBook = WorkbookFactory.create(inputStream);

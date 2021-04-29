@@ -57,16 +57,18 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             if (file != null) {
                 try (InputStream inputStream = file.getInputStream()){
                     ExcelLogs logs =new ExcelLogs();
-                    Collection<Map> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
+                    Map<String, List<Map>> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs , 0);
                     // todo 将文件解析，存入缓存，在启动服务端程序在拿出来使用
                     if(!importExcel.isEmpty()){
                         flag=true;
 
                     }
-                    for(Map m : importExcel){
+                    for (Map.Entry<String, List<Map>> entry1 : importExcel.entrySet()) {
                         // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型
+                        System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                        Map map = entry1.getValue().get(0);
+                        System.out.println("Map ====="+map);
 
-                        System.out.println("输出结果为："+m);
                     }
                 } catch (IOException e) {
                     log.error("读取Excel文件出错：{}", e.getMessage());
