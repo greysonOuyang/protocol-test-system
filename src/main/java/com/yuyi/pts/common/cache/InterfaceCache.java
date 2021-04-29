@@ -16,25 +16,21 @@ import java.util.Map;
 public class InterfaceCache {
     public static Map<String, ServiceInterface>  INTERFACE_MAP = new HashMap<>();
 
-    public static void put(String key, ServiceInterface serviceInterface) {
+    public static ServiceInterface put(String key, ServiceInterface serviceInterface) {
         if (key == null || serviceInterface == null) {
-
+           return null;
         }
-         INTERFACE_MAP.put(key, serviceInterface);
+        return   INTERFACE_MAP.put(key, serviceInterface);
     }
 
-    public static ServiceInterface remove(String key) {
-        if (key == null) {
-            return null;
-        }
-        return INTERFACE_MAP.remove(key);
-    }
-    public static void remove(List<Map> idList) {
+    public static ServiceInterface remove(List<Map> idList) {
         for (Map id : idList) {
             String interfaceId = id.get("id").toString();
             if (id.toString() == null) {
+                return null;
             }
             INTERFACE_MAP.remove(interfaceId);
         }
+        return null;
     }
 }
