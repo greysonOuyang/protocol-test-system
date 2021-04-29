@@ -1,6 +1,5 @@
 package com.yuyi.pts.common.cache;
 
-import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.server.ServiceInterface;
 
 import java.util.HashMap;

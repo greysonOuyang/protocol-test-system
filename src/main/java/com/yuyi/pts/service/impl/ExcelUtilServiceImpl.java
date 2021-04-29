@@ -13,6 +13,7 @@ import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.response.PlanInfo;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -37,15 +38,24 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
         if (ExcelConstant.PLAN_INFO.equals(interfaceName)) {
             //   给PlanInfo赋初始值 表格内容赋值
             PlanInfo planInfo = MapAndListConstant.PLANINFO;
-            Collection<Object> dataset = new ArrayList<Object>();
+            Collection<Object> dataInput = new ArrayList<>();
+            // todo 模型设计中 输入参数
             for (int i = 0; i < planInfo.getModelList().size(); i++) {
-                dataset.add(planInfo.getModelList().get(i));
+                dataInput.add(planInfo.getModelList().get(i));
             }
+            // todo  输出参数 暂未设计模型
+            Collection<Object> dataOutput = new ArrayList<>();
+            for (int i = 0; i < planInfo.getModelList().size(); i++) {
+                dataOutput.add(planInfo.getModelList().get(i));
+            }
+            Map mapList = new HashMap<>();
+            mapList.put("sheel0",dataInput);
+            mapList.put("sheel1",dataOutput);
             String date = DateTimeUtil.getStringDateShort();
             String fileName = interfaceName.toUpperCase()+"_" + date +".xls";
             //  给表头加数据
             Map map = MapAndListConstant.getPlanModel();
-            ExcelUtil.exportExcel(map, dataset, response,fileName);
+            ExcelUtil.exportExcel(map, mapList, response,fileName);
         }
     }
 
