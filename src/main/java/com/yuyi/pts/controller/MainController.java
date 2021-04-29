@@ -32,7 +32,8 @@ public class MainController {
 
     @PostMapping("/start/server")
     public void execute(ServerRequestDto request) {
-        ServiceInterface serviceInterface = request.getServiceInterface();
+        String serviceInterfaceId = request.getInterfaceId();
+        ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
         int port = request.getPort();
         NettyServer nettyServer = new NettyServer(serviceInterface, port);
         nettyServer.start();

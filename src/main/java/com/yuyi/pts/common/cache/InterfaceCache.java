@@ -1,6 +1,5 @@
 package com.yuyi.pts.common.cache;
 
-import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.server.ServiceInterface;
 
 import java.util.HashMap;
@@ -32,5 +31,12 @@ public class InterfaceCache {
             INTERFACE_MAP.remove(interfaceId);
         }
         return null;
+    }
+
+    public static ServiceInterface get(String id) {
+        if (id == null) {
+            return null;
+        }
+        return INTERFACE_MAP.get(id);
     }
 }

@@ -1,6 +1,5 @@
 package com.yuyi.pts.model.vo.request;
 
-import com.yuyi.pts.model.server.ServiceInterface;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class ServerRequestDto {
     private int port;
 
     /**
-     * 接口
+     * 接口Id
      */
-    private ServiceInterface serviceInterface;
+    private String interfaceId;
 }
