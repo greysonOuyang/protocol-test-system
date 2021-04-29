@@ -14,5 +14,9 @@ public enum FieldType {
     /**
      * 字符串
      */
-    String;
+    String,
+    /**
+     * ASCII
+     */
+    ASCII;
 }
