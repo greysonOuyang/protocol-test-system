@@ -39,6 +39,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 bytes = ByteUtils.hexString2Bytes(value);
             } else if (type == FieldType.String) {
                 bytes = value.getBytes(StandardCharsets.UTF_8);
+            }else if (type == FieldType.ASCII) {
+                bytes = value.getBytes(StandardCharsets.UTF_8);
             }
             byte[] outBytes = ByteUtils.storeInBytes(bytes, length);
 
