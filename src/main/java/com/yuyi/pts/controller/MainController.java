@@ -24,6 +24,7 @@ import java.util.Map;
 public class MainController {
 
     public static Map<String, Param> PARAM_MAP = new HashMap<>();
+    NettyServer nettyServer;
     /**
      *
      *   获取到最开始的缓存容量大小
@@ -31,12 +32,17 @@ public class MainController {
     int startNum = InterfaceCache.INTERFACE_MAP.size();
 
     @PostMapping("/start/server")
-    public void execute(@RequestBody ServerRequestDto request) {
+    public String execute(@RequestBody ServerRequestDto request) {
         String serviceInterfaceId = request.getInterfaceId();
         ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
         int port = request.getPort();
-        NettyServer nettyServer = new NettyServer(serviceInterface, port);
-        nettyServer.start();
+        nettyServer = new NettyServer(serviceInterface, port);
+        return nettyServer.start();
+    }
+
+    @GetMapping("/stop/server")
+    public boolean stopServer() {
+        return nettyServer.stop();
     }
 
     @PostMapping("/interface/add")
@@ -61,7 +67,7 @@ public class MainController {
     }
 
     @PostMapping("interface/delete")
-    public String deleteInterface(@RequestBody List<Map> idList) {
+    public String deleteInterface(@RequestBody List<String> idList) {
         InterfaceCache.remove(idList);
         // 拿最开始的缓存数据 减去删除后的缓存数据
         int endNum = InterfaceCache.INTERFACE_MAP.size();

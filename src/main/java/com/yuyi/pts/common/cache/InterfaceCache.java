@@ -22,13 +22,12 @@ public class InterfaceCache {
         return   INTERFACE_MAP.put(key, serviceInterface);
     }
 
-    public static ServiceInterface remove(List<Map> idList) {
-        for (Map id : idList) {
-            String interfaceId = id.get("id").toString();
-            if (id.toString() == null) {
-                return null;
-            }
-            INTERFACE_MAP.remove(interfaceId);
+    public static ServiceInterface remove(List<String> idList) {
+        if (idList == null || idList.isEmpty()) {
+            return null;
+        }
+        for (String id : idList) {
+            INTERFACE_MAP.remove(id);
         }
         return null;
     }

@@ -82,6 +82,7 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                     serviceInterface.setOutput(output);
                     System.out.println("serviceInterface 获取成功");
                 }
+                // TODO UUID不唯一
                 serviceInterface.setInterfaceId(UUID.randomUUID().toString().replace("-", ""));
                 String originalFilename = file.getOriginalFilename();
                 int length = originalFilename.length();

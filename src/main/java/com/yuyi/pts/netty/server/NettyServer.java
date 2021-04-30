@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.server;
 
+import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -39,7 +40,7 @@ public class NettyServer {
     }
 
     @PreDestroy
-    public void stop(){
+    public boolean stop(){
         if(future!=null){
             future.channel().close().addListener(ChannelFutureListener.CLOSE);
             future.awaitUninterruptibly();
@@ -47,9 +48,11 @@ public class NettyServer {
             worker.shutdownGracefully();
             future=null;
             log.info(" 服务关闭 ");
+            return true;
         }
+        return false;
     }
-    public void start(){
+    public String start(){
         log.info(" nettyServer 正在启动");
 
         boss = new NioEventLoopGroup();
@@ -77,10 +80,12 @@ public class NettyServer {
         }catch (Exception e){
             log.info("nettyServer 启动时发生异常---------------{}", e.getMessage());
             log.info(e.getMessage());
+            return ResultEntity.failedWithMsg(e.getMessage());
         }finally {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
+        return ResultEntity.successWithNothing();
     }
 
 }
