@@ -1,7 +1,8 @@
 package com.yuyi.pts.netty.client.initializer;
 
-import com.yuyi.pts.netty.client.codec.ModBusCodec;
+import com.yuyi.pts.netty.codec.ModBusEncoder;
 import com.yuyi.pts.netty.client.handler.ModbusRequestHandler;
+import com.yuyi.pts.netty.codec.ModBusDecoder;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
@@ -16,7 +17,8 @@ public class ModBusRequestInitializer extends NettyClientInitializer<SocketChann
         ch.pipeline()
                 .addLast(
                         // 自定义解码
-                        new ModBusCodec(),
+                        new ModBusDecoder(),
+                        new ModBusEncoder(),
                         new IdleStateHandler(3, 0, 0),
                         //自定义的处理器
                         new ModbusRequestHandler());

@@ -2,15 +2,14 @@ package com.yuyi.pts.netty.server.handler;
 
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
-import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,17 +29,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ModBusMessage modBusMessage = null;
-        if (msg instanceof ModBusMessage) {
-            modBusMessage = (ModBusMessage) msg;
-        }
-        if (modBusMessage == null) {
-            log.error("解析错误");
-            return;
-        }
         super.channelRead(ctx, msg);
-        ByteBuf out = ctx.alloc().buffer();
         List<Param> outputList = serviceInterface.getOutput();
+        List<byte[]> byteList = new ArrayList<>();
         for (Param param : outputList) {
             int length = param.getLength();
             String value = param.getValue();
@@ -56,10 +47,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             }
             if (bytes != null) {
                 byte[] outBytes = ByteUtils.storeInBytes(bytes, length);
-                out.writeBytes(outBytes);
+                byteList.add(outBytes);
             }
         }
-        modBusMessage.setContent(out);
-        ctx.channel().writeAndFlush(modBusMessage);
+        ctx.channel().writeAndFlush(byteList);
     }
 }

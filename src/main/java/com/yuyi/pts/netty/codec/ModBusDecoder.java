@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.client.codec;
+package com.yuyi.pts.netty.codec;
 
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
@@ -6,59 +6,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * ModBus协议编码解码器
+ * description
  *
- * @author greyson/wzl
- * @since 2021/4/16
+ * @author greyson
+ * @since 2021/4/30
  */
 @Slf4j
-@Component
-public class ModBusCodecForServer extends ByteToMessageCodec<ModBusMessage> {
-
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        log.info("modbuscodec激活了");
-    }
-
-    @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ModBusMessage modBusMessage, ByteBuf out) throws Exception {
-        log.info("进入了modBus编码");
-        // 业务标识符 两个字节 
-        byte[] affairIdentification = ByteUtils.storeInBytes(
-                ByteUtils.hexString2Bytes(
-                        modBusMessage.getAffairIdentification()), 2);
-        // 协议标识符 两个字节
-        byte[] protocolIdentification = ByteUtils.storeInBytes(
-                ByteUtils.hexString2Bytes(
-                        modBusMessage.getProtocolIdentification()), 2);
-        //  单元标识码  一个字节
-        byte[] unitIdentification = ByteUtils.storeInBytes(
-                ByteUtils.hexString2Bytes(modBusMessage.getUnitIdentification()), 1);
-        //  功能码 一个字节
-        byte[] code = ByteUtils.storeInBytes(
-                ByteUtils.hexString2Bytes(modBusMessage.getCode()), 1);
-        ByteBuf content = (ByteBuf) modBusMessage.getContent();
-        byte[] body = new byte[content.readableBytes()];
-        //  长度两个字节 == 单元标识符一个字节 + 数据长度
-        int length = code.length + body.length +  + 1;
-        byte[] lengthBytes = ByteUtils.storeInBytes(
-                ByteUtils.intToBytesLow(length), 2);
-        // 注意！写入顺序不可调整
-        out.writeBytes(affairIdentification);
-        out.writeBytes(protocolIdentification);
-        out.writeBytes(lengthBytes);
-        out.writeBytes(code);
-        out.writeBytes(body);
-    }
+public class ModBusDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf,
@@ -121,5 +81,4 @@ public class ModBusCodecForServer extends ByteToMessageCodec<ModBusMessage> {
 
         out.add(modBusMessage);
     }
-
 }

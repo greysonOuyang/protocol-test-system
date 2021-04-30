@@ -1,12 +1,11 @@
-package com.yuyi.pts.netty.client.codec;
+package com.yuyi.pts.netty.codec;
 
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.AtsMessage;
-import com.yuyi.pts.model.vo.request.RequestDataDto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class AtsCodec extends ByteToMessageCodec<RequestDataDto> {
+public class SmartCarEncoder extends MessageToByteEncoder<Object> {
 
     static AtsMessage atsMessage;
 
@@ -29,15 +28,20 @@ public class AtsCodec extends ByteToMessageCodec<RequestDataDto> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, RequestDataDto requestDataDto, ByteBuf byteBuf) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, Object obj, ByteBuf byteBuf) throws Exception {
+        List<byte[]> byteList = (List<byte[]>) obj;
         log.info("进入了Ats编码");
         byte[] dataHead = ByteUtils.shortToByte2(
                 atsMessage.getDataHead());
+        byteBuf.writeBytes(dataHead);
+
+        for (byte[] bytes : byteList) {
+            byteBuf.writeBytes(bytes);
+        }
+        byte[] dataTail = ByteUtils.shortToByte2(
+                atsMessage.getHeadTail());
+        byteBuf.writeBytes(dataTail);
 
     }
 
-    @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-
-    }
 }
