@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.constant.ExcelConstant;
 import com.yuyi.pts.common.constant.ParamConstant;
+import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.common.util.ResultEntity;
@@ -60,7 +61,6 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
 
     @Override
     public String upLoadExcel(MultipartHttpServletRequest mRequest) throws IOException {
-        ServiceInterface serviceInterface = new ServiceInterface();
         Map<String, MultipartFile> fileMap = mRequest.getFileMap();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
             String key = entry.getKey();
@@ -71,14 +71,28 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             }
             try (InputStream inputStream = file.getInputStream()) {
                 ExcelLogs logs = new ExcelLogs();
-                Map<String, List<Param>> importExcel = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs, 0);
-                List<Param> input = importExcel.get("Input");
+                Map map = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs, 0);
+                List<Map> inputMapList = (List) map.get("Input");
+//                if (input instanceof List) {
+//
+//                }
+                List<Param> input = new ArrayList<>();
+                for (Map res : inputMapList) {
+                    Param param = CommonUtil.mapToJavaBean(res, Param.class);
+                    input.add(param);
+                }
+                ServiceInterface serviceInterface = new ServiceInterface();
                 if (input != null && !input.isEmpty()) {
                     serviceInterface.setInput(input);
                 }
-                List<Param> output = importExcel.get("Output");
+                List<Map> outputMapList = (List) map.get("Output");
+                List<Param> output = new ArrayList<>();
+
+                for (Map res : outputMapList) {
+                    Param param = CommonUtil.mapToJavaBean(res, Param.class);
+                    output.add(param);
+                }
                 if (output != null && !output.isEmpty()) {
-                    // todo 在这里进一步解析数据,将数据解析成二进制或者其他类型 未解析 待启动服务的时候去解析
                     serviceInterface.setOutput(output);
                     System.out.println("serviceInterface 获取成功");
                 }

@@ -2,7 +2,7 @@ package com.yuyi.pts.netty.server.initializer;
 
 import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.model.server.ServiceInterface;
-import com.yuyi.pts.netty.client.codec.ModBusCodec;
+import com.yuyi.pts.netty.client.codec.ModBusCodecForServer;
 import com.yuyi.pts.netty.server.handler.NettyServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -34,9 +34,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
                 Constant.SERVER_ALL_IDLE_TIME_OUT,
                 TimeUnit.SECONDS));
 
-//        pipeline.addLast(new StringEncoder());
-//        pipeline.addLast(new ByteArrayEncoder());
-        pipeline.addLast(new ModBusCodec());
+        pipeline.addLast(new ModBusCodecForServer());
         pipeline.addLast(new NettyServerHandler(serviceInterface));
     }
 }

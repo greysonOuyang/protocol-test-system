@@ -497,6 +497,37 @@ public class ByteUtils {
         return bytes;
     }
 
+    /**
+     * 数字字符串转ASCII码字符串
+     *
+     * @param content
+     *            字符串
+     * @return ASCII字符串
+     */
+    public static String StringToAsciiString(String content) {
+        String result = "";
+        int max = content.length();
+        for (int i = 0; i < max; i++) {
+            char c = content.charAt(i);
+            String b = Integer.toHexString(c);
+            result = result + b;
+        }
+        return result;
+    }
+
+
+    /**
+     * ascii字符串转成byte数组
+     */
+    public static byte[] asciiStrToBytes(String str) {
+        char[] chars = str.toCharArray();
+        byte[] bytes = new byte[chars.length];
+        for (int i = 0; i < chars.length; i++) {
+            bytes[i] = (byte) chars[i];
+        }
+        return bytes;
+    }
+
     public static String bytesToASCII(byte[] bytes) {
         StringBuilder buffer = new StringBuilder();
         for (byte var : bytes) {

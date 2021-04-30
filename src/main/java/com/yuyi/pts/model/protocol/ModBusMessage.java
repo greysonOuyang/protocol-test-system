@@ -50,4 +50,9 @@ public class ModBusMessage {
      */
     private String body;
 
+    /**
+     * 数据字段
+     */
+    private Object content;
+
 }
