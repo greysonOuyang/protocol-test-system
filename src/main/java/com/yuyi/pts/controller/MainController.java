@@ -25,12 +25,6 @@ public class MainController {
 
     public static Map<String, Param> PARAM_MAP = new HashMap<>();
     NettyServer nettyServer;
-    /**
-     *
-     *   获取到最开始的缓存容量大小
-     */
-    int startNum = InterfaceCache.INTERFACE_MAP.size();
-
     @PostMapping("/start/server")
     public String execute(@RequestBody ServerRequestDto request) {
         String serviceInterfaceId = request.getInterfaceId();
@@ -47,6 +41,7 @@ public class MainController {
 
     @PostMapping("/interface/add")
     public String addInterface(@RequestBody ServiceInterface serviceInterface) {
+        int startNum = getCacheSize();
        InterfaceCache.put(serviceInterface.getInterfaceId(), serviceInterface);
        int endNum = InterfaceCache.INTERFACE_MAP.size();
        int number = endNum - startNum;
@@ -67,7 +62,9 @@ public class MainController {
     }
 
     @PostMapping("interface/delete")
-    public String deleteInterface(@RequestBody List<String> idList) {
+    public String deleteInterface(@RequestBody List<Map> idList) {
+
+        int startNum = getCacheSize();
         InterfaceCache.remove(idList);
         // 拿最开始的缓存数据 减去删除后的缓存数据
         int endNum = InterfaceCache.INTERFACE_MAP.size();
@@ -80,8 +77,21 @@ public class MainController {
     }
 
     @PostMapping("interface/deleteAll")
-    public void deleteAllInterface() {
+    public String deleteAllInterface() {
         InterfaceCache.INTERFACE_MAP.clear();
+        int num = InterfaceCache.INTERFACE_MAP.size();
+        if(num>0){
+            return ResultEntity.failedWithData("删除失败，请重新尝试");
+        }else{
+            return ResultEntity.successWithData("删除成功");
+        }
     }
 
+    /**
+     * 获取到初始值
+     * @return
+     */
+    public int getCacheSize(){
+        return InterfaceCache.INTERFACE_MAP.size();
+    }
 }
