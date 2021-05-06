@@ -26,17 +26,12 @@ public class MainController {
     public static Map<String, Param> PARAM_MAP = new HashMap<>();
     NettyServer nettyServer;
     @PostMapping("/start/server")
-    public String execute(@RequestBody ServerRequestDto request) {
+    public void execute(@RequestBody ServerRequestDto request) {
         String serviceInterfaceId = request.getInterfaceId();
         ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
         int port = request.getPort();
         nettyServer = new NettyServer(serviceInterface, port);
-        boolean isSuccess = nettyServer.start();
-        if (isSuccess) {
-            return ResultEntity.successWithNothing();
-        } else {
-            return ResultEntity.failedWithMsg("服务器启动失败");
-        }
+        nettyServer.start();
     }
 
     @GetMapping("/stop/server")

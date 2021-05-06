@@ -641,7 +641,8 @@ public class ByteUtils {
             for (byte bt : source) {
                 stack.push(bt);
             }
-            for (int i = target.length - 1; i >= 0; i--) {
+            int length = Math.min(source.length, target.length);
+            for (int i = length - 1; i >= 0; i--) {
                 target[i] = stack.pop();
             }
         }

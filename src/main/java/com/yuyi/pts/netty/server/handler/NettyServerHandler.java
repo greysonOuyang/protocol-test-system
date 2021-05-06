@@ -4,12 +4,12 @@ import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         super.channelRead(ctx, msg);
         List<Param> outputList = serviceInterface.getOutput();
-        List<byte[]> byteList = new ArrayList<>();
+        ByteBuf buffer = ctx.alloc().buffer();
         // 车组号长度
         int trainGroupLength = 0;
         // 车组号长度
@@ -55,7 +55,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 // TODO ASCII码存什么待定 根据车组号长度存入一个数组
                 int i = Integer.parseInt(value);
                 bytes = ByteUtils.asciiStrToBytes(value);
-//                length = value.toCharArray().length;
                 if ("车组号".equals(field)) {
                     length = trainGroupLength;
                 } else if ("车次号".equals(field)) {
@@ -63,15 +62,15 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
             if ("车组号长度".equals(field)) {
-                trainGroupLength = param.getLength();
+                trainGroupLength = Integer.parseInt(param.getValue());
             } else if ("车次号长度".equals(field)) {
-                trainLength = param.getLength();
+                trainLength = Integer.parseInt(param.getValue());
             }
             if (bytes != null) {
                 byte[] outBytes = ByteUtils.storeInBytesLow(bytes, length);
-                byteList.add(outBytes);
+                buffer.writeBytes(outBytes);
             }
         }
-        ctx.channel().writeAndFlush(byteList);
+        ctx.channel().writeAndFlush(buffer);
     }
 }

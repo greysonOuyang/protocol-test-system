@@ -31,6 +31,9 @@ public class NettyServer {
 
     ServiceInterface serviceInterface;
 
+    boolean isStartSuccess = false;
+
+
     int port;
 
     public NettyServer(ServiceInterface service, int port){
@@ -51,8 +54,12 @@ public class NettyServer {
         }
         return false;
     }
-    public boolean start(){
-        boolean isStartSuccess = false;
+
+    public boolean isStartSuccess() {
+        return isStartSuccess;
+    }
+
+    public void start(){
         log.info(" nettyServer 正在启动");
 
         boss = new NioEventLoopGroup();
@@ -74,7 +81,6 @@ public class NettyServer {
             future = serverBootstrap.bind(this.port).sync();
             if(future.isSuccess()){
                 log.info("nettyServer 完成启动 ");
-                isStartSuccess = true;
             }
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();
@@ -85,7 +91,6 @@ public class NettyServer {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
-        return isStartSuccess;
     }
 
 }
