@@ -31,17 +31,16 @@ public class SmartCarEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext channelHandlerContext, Object obj, ByteBuf byteBuf) throws Exception {
         List<byte[]> byteList = (List<byte[]>) obj;
         log.info("进入了Ats编码");
-        byte[] dataHead = ByteUtils.shortToByte2(
-                atsMessage.getDataHead());
+        byte[] dataHead = ByteUtils.shortToByte2(atsMessage.getDataHead());
         byteBuf.writeBytes(dataHead);
         byteBuf.writeByte(atsMessage.getTotal());
         byteBuf.writeByte(atsMessage.getIndex());
         int size = byteList.size() + 2;
         byte[] dataLen = ByteUtils.storeInBytes(ByteUtils.intToBytesLow(size), 2);
         byteBuf.writeBytes(dataLen);
-        byte[] deviceStatus = ByteUtils.convertHEXString2ByteArray(atsMessage.getDeviceStatus());
+        byte[] deviceStatus = ByteUtils.storeInBytesLow(ByteUtils.convertHEXString2ByteArray(atsMessage.getDeviceStatus()), 1);
         byteBuf.writeBytes(deviceStatus);
-        byte[] type = ByteUtils.storeInBytes(ByteUtils.convertHEXString2ByteArray(atsMessage.getType()), 2);
+        byte[] type = ByteUtils.storeInBytesLow(ByteUtils.convertHEXString2ByteArray(atsMessage.getType()), 1);
         byteBuf.writeBytes(type);
         for (byte[] bytes : byteList) {
             byteBuf.writeBytes(bytes);

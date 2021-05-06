@@ -530,8 +530,7 @@ public class ByteUtils {
     /**
      * 数字字符串转ASCII码字符串
      *
-     * @param content
-     *            字符串
+     * @param content 字符串
      * @return ASCII字符串
      */
     public static String StringToAsciiString(String content) {
@@ -579,24 +578,6 @@ public class ByteUtils {
         return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
     }
 
-    /**
-     * 将一个数组存入另一个数组 如果原数组容量大于目标数组，则截取高位
-     *
-     * @param source 原数组
-     * @param target 目标数组
-     * @return 新数组
-     */
-    public static byte[] storeInBytes(byte[] source, byte[] target) {
-        if (source == null || target == null) {
-            return null;
-        }
-        if (source.length > target.length) {
-            System.arraycopy(source, 0, target, 0, target.length);
-        } else {
-            System.arraycopy(source, 0, target, 0, source.length);
-        }
-        return target;
-    }
 
     /**
      * 将byte数组存入指定大小的byte数组
@@ -608,6 +589,65 @@ public class ByteUtils {
     public static byte[] storeInBytes(byte[] source, int size) {
         byte[] target = new byte[size];
         return storeInBytes(source, target);
+    }
+
+    /**
+     * 将一个数组存入另一个数组 如果原数组容量大于目标数组，则截取高位 默认取高位存取
+     *
+     * @param source 原数组
+     * @param target 目标数组
+     * @return 新数组
+     */
+    public static byte[] storeInBytes(byte[] source, byte[] target) {
+        return storeInBytes(source, target, true);
+
+    }
+
+    /**
+     * 将byte数组存入指定大小的byte数组
+     *
+     * @param source 原数组
+     * @param size   指定大小
+     * @return 新数组
+     */
+    public static byte[] storeInBytesLow(byte[] source, int size) {
+        byte[] target = new byte[size];
+        return storeInBytesLow(source, target);
+    }
+
+    public static byte[] storeInBytesLow(byte[] source, byte[] target) {
+        return storeInBytes(source, target, false);
+
+    }
+
+    /**
+     * @param source 原数组
+     * @param target 目标数组
+     * @param isHigh 是否取高位 默认为true
+     * @return byte数组
+     */
+    public static byte[] storeInBytes(byte[] source, byte[] target, boolean isHigh) {
+        if (source == null || target == null) {
+            return null;
+        }
+        if (isHigh) {
+            if (source.length >= target.length) {
+                System.arraycopy(source, 0, target, 0, target.length);
+            } else {
+                System.arraycopy(source, 0, target, 0, source.length);
+            }
+        } else {
+            boolean flag = true;
+            for (int j = source.length - 1; j >= 0; j--) {
+                    if (flag) {
+                        for (int i = 0; i < target.length; i++) {
+                            target[i] = source[j];
+                        }
+                        flag = false;
+                    }
+                }
+            }
+        return target;
     }
 
 
