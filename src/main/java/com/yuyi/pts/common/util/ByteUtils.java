@@ -635,11 +635,7 @@ public class ByteUtils {
             return source;
         }
         if (isHigh) {
-            if (source.length > target.length) {
-                System.arraycopy(source, 0, target, 0, target.length);
-            } else {
-                System.arraycopy(source, 0, target, 0, source.length);
-            }
+            System.arraycopy(source, 0, target, 0, Math.min(source.length, target.length));
         } else {
             Stack<Byte> stack = new Stack<Byte>();
             for (byte bt : source) {
