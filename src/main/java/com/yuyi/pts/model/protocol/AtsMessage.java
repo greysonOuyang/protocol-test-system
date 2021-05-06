@@ -47,12 +47,12 @@ public class AtsMessage {
      * 主备机状态
      */
     @Value("${user.protocol.status}")
-    private int deviceStatus;
+    private String deviceStatus;
     /**
      * 消息种类
      */
     @Value("${user.protocol.type}")
-    private int type;
+    private String type;
     /**
      * 消息内容
      */
