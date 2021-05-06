@@ -39,9 +39,9 @@ public class SmartCarEncoder extends MessageToByteEncoder<Object> {
         int size = byteList.size() + 2;
         byte[] dataLen = ByteUtils.storeInBytes(ByteUtils.intToBytesLow(size), 2);
         byteBuf.writeBytes(dataLen);
-        byte[] deviceStatus = ByteUtils.hexString2Bytes(atsMessage.getDeviceStatus());
+        byte[] deviceStatus = ByteUtils.convertHEXString2ByteArray(atsMessage.getDeviceStatus());
         byteBuf.writeBytes(deviceStatus);
-        byte[] type = ByteUtils.storeInBytes(ByteUtils.hexString2Bytes(atsMessage.getType()), 2);
+        byte[] type = ByteUtils.storeInBytes(ByteUtils.convertHEXString2ByteArray(atsMessage.getType()), 2);
         byteBuf.writeBytes(type);
         for (byte[] bytes : byteList) {
             byteBuf.writeBytes(bytes);

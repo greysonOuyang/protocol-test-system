@@ -17,11 +17,41 @@ public class ByteUtils {
         return str.getBytes(StandardCharsets.UTF_8);
     }
 
+    public static byte[] convertHEXString2ByteArray(String value) {
+        if (value == null || value.length() == 0) {
+            return null;
+        } else {
+            char[] array = value.toCharArray();
+            int ext = array.length % 2; // can be 0 or 1 only!
+            byte[] out = new byte[array.length / 2 + ext];
+            for (int i = 0; i < array.length - ext; i += 2) {
+                String part = new String(array, i, 2);
+                try {
+                    out[i / 2] = (byte) Integer.parseInt(part, 16);
+                } catch (NumberFormatException e) {
+                    // ignore conversion error
+                    out[i / 2] = 0;
+                }
+            }
+
+            if (ext != 0) {
+                String part = String.valueOf(array[array.length - 1]);
+                try {
+                    out[out.length - 1] = (byte) Integer.parseInt(part, 16);
+                } catch (NumberFormatException e) {
+                    // ignore conversion error
+                    out[out.length - 1] = 0;
+                }
+            }
+            return out;
+        }
+    }
+
     /**
      * 16进制字符串转字节数组
      */
     public static byte[] hexString2Bytes(String hex) {
-        if ((hex == null) || ("".equals(hex))) {
+        if (hex == null || hex.length() == 0) {
             return null;
         } else if (hex.length() % 2 != 0) {
             return null;
