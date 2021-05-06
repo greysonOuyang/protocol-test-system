@@ -31,7 +31,12 @@ public class MainController {
         ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
         int port = request.getPort();
         nettyServer = new NettyServer(serviceInterface, port);
-        return nettyServer.start();
+        boolean isSuccess = nettyServer.start();
+        if (isSuccess) {
+            return ResultEntity.successWithNothing();
+        } else {
+            return ResultEntity.failedWithMsg("服务器启动失败");
+        }
     }
 
     @GetMapping("/stop/server")

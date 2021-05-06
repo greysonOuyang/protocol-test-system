@@ -18,5 +18,7 @@ public enum FieldType {
     /**
      * ASCII
      */
-    ASCII;
+    ASCII,
+    Int
+    ;
 }

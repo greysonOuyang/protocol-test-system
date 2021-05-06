@@ -2,6 +2,7 @@ package com.yuyi.pts.common.util;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.Stack;
 
 /**
  * <pre>
@@ -630,23 +631,24 @@ public class ByteUtils {
         if (source == null || target == null) {
             return null;
         }
+        if (source.length == target.length) {
+            return source;
+        }
         if (isHigh) {
-            if (source.length >= target.length) {
+            if (source.length > target.length) {
                 System.arraycopy(source, 0, target, 0, target.length);
             } else {
                 System.arraycopy(source, 0, target, 0, source.length);
             }
         } else {
-            boolean flag = true;
-            for (int j = source.length - 1; j >= 0; j--) {
-                    if (flag) {
-                        for (int i = 0; i < target.length; i++) {
-                            target[i] = source[j];
-                        }
-                        flag = false;
-                    }
-                }
+            Stack<Byte> stack = new Stack<Byte>();
+            for (byte bt : source) {
+                stack.push(bt);
             }
+            for (int i = target.length - 1; i >= 0; i--) {
+                target[i] = stack.pop();
+            }
+        }
         return target;
     }
 
