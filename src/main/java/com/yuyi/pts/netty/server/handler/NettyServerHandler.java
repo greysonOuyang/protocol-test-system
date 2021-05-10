@@ -53,6 +53,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 bytes = ByteUtils.shortToByte2(Short.valueOf(value));
 //                bytes = ByteUtils.storeInBytes(ByteUtils.intToBytesLow(Integer.parseInt(value)), 2);
             } else if (type == FieldType.String) {
+                // 如果高两位是00 则会出现直接记录后两位的现象
                 bytes = value.getBytes(StandardCharsets.UTF_8);
             } else if (type == FieldType.ASCII) {
                 // TODO ASCII码存什么待定 根据车组号长度存入一个数组
@@ -78,10 +79,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                     sourceByteArr = ByteUtils.addByteArrays(sourceByteArr, outBytes);
                 }
                 buffer.writeBytes(outBytes);
-
                 byteList.add(outBytes);
             }
         }
+        log.info("sourceByteArr=====",sourceByteArr);
         ctx.channel().writeAndFlush(sourceByteArr);
     }
 }
