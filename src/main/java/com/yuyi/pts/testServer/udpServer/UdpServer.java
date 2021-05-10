@@ -48,7 +48,6 @@ import org.springframework.stereotype.Component;
                             @Override
                             protected void initChannel(NioDatagramChannel ch)
                                     throws Exception {
-                                // TODO Auto-generated method stub
                                 //创建一个执行Handler的容器
                                 ChannelPipeline pipeline = ch.pipeline();
                                 pipeline.addLast(new StringDecoder());

@@ -27,7 +27,6 @@ public class MapAndListConstant {
      public static PlanInfo getPlanInfo(){
          // 填充planInfo对象数据
          PlanInfo planInfo = new PlanInfo();
-         // todo  给PlanInfo赋初始值
          PlanInfoModel model1 = new PlanInfoModel("1", "1", "1",null);
          PlanInfoModel model2 = new PlanInfoModel("2", "1", "1",null);
          PlanInfoModel model3 = new PlanInfoModel("3", "1", "1",null);

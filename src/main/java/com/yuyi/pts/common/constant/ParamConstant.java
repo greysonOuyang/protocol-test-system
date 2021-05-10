@@ -28,7 +28,6 @@ public class ParamConstant {
     public static ServiceInterface getInputParam(){
         // 填充serviceInterface对象数据
         ServiceInterface serviceInterface = new ServiceInterface();
-        // todo  给serviceInterface赋初始值
         Param model1 = new Param(1, 1, "1","1", FieldType.Hex);
         Param model2 = new Param(4, 1, "1","1", FieldType.Hex);
         Param model3 = new Param(7, 1, "1","1", FieldType.Hex);
@@ -54,7 +53,6 @@ public class ParamConstant {
     public static ServiceInterface getOutputParam(){
         // 填充serviceInterface对象数据
         ServiceInterface serviceInterface = new ServiceInterface();
-        // todo  给serviceInterface赋初始值
         Param model1 = new Param(1, 1, "1","1", FieldType.Hex);
         Param model2 = new Param(5, 1, "1","1", FieldType.Hex);
         Param model3 = new Param(8, 1, "1","1", FieldType.Hex);

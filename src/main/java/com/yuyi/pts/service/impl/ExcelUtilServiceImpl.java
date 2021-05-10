@@ -39,11 +39,9 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             //   给serviceInterfaceInput赋初始值 表格内容赋值
             ServiceInterface serviceInterfaceInput = ParamConstant.SERVICE_INTERFACE;
             Collection<Object> dataInput = new ArrayList<>();
-            // todo 模型设计中 输入参数
             for (int i = 0; i < serviceInterfaceInput.getInput().size(); i++) {
                 dataInput.add(serviceInterfaceInput.getInput().get(i));
             }
-            // todo  输出参数 暂未设计模型
             Collection<Object> dataOutput = new ArrayList<>();
             for (int i = 0; i < serviceInterfaceInput.getOutput().size(); i++) {
                 dataOutput.add(serviceInterfaceInput.getOutput().get(i));

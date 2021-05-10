@@ -60,15 +60,22 @@ public class RequestServiceImpl implements RequestService {
             request= new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, urlResult, buf);
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
-            for (int i = 0; i < dataContent.getAverage(); i++) {
-                // TODO 这里行多次发送消息给服务端
+            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
+                String jsonString = JSONObject.toJSONString(dataContent);
+                log.debug("客户端往服务端发送的数据：{}", jsonString);
                 currentCtx.writeAndFlush(request);
-            }
+            }, 0, value, count, TimeUnit.MILLISECONDS);
         }else if(type == RequestType.UDP){
-            // TODO 这里行多次发送消息给服务端
-            for (int i = 0; i < dataContent.getAverage(); i++) {
+
+            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
+                String jsonString = JSONObject.toJSONString(dataContent);
+                log.debug("客户端往服务端发送的数据：{}", jsonString);
                 currentCtx.writeAndFlush(dataContent);
-            }
+            }, 0, value, count, TimeUnit.MILLISECONDS);
+//            // TODO 这里行多次发送消息给服务端
+//            for (int i = 0; i < dataContent.getAverage(); i++) {
+//                currentCtx.writeAndFlush(dataContent);
+//            }
         }
     }
 }
