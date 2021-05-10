@@ -10,6 +10,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         super.channelRead(ctx, msg);
         List<Param> outputList = serviceInterface.getOutput();
+        byte[] sourceByteArr = null;
+        List<byte[]> byteList = new ArrayList<>();
         ByteBuf buffer = ctx.alloc().buffer();
         // 车组号长度
         int trainGroupLength = 0;
@@ -53,8 +56,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 bytes = value.getBytes(StandardCharsets.UTF_8);
             } else if (type == FieldType.ASCII) {
                 // TODO ASCII码存什么待定 根据车组号长度存入一个数组
-                int i = Integer.parseInt(value);
-                bytes = ByteUtils.asciiStrToBytes(value);
+//                int i = Integer.parseInt(value);
+//                bytes = ByteUtils.asciiStrToBytes(value);
+                bytes = value.getBytes(StandardCharsets.UTF_8);
                 if ("车组号".equals(field)) {
                     length = trainGroupLength;
                 } else if ("车次号".equals(field)) {
@@ -68,9 +72,16 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             }
             if (bytes != null) {
                 byte[] outBytes = ByteUtils.storeInBytesLow(bytes, length);
+                if (sourceByteArr == null) {
+                    sourceByteArr = outBytes;
+                } else {
+                    sourceByteArr = ByteUtils.addByteArrays(sourceByteArr, outBytes);
+                }
                 buffer.writeBytes(outBytes);
+
+                byteList.add(outBytes);
             }
         }
-        ctx.channel().writeAndFlush(buffer);
+        ctx.channel().writeAndFlush(sourceByteArr);
     }
 }

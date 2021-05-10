@@ -14,6 +14,27 @@ import java.util.Stack;
  */
 public class ByteUtils {
 
+    public static String AsciiToBinary(String asciiString) {
+
+        byte[] bytes = asciiString.getBytes();
+        StringBuilder binary = new StringBuilder();
+        for (byte b : bytes) {
+            int val = b;
+            for (int i = 0; i < 8; i++) {
+                binary.append((val & 128) == 0 ? 0 : 1);
+                val <<= 1;
+            }
+        }
+        return binary.toString();
+    }
+
+    public static byte[] addByteArrays(byte[] array1, byte[] array2) {
+        byte[] concatenatedArray = new byte[array1.length + array2.length];
+        System.arraycopy(array1, 0, concatenatedArray, 0, array1.length);
+        System.arraycopy(array2, 0, concatenatedArray, array1.length, array2.length);
+        return concatenatedArray;
+    }
+
     public static byte[] strToBytes(String str) {
         return str.getBytes(StandardCharsets.UTF_8);
     }
@@ -179,6 +200,13 @@ public class ByteUtils {
             throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
         }
         return (char) (((char) (arr[0] << 8)) | ((char) arr[1]));
+    }
+
+    public static byte[] fromShort(short key) {
+        byte[] writeBuffer = new byte[2];
+        writeBuffer[0] = (byte) key;
+        writeBuffer[1] = (byte) ((key >>> 8) & 0xFF);
+        return writeBuffer;
     }
 
     /**
