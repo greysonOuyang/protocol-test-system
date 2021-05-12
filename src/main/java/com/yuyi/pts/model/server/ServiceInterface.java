@@ -1,6 +1,5 @@
 package com.yuyi.pts.model.server;
 
-import jdk.internal.util.xml.impl.Input;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +22,4 @@ public class ServiceInterface {
     private String interfaceName;
     private List<Param> input;
     private List<Param> output;
-
 }

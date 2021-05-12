@@ -19,6 +19,11 @@ public enum FieldType {
      * ASCII
      */
     ASCII,
+    /**
+     * 时间
+     */
+    Time,
+
     Int
     ;
 }

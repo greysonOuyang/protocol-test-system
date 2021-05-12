@@ -2,14 +2,12 @@ package com.yuyi.pts.controller;
 
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.util.ResultEntity;
-import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ServerRequestDto;
 import com.yuyi.pts.netty.server.NettyServer;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +21,9 @@ import java.util.Map;
 @RequestMapping("/main")
 public class MainController {
 
-    public static Map<String, Param> PARAM_MAP = new HashMap<>();
+
     NettyServer nettyServer;
+
     @PostMapping("/start/server")
     public void execute(@RequestBody ServerRequestDto request) {
         String serviceInterfaceId = request.getInterfaceId();
@@ -34,6 +33,11 @@ public class MainController {
         nettyServer.start();
     }
 
+    /**
+     * 关闭服务
+     *
+     * @return
+     */
     @GetMapping("/stop/server")
     public boolean stopServer() {
         return nettyServer.stop();
@@ -85,6 +89,19 @@ public class MainController {
         }else{
             return ResultEntity.successWithData("删除成功");
         }
+    }
+
+    @PostMapping("/param/save")
+    public void saveParamData(@RequestBody ServiceInterface serviceInterface) {
+        String interfaceId = serviceInterface.getInterfaceId();
+        ServiceInterface service = InterfaceCache.get(interfaceId);
+        if (serviceInterface.getInput() != null) {
+            service.setInput(serviceInterface.getInput());
+        }
+        if (serviceInterface.getOutput() != null) {
+            service.setOutput(serviceInterface.getOutput());
+        }
+        InterfaceCache.put(interfaceId, service);
     }
 
     /**

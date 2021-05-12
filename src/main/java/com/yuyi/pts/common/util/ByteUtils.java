@@ -14,7 +14,70 @@ import java.util.Stack;
  */
 public class ByteUtils {
 
-    public static String AsciiToBinary(String asciiString) {
+    /**
+     * 十进制转十六进制
+     *
+     * @param decimal_str
+     * @return
+     */
+    public static String decimalToHex(String decimal_str) {
+        return Integer.toHexString(Integer.parseInt(decimal_str));
+    }
+
+    public static byte[] asciiToHex(String asciiStr) {
+        char[] chars = asciiStr.toCharArray();
+        byte[] target = new byte[chars.length];
+        StringBuilder hex_str = new StringBuilder();
+
+        for (int i = 0; i < chars.length; i++) {
+            target[i] = ByteUtils.intToByte((int) chars[i]);
+        }
+        return target;
+    }
+
+    public static byte[] asciiToHex(byte[] in) {
+        byte[] temp1 = new byte[1];
+        byte[] temp2 = new byte[1];
+        int i = 0;
+        byte[] out = new byte[in.length / 2];
+        for (int j = 0; i < in.length; j++) {
+            temp1[0] = in[i];/*w  w w . java 2  s .c o m*/
+            temp2[0] = in[(i + 1)];
+            if ((temp1[0] >= 48) && (temp1[0] <= 57)) {
+                int tmp53_52 = 0;
+                byte[] tmp53_51 = temp1;
+                tmp53_51[tmp53_52] = (byte) (tmp53_51[tmp53_52] - 48);
+                temp1[0] = (byte) (temp1[0] << 4);
+
+                temp1[0] = (byte) (temp1[0] & 0xF0);
+            } else if ((temp1[0] >= 97) && (temp1[0] <= 102)) {
+                int tmp101_100 = 0;
+                byte[] tmp101_99 = temp1;
+                tmp101_99[tmp101_100] = (byte) (tmp101_99[tmp101_100] - 87);
+                temp1[0] = (byte) (temp1[0] << 4);
+                temp1[0] = (byte) (temp1[0] & 0xF0);
+            }
+
+            if ((temp2[0] >= 48) && (temp2[0] <= 57)) {
+                int tmp149_148 = 0;
+                byte[] tmp149_146 = temp2;
+                tmp149_146[tmp149_148] = (byte) (tmp149_146[tmp149_148] - 48);
+
+                temp2[0] = (byte) (temp2[0] & 0xF);
+            } else if ((temp2[0] >= 97) && (temp2[0] <= 102)) {
+                int tmp192_191 = 0;
+                byte[] tmp192_189 = temp2;
+                tmp192_189[tmp192_191] = (byte) (tmp192_189[tmp192_191] - 87);
+
+                temp2[0] = (byte) (temp2[0] & 0xF);
+            }
+            out[j] = (byte) (temp1[0] | temp2[0]);
+            i += 2;
+        }
+        return out;
+    }
+
+    public static String asciiToBinary(String asciiString) {
 
         byte[] bytes = asciiString.getBytes();
         StringBuilder binary = new StringBuilder();
@@ -37,6 +100,30 @@ public class ByteUtils {
 
     public static byte[] strToBytes(String str) {
         return str.getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static void reverseBytes(byte[] array) {
+        if (array == null) {
+            return;
+        }
+
+        byte tmp;
+
+        for (int i = 0, j = array.length - 1; j > i; i++, j--) {
+            tmp = array[j];
+            array[j] = array[i];
+            array[i] = tmp;
+        }
+    }
+
+    /**
+     * 十进制字转成十六进制字节数组
+     *
+     * @param str 字符串
+     * @return
+     */
+    public static byte[] decimalStrToHex(String str) {
+        return ByteUtils.convertHEXString2ByteArray(ByteUtils.decimalToHex(str));
     }
 
     public static byte[] convertHEXString2ByteArray(String value) {
@@ -93,29 +180,6 @@ public class ByteUtils {
         }
     }
 
-    /**
-     * 将一个float数字转换为4个byte数字组成的数组.
-     */
-    public static byte[] floatToByte4(float f) {
-        int i = Float.floatToIntBits(f);
-        return intToByte4(i);
-    }
-
-    /**
-     * <pre>
-     * 将4个byte数字组成的数组合并为一个float数.
-     * </pre>
-     *
-     * @param arr
-     * @return
-     */
-    public static float byte4ToFloat(byte[] arr) {
-        if (arr == null || arr.length != 4) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是4位!");
-        }
-        int i = byte4ToInt(arr);
-        return Float.intBitsToFloat(i);
-    }
 
     /**
      * 二进制字符串转换成数字
@@ -143,71 +207,6 @@ public class ByteUtils {
     }
 
 
-    /**
-     * <pre>
-     * 将八个byte数字组成的数组转换为一个double数字.
-     * </pre>
-     *
-     * @param arr
-     * @return
-     */
-    public static double byte8ToDouble(byte[] arr) {
-        if (arr == null || arr.length != 8) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是8位!");
-        }
-        long l = byte8ToLong(arr);
-        return Double.longBitsToDouble(l);
-    }
-
-    /**
-     * <pre>
-     * 将一个double数字转换为8个byte数字组成的数组.
-     * </pre>
-     *
-     * @param i
-     * @return
-     */
-    public static byte[] doubleToByte8(double i) {
-        long j = Double.doubleToLongBits(i);
-        return longToByte8(j);
-    }
-
-    /**
-     * <pre>
-     * 将一个char字符转换为两个byte数字转换为的数组.
-     * </pre>
-     *
-     * @param c
-     * @return
-     */
-    public static byte[] charToByte2(char c) {
-        byte[] arr = new byte[2];
-        arr[0] = (byte) (c >> 8);
-        arr[1] = (byte) (c & 0xff);
-        return arr;
-    }
-
-    /**
-     * <pre>
-     * 将2个byte数字组成的数组转换为一个char字符.
-     * </pre>
-     *
-     * @param arr
-     * @return
-     */
-    public static char byte2ToChar(byte[] arr) {
-        if (arr == null || arr.length != 2) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
-        }
-        return (char) (((char) (arr[0] << 8)) | ((char) arr[1]));
-    }
-
-    public static byte[] fromShort(short key) {
-        byte[] writeBuffer = new byte[2];
-        writeBuffer[0] = (byte) key;
-        writeBuffer[1] = (byte) ((key >>> 8) & 0xFF);
-        return writeBuffer;
-    }
 
     /**
      * <pre>
@@ -221,6 +220,19 @@ public class ByteUtils {
         byte[] arr = new byte[2];
         arr[0] = (byte) (s >> 8);
         arr[1] = (byte) (s & 0xff);
+        return arr;
+    }
+
+    /**
+     * 将一个16位的short转换为长度为2的8位byte数组. 小端模式
+     *
+     * @param s
+     * @return
+     */
+    public static byte[] shortToByte2SmallEnd(Short s) {
+        byte[] arr = new byte[2];
+        arr[0] = (byte) (s & 0xff);
+        arr[1] = (byte) (s >> 8);
         return arr;
     }
 
@@ -312,40 +324,6 @@ public class ByteUtils {
 
     /**
      * <pre>
-     * 将short转换为长度为16的byte数组.
-     * 实际上每个8位byte只存储了一个0或1的数字
-     * 比较浪费.
-     * </pre>
-     *
-     * @param s
-     * @return
-     */
-    public static byte[] shortToByte16(short s) {
-        byte[] arr = new byte[16];
-        for (int i = 15; i >= 0; i--) {
-            arr[i] = (byte) (s & 1);
-            s >>= 1;
-        }
-        return arr;
-    }
-
-    /**
-     * @param arr arr
-     * @return short
-     */
-    public static short byte16ToShort(byte[] arr) {
-        if (arr == null || arr.length != 16) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且长度为16!");
-        }
-        short sum = 0;
-        for (int i = 0; i < 16; ++i) {
-            sum |= (arr[i] << (15 - i));
-        }
-        return sum;
-    }
-
-    /**
-     * <pre>
      * 将32位int转换为由四个8位byte数字.
      * </pre>
      *
@@ -377,82 +355,7 @@ public class ByteUtils {
         return (int) (((arr[0] & 0xff) << 24) | ((arr[1] & 0xff) << 16) | ((arr[2] & 0xff) << 8) | ((arr[3] & 0xff)));
     }
 
-    /**
-     * <pre>
-     * 将长度为8的8位byte数组转换为64位long.
-     * </pre>
-     * <p>
-     * 0xff对应16进制,f代表1111,0xff刚好是8位 byte[]
-     * arr,byte[i]&0xff刚好满足一位byte计算,不会导致数据丢失. 如果是int计算. int[] arr,arr[i]&0xffff
-     *
-     * @param arr
-     * @return
-     */
-    public static long byte8ToLong(byte[] arr) {
-        if (arr == null || arr.length != 8) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是8位!");
-        }
-        return (long) (((long) (arr[0] & 0xff) << 56) | ((long) (arr[1] & 0xff) << 48) | ((long) (arr[2] & 0xff) << 40)
-                | ((long) (arr[3] & 0xff) << 32) | ((long) (arr[4] & 0xff) << 24)
-                | ((long) (arr[5] & 0xff) << 16) | ((long) (arr[6] & 0xff) << 8) | ((long) (arr[7] & 0xff)));
-    }
 
-    /**
-     * 将一个long数字转换为8个byte数组组成的数组.
-     */
-    public static byte[] longToByte8(long sum) {
-        byte[] arr = new byte[8];
-        arr[0] = (byte) (sum >> 56);
-        arr[1] = (byte) (sum >> 48);
-        arr[2] = (byte) (sum >> 40);
-        arr[3] = (byte) (sum >> 32);
-        arr[4] = (byte) (sum >> 24);
-        arr[5] = (byte) (sum >> 16);
-        arr[6] = (byte) (sum >> 8);
-        arr[7] = (byte) (sum & 0xff);
-        return arr;
-    }
-
-    /**
-     * <pre>
-     * 将int转换为32位byte.
-     * 实际上每个8位byte只存储了一个0或1的数字
-     * 比较浪费.
-     * </pre>
-     *
-     * @param num
-     * @return
-     */
-    public static byte[] intToByte32(int num) {
-        byte[] arr = new byte[32];
-        for (int i = 31; i >= 0; i--) {
-            // &1 也可以改为num&0x01,表示取最地位数字.
-            arr[i] = (byte) (num & 1);
-            // 右移一位.
-            num >>= 1;
-        }
-        return arr;
-    }
-
-    /**
-     * <pre>
-     * 将长度为32的byte数组转换为一个int类型值.
-     * 每一个8位byte都只存储了0或1的数字.
-     * </pre>
-     *
-     * @param arr
-     * @return
-     */
-    public static int byte32ToInt(byte[] arr) {
-        if (arr == null || arr.length != 32) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且长度是32!");
-        }
-        int sum = 0;
-        for (int i = 0; i < 32; ++i) {
-            sum |= (arr[i] << (31 - i));
-        }
-        return sum;
-    }
 
     /**
      * byte数组转字符串
@@ -586,6 +489,7 @@ public class ByteUtils {
         return bytes;
     }
 
+
     public static String bytesToASCII(byte[] bytes) {
         StringBuilder buffer = new StringBuilder();
         for (byte var : bytes) {
@@ -633,7 +537,7 @@ public class ByteUtils {
     }
 
     /**
-     * 将byte数组存入指定大小的byte数组
+     * 将byte数组存入指定大小的byte数组 截取低位
      *
      * @param source 原数组
      * @param size   指定大小

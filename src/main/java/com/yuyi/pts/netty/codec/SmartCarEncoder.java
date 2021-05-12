@@ -38,7 +38,8 @@ public class SmartCarEncoder extends MessageToByteEncoder<Object> {
         byteBuf.writeBytes(dataLen);
         byte[] deviceStatus = ByteUtils.storeInBytesLow(ByteUtils.convertHEXString2ByteArray(atsMessage.getDeviceStatus()), 1);
         byteBuf.writeBytes(deviceStatus);
-        byte[] type = ByteUtils.storeInBytes(ByteUtils.convertHEXString2ByteArray(atsMessage.getType()), 2);
+        byte[] type = ByteUtils.storeInBytesLow(ByteUtils.convertHEXString2ByteArray(atsMessage.getType()), 2);
+        ByteUtils.reverseBytes(type);
         byteBuf.writeBytes(type);
         byteBuf.writeBytes(sourceByteArr);
         byte[] dataTail = ByteUtils.shortToByte2(

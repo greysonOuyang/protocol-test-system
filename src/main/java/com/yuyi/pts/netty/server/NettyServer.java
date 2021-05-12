@@ -65,7 +65,7 @@ public class NettyServer {
         boss = new NioEventLoopGroup();
         worker = new NioEventLoopGroup();
 
-        log.info("netty服务器在["+this.port+"]端口启动监听");
+        log.info("netty服务器在{}端口启动监听", this.port);
 
         serverBootstrap.group(boss,worker)
                 .channel(NioServerSocketChannel.class)
@@ -75,7 +75,6 @@ public class NettyServer {
                 .option(ChannelOption.TCP_NODELAY,true)
                 .childOption(ChannelOption.SO_KEEPALIVE,true)
                 .childHandler(new NettyServerInitializer(serviceInterface));
-
 
         try{
             future = serverBootstrap.bind(this.port).sync();
