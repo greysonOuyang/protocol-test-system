@@ -73,6 +73,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
+        log.info("sourceByteArr=====",sourceByteArr);
         ctx.channel().writeAndFlush(sourceByteArr);
     }
 }

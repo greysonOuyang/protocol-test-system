@@ -22,12 +22,16 @@ import org.springframework.stereotype.Component;
 
     /**
      * 服务监听、初始化类
+     *
+     * @author JoyWu
      * */
     @Component
     @Slf4j
     public class UdpServer {
-        //给管道抽象出接口，给Channel更多的能力和配置，例如Channel的状态，参数，IO操作
-        //使用ChannelPipeline实现自定义IO
+        /**
+         * 给管道抽象出接口，给Channel更多的能力和配置，例如Channel的状态，参数，IO操作
+         * 使用ChannelPipeline实现自定义IO
+         */
         public static Channel channel;
 
         public static void main(String[] args) throws Exception {
@@ -40,8 +44,10 @@ import org.springframework.stereotype.Component;
             final EventExecutorGroup group = new DefaultEventExecutorGroup(16);
 
             try {
-                Bootstrap b = new Bootstrap();//udp不能使用ServerBootstrap
-                b.group(workerGroup).channel(NioDatagramChannel.class)//设置UDP通道
+                //udp不能使用ServerBootstrap
+                Bootstrap b = new Bootstrap();
+                //设置UDP通道
+                b.group(workerGroup).channel(NioDatagramChannel.class)
                         //设置udp的管道工厂
                         .handler(new ChannelInitializer<NioDatagramChannel>() {
                             //NioDatagramChannel标志着是UDP格式的
@@ -57,10 +63,12 @@ import org.springframework.stereotype.Component;
                             }
 
                         })//初始化处理器
-                        //true / false 多播模式(UDP适用),可以向多个主机发送消息
-                        .option(ChannelOption.SO_BROADCAST, true)// 支持广播
-                        .option(ChannelOption.SO_RCVBUF, 2048 * 1024)// 设置UDP读缓冲区为2M
-                        .option(ChannelOption.SO_SNDBUF, 1024 * 1024);// 设置UDP写缓冲区为1M
+                        //true / false 多播模式(UDP适用),可以向多个主机发送消息// 支持广播
+                        .option(ChannelOption.SO_BROADCAST, true)
+                        // 设置UDP读缓冲区为2M
+                        .option(ChannelOption.SO_RCVBUF, 2048 * 1024)
+                        // 设置UDP写缓冲区为1M
+                        .option(ChannelOption.SO_SNDBUF, 1024 * 1024);
 
                 // 绑定端口，开始接收进来的连接  ，绑定的端口9999
                 ChannelFuture f = b.bind(9090).sync();
