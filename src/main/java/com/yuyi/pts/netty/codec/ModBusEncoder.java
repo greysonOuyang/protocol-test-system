@@ -32,15 +32,15 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         log.info("进入了modBus编码");
         // 业务标识符 两个字节 TODO 批量时考虑生成自增顺序号
         byte[] affairIdentification = ByteUtils.storeInBytes(
-                ByteUtils.convertHEXString2ByteArray(
+                ByteUtils.hexString2Bytes(
                         modBusMessage.getAffairIdentification()), 2);
         // 协议标识符 两个字节
         byte[] protocolIdentification = ByteUtils.storeInBytes(
-                ByteUtils.convertHEXString2ByteArray(
+                ByteUtils.hexString2Bytes(
                         modBusMessage.getProtocolIdentification()), 2);
         //  单元标识码  一个字节
         byte[] unitIdentification = ByteUtils.storeInBytes(
-                ByteUtils.convertHEXString2ByteArray(modBusMessage.getUnitIdentification()), 1);
+                ByteUtils.hexString2Bytes(modBusMessage.getUnitIdentification()), 1);
 
         // TODO 长度包含哪些值待确定 发送数据方式：  1.直接发送body  2. 构造后再发送 现在选择的方式是2 对数据有严格要求，对1的支持后续再处理
         Object body = requestDataDto.getBody();
@@ -50,12 +50,14 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         String functionCode = (String) jsonObject.get("functionCode");
         functionCode = functionCode == null ? modBusMessage.getCode() : functionCode;
         byte[] code = ByteUtils.storeInBytes(
-                ByteUtils.convertHEXString2ByteArray(functionCode), 1);
+                ByteUtils.hexString2Bytes(functionCode), 1);
         //  写入数据
        String startAddress = (String) jsonObject.get("startAddress");
-        byte[] strAddressBytes = ByteUtils.convertHEXString2ByteArray(startAddress);
+        byte[] strAddressBytes = ByteUtils.hexString2Bytes(startAddress);
         String registerCount = (String) jsonObject.get("registerCount");
-        byte[] registerCountBytes = ByteUtils.convertHEXString2ByteArray(registerCount);
+        byte[] registerCountBytes = ByteUtils.hexString2Bytes(registerCount);
+        byte[]  bytes = new byte[2];
+        bytes[0] = registerCountBytes[0] ;
         //  长度两个字节 == 单元标识符一个字节 + 数据长度
         int length = code.length + strAddressBytes.length + registerCountBytes.length + 1;
         byte[] lengthBytes = ByteUtils.storeInBytes(
