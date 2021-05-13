@@ -71,9 +71,6 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 ExcelLogs logs = new ExcelLogs();
                 Map map = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs, 0);
                 List<Map> inputMapList = (List) map.get("Input");
-//                if (input instanceof List) {
-//
-//                }
                 List<Param> input = new ArrayList<>();
                 for (Map res : inputMapList) {
                     Param param = CommonUtil.mapToJavaBean(res, Param.class);

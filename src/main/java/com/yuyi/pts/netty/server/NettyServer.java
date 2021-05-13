@@ -28,12 +28,7 @@ public class NettyServer {
     EventLoopGroup boss =null;
     EventLoopGroup worker =null;
     ChannelFuture future = null;
-
     ServiceInterface serviceInterface;
-
-    boolean isStartSuccess = false;
-
-
     int port;
 
     public NettyServer(ServiceInterface service, int port){
@@ -53,10 +48,6 @@ public class NettyServer {
             return true;
         }
         return false;
-    }
-
-    public boolean isStartSuccess() {
-        return isStartSuccess;
     }
 
     public void start(){

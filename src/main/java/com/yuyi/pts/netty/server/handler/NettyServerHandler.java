@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.server.handler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.model.server.Param;
@@ -12,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * description
+ * 服务器处理程序
  *
  * @author greyson
  * @since 2021/4/27
@@ -29,6 +30,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         super.channelRead(ctx, msg);
+        String jsonString = JSONObject.toJSONString(msg);
+
         List<Param> outputList = serviceInterface.getOutput();
         // 粘包处理，组织成对方想要的数据
         byte[] sourceByteArr = null;
@@ -41,7 +44,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             byte[] tempBytes = null;
             // 解析数据转成字节数组bytes
             if (type == FieldType.Hex) {
-                tempBytes = ByteUtils.convertHEXString2ByteArray(value);
+                tempBytes = ByteUtils.hexString2Bytes(value);
             } else if (type == FieldType.Int) {
                 tempBytes = ByteUtils.decimalStrToHex(value);
             } else if (type == FieldType.String) {
