@@ -6,10 +6,14 @@ import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.nio.Buffer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * ModBus协议编码解码器
@@ -54,9 +58,12 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         //  写入数据
        String startAddress = (String) jsonObject.get("startAddress");
         byte[] strAddressBytes = ByteUtils.hexString2Bytes(startAddress);
-        String registerCount = (String) jsonObject.get("registerCount");
-        byte[] registerCountBytes = ByteUtils.hexString2Bytes(registerCount);
-        byte[]  bytes = new byte[2];
+        int  registerCount = Integer.parseInt(jsonObject.get("registerCount").toString());
+        String hex= Integer.toHexString(registerCount);
+        byte[] registerCountBytes = ByteUtils.hexString2Bytes("00"+hex);
+        ByteBuf buffer = Unpooled.buffer();
+        buffer.writeBytes(registerCountBytes);
+        byte[]  bytes = new byte[1];
         bytes[0] = registerCountBytes[0] ;
         //  长度两个字节 == 单元标识符一个字节 + 数据长度
         int length = code.length + strAddressBytes.length + registerCountBytes.length + 1;
@@ -70,7 +77,18 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         out.writeBytes(code);
         out.writeBytes(strAddressBytes);
         out.writeBytes(registerCountBytes);
-
+        if("0x10".equals(functionCode)){
+            ByteBuf byteBuf = Unpooled.buffer();
+            // todo 暂时写死  后面在改
+            byte[] num = new byte[2];
+            for (int i = 0; i < 32; i++) {
+                ByteUtils.hexString2Bytes("00"+i*10);
+                byteBuf.writeBytes(num);
+            }
+            byte[] rnum = ByteUtils.hexString2Bytes("01");
+            out.writeBytes(rnum);
+            out.writeBytes(byteBuf);
+        }
     }
 
 }
