@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * description
@@ -45,8 +46,9 @@ public class MainController {
 
     @PostMapping("/interface/add")
     public String addInterface(@RequestBody ServiceInterface serviceInterface) {
+        String uuid = UUID.randomUUID().toString();
         int startNum = getCacheSize();
-       InterfaceCache.put(serviceInterface.getInterfaceId(), serviceInterface);
+       InterfaceCache.put(uuid, serviceInterface);
        int endNum = InterfaceCache.INTERFACE_MAP.size();
        int number = endNum - startNum;
        if(endNum-startNum>=1){

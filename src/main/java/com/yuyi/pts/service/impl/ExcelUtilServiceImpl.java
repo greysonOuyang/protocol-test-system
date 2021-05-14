@@ -70,13 +70,18 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             try (InputStream inputStream = file.getInputStream()) {
                 ExcelLogs logs = new ExcelLogs();
                 Map map = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs, 0);
+                ServiceInterface serviceInterface = new ServiceInterface();
+                List<Map> messageType = (List)  map.get("messageType");
+                for (Map res : messageType) {
+                    String type = (String) res.get("消息类型");
+                    serviceInterface.setInterfaceType(type);
+                }
                 List<Map> inputMapList = (List) map.get("Input");
                 List<Param> input = new ArrayList<>();
                 for (Map res : inputMapList) {
                     Param param = CommonUtil.mapToJavaBean(res, Param.class);
                     input.add(param);
                 }
-                ServiceInterface serviceInterface = new ServiceInterface();
                 if (input != null && !input.isEmpty()) {
                     serviceInterface.setInput(input);
                 }

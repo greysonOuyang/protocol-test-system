@@ -1,7 +1,7 @@
 package com.yuyi.pts.netty.server.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.FieldType;
+import com.yuyi.pts.common.enums.InterfaceMessageType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
@@ -30,12 +30,18 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         super.channelRead(ctx, msg);
-        String jsonString = JSONObject.toJSONString(msg);
 
         List<Param> outputList = serviceInterface.getOutput();
-        // 粘包处理，组织成对方想要的数据
+        String interfaceType = serviceInterface.getInterfaceType();
         byte[] sourceByteArr = null;
+        // 写入消息类型 供编码使用 一个自己
+        String messageType = InterfaceMessageType.stream()
+                .filter(d -> d.getDescription().equals(interfaceType))
+                .findFirst()
+                .get().getType();
+        sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(messageType), 2);
 
+        // 写入数据，组织成对方想要的数据
         for (Param param : outputList) {
             int length = param.getLength();
             String value = param.getValue().trim();

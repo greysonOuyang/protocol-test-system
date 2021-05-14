@@ -18,8 +18,18 @@ import java.util.List;
 @AllArgsConstructor
 @Component
 public class ServiceInterface {
+    /**
+     * 消息类型 对应枚举类InterfaceMessageType
+     */
+    private String interfaceType;
     private String interfaceId;
     private String interfaceName;
+    /**
+     * 输入参数列表
+     */
     private List<Param> input;
+    /**
+     * 输出参数列表
+     */
     private List<Param> output;
 }

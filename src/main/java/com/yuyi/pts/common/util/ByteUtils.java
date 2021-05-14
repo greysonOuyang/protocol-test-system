@@ -157,7 +157,7 @@ public class ByteUtils {
     }
 
     /**
-     * 16进制字符串转字节数组
+     * 16进制字符串转字节数组 支持带0x开头
      */
     public static byte[] hexString2Bytes(String hex) {
         if (hex == null || hex.length() == 0) {
