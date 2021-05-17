@@ -15,4 +15,19 @@ public class CommonUtil {
         String jsonString = JSON.toJSONString(map);
         return JSON.parseObject(jsonString, clazz);
     }
+
+    public static String randomInt256Str() {
+        int num = 1 + (int) (Math.random() * 255);
+        return String.valueOf(num);
+    }
+    public static String random1To18IntStr() {
+        int num = 1 +  (int) (Math.random() * 17);
+        return String.valueOf(num);
+    }
+    public static String random1To10IntStr() {
+        int num = 1 +  (int) (Math.random() * 9);
+        return String.valueOf(num);
+    }
+
+
 }

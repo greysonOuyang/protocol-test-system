@@ -1,6 +1,7 @@
 package com.yuyi.pts.model.server;
 
 import com.yuyi.pts.common.enums.FieldType;
+import com.yuyi.pts.common.util.InstanceFactory;
 import com.yuyi.pts.model.excel.ExcelCell;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Param {
+
+    public static final InstanceFactory<Param> paramFactory = InstanceFactory.init(Param.class);
+
     /**
      * 写入下标
      */
@@ -42,5 +46,13 @@ public class Param {
      */
     @ExcelCell(index = 4)
     private FieldType type;
+
+    public Param(Param param) {
+        this.index = param.index;
+        this.field = param.field;
+        this.length = param.length;
+        this.value = param.value;
+        this.type = param.type;
+    }
 
 }

@@ -40,13 +40,14 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 .findFirst()
                 .get().getType();
         sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(messageType), 2);
-
         // 写入数据，组织成对方想要的数据
         for (Param param : outputList) {
-            int length = param.getLength();
+            // 当前字段长度
+            int currentFieldLength = param.getLength();
             String value = param.getValue().trim();
             FieldType type = param.getType();
-
+            // 发给对方时的字节数, 默认是当前参数自带的length字段；如果当前参数是ASCII形式，则取上一个字段的值 即lenList的内容
+            int storeLength = currentFieldLength;
             byte[] tempBytes = null;
             // 解析数据转成字节数组bytes
             if (type == FieldType.Hex) {
@@ -57,7 +58,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 tempBytes = value.getBytes(StandardCharsets.UTF_8);
             } else if (type == FieldType.ASCII) {
                 tempBytes = ByteUtils.asciiToHex(value);
-                length = tempBytes.length;
+                int length = tempBytes.length;
+                // 如果是ascii码形式，计算当前数据长度并赋值给上一个参数的长度字段
+                sourceByteArr[sourceByteArr.length - 1] = ByteUtils.intToByte(length);
+                storeLength = length;
             } else if (type == FieldType.Time) {
                 // Todo 年份的解析存在问题，不确定要解析成何种数据，由于pis暂未使用这个字段，故不处理
                 byte[] timeByteArr = new byte[7];
@@ -72,9 +76,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             }
 
             if (tempBytes != null) {
-                if (length != -1) {
-                    tempBytes = ByteUtils.storeInBytesLow(tempBytes, length);
-                }
+                tempBytes = ByteUtils.storeInBytes(tempBytes, storeLength);
                 if (sourceByteArr == null) {
                     sourceByteArr = tempBytes;
                 } else {
