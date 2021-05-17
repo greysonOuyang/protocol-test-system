@@ -23,3 +23,6 @@ logFilePath_IS_UNDEFINED/
 .factorypath
 /.factorypath
 target
+src/main/resources/static/
+
+protocol-test-system-1.0-SNAPSHOT.jar
