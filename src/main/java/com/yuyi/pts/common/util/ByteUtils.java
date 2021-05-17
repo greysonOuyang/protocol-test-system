@@ -1,7 +1,13 @@
 package com.yuyi.pts.common.util;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -613,5 +619,25 @@ public class ByteUtils {
         }
         return res;
     }
+    public static byte[] charsToBytes(char[] chars){
+        Charset charset = Charset.forName("UTF-8");
+        ByteBuffer byteBuffer = charset.encode(CharBuffer.wrap(chars));
+        return Arrays.copyOf(byteBuffer.array(), byteBuffer.limit());
+    }
+    /**
+     * 字符串转换unicode
+     * @param string
+     * @return
+     */
+    public static String string2Unicode(String string) {
+        StringBuffer unicode = new StringBuffer();
+        for (int i = 0; i < string.length(); i++) {
+            // 取出每一个字符
+            char c = string.charAt(i);
+            // 转换为unicode
+            unicode.append("\\u" + Integer.toHexString(c));
+        }
 
+        return unicode.toString();
+    }
 }
