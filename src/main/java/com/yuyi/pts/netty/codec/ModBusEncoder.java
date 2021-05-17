@@ -5,6 +5,7 @@ import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
+import io.lettuce.core.StrAlgoArgs;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -55,16 +56,16 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         functionCode = functionCode == null ? modBusMessage.getCode() : functionCode;
         byte[] code = ByteUtils.storeInBytes(
                 ByteUtils.hexString2Bytes(functionCode), 1);
-        //  写入数据
-       String startAddress = (String) jsonObject.get("startAddress");
-        byte[] strAddressBytes = ByteUtils.hexString2Bytes(startAddress);
-        int  registerCount = Integer.parseInt(jsonObject.get("registerCount").toString());
-        String hex= Integer.toHexString(registerCount);
-        byte[] registerCountBytes = ByteUtils.hexString2Bytes("00"+hex);
-        ByteBuf buffer = Unpooled.buffer();
-        buffer.writeBytes(registerCountBytes);
-        byte[]  bytes = new byte[1];
-        bytes[0] = registerCountBytes[0] ;
+        //  写入数据    10进制转换成 16 进制
+        String  startAddress = jsonObject.get("startAddress").toString();
+        byte[] strAddressBytes = ByteUtils.shortToByte2(Short.valueOf(startAddress));
+        byte[] strAddressByte = ByteUtils.storeInBytes(strAddressBytes,2);
+
+        // 寄存器个数
+        String  registerCount = jsonObject.get("registerCount").toString();
+        byte[] registerCountStr=  ByteUtils.shortToByte2(Short.valueOf(registerCount));
+        byte[] registerCountBytes = ByteUtils.storeInBytes(registerCountStr,2);
+
         //  长度两个字节 == 单元标识符一个字节 + 数据长度
         int length = code.length + strAddressBytes.length + registerCountBytes.length + 1;
         byte[] lengthBytes = ByteUtils.storeInBytes(
@@ -75,20 +76,36 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         out.writeBytes(lengthBytes);
         out.writeBytes(unitIdentification);
         out.writeBytes(code);
-        out.writeBytes(strAddressBytes);
+        out.writeBytes(strAddressByte);
         out.writeBytes(registerCountBytes);
         if("0x10".equals(functionCode)){
-            ByteBuf byteBuf = Unpooled.buffer();
+            // 文本消息属性
+            //  byte[] chars = new byte[16];
+            // 第0位 综合监控控制取消播控区域文本内容   1 启动
+            //第1位 1 全屏播放文本  0 滚动播放文本
+            //第15位播放文本是否启用时限控制，0：不控制，1：启用时限控制  1000000000000000 32768  0100000000000000 16384  1100000000000000    49152
+            short s = (short) 32768;
+           // byte[] bytes1 = ByteUtils.charsToBytes(chars);
+            ByteBuf byteBuf1 = Unpooled.buffer();
+            byte[] bytes1 = ByteUtils.shortToByte2(s);
+            byteBuf1.writeBytes(ByteUtils.storeInBytes(bytes1,2));
             // todo 暂时写死  后面在改
             byte[] num = new byte[2];
-            for (int i = 0; i < 32; i++) {
+            ByteBuf byteBuf = Unpooled.buffer();
+            // 文本消息内容
+            String str = "千钧一发";
+//            String s1 = ByteUtils.string2Unicode(str);
+            byte[] bytesStr = ByteUtils.strToBytes(str);
+            byteBuf1.writeBytes(ByteUtils.storeInBytes(bytesStr,250));
+
+            for (int i = 0; i < 247; i++) {
                 ByteUtils.hexString2Bytes("00"+i*10);
                 byteBuf.writeBytes(num);
             }
             byte[] rnum = ByteUtils.hexString2Bytes("01");
             out.writeBytes(rnum);
+            out.writeBytes(byteBuf1);
             out.writeBytes(byteBuf);
         }
     }
-
 }
