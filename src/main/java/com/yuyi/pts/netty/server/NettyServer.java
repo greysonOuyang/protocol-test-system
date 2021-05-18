@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.server;
 
+import com.yuyi.pts.controller.MainController;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -27,7 +28,7 @@ public class NettyServer {
     ServerBootstrap serverBootstrap =  new ServerBootstrap();
     EventLoopGroup boss =null;
     EventLoopGroup worker =null;
-    ChannelFuture future = null;
+    public ChannelFuture future = null;
     ServiceInterface serviceInterface;
     int port;
 
@@ -71,6 +72,9 @@ public class NettyServer {
             future = serverBootstrap.bind(this.port).sync();
             if(future.isSuccess()){
                 log.info("nettyServer 完成启动 ");
+                MainController.STATUS_MAP.put(port, true);
+            } else {
+                MainController.STATUS_MAP.put(port, false);
             }
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();

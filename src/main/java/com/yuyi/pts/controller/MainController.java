@@ -2,15 +2,15 @@ package com.yuyi.pts.controller;
 
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ServerRequestDto;
 import com.yuyi.pts.netty.server.NettyServer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * description
@@ -18,10 +18,14 @@ import java.util.UUID;
  * @author greyson
  * @since 2021/4/27
  */
+@Slf4j
 @RestController
 @RequestMapping("/main")
 public class MainController {
 
+    private final ScheduledExecutorService scheduledExecutorService = ScheduledThreadPoolUtil.getInstance();
+
+    public static final Map<Integer, Boolean> STATUS_MAP = new HashMap<>();
 
     NettyServer nettyServer;
 
@@ -32,6 +36,13 @@ public class MainController {
         int port = request.getPort();
         nettyServer = new NettyServer(serviceInterface, port);
         nettyServer.start();
+//        scheduledExecutorService.execute(() -> {
+//        });
+    }
+
+    @GetMapping("/server/status")
+    public boolean getServerStatus(String port) {
+        return STATUS_MAP.get(Integer.parseInt(port));
     }
 
     /**
@@ -40,7 +51,8 @@ public class MainController {
      * @return
      */
     @GetMapping("/stop/server")
-    public boolean stopServer() {
+    public boolean stopServer(String port) {
+        STATUS_MAP.put(Integer.parseInt(port), false);
         return nettyServer.stop();
     }
 
