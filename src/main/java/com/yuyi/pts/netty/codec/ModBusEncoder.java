@@ -82,20 +82,38 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             // 文本消息属性
             //  byte[] chars = new byte[16];
             // 第0位 综合监控控制取消播控区域文本内容   1 启动
+            String  isOpen = jsonObject.get("isOpen").toString();
+//            byte[] strAddressBytes = ByteUtils.shortToByte2(Short.valueOf(startAddress));
+//            byte[] strAddressByte = ByteUtils.storeInBytes(strAddressBytes,2);
             //第1位 1 全屏播放文本  0 滚动播放文本
-            //第15位播放文本是否启用时限控制，0：不控制，1：启用时限控制  1000000000000000 32768  0100000000000000 16384  1100000000000000    49152
-            short s = (short) 32768;
-           // byte[] bytes1 = ByteUtils.charsToBytes(chars);
+            String  showType = jsonObject.get("showType").toString();
+            // 8-14  表示  1-127分钟
+            String  showTime = Integer.toBinaryString(Integer.parseInt(jsonObject.get("showTime").toString()));
+            if(showTime.length()<8){
+                for (int i=showTime.length();i<7;i++){
+                    showTime="0"+showTime;
+                }
+            }
+            //第15位播放文本是否启用时限控制，0：不控制，1：启用时限控制  1000 0000 1000 0001 32897  0100000000000000 16384  1100 0000 1000 0001    49281
+            String  limitStyle = jsonObject.get("limitStyle").toString();
+            // 优先级
+            String  priority = Integer.toBinaryString(Integer.parseInt(jsonObject.get("priority").toString()));
+            if(priority.length()<4){
+                for (int i=0;i<4-priority.length();i++){
+                    priority="0"+priority;
+                }
+            }
+            String request =  isOpen + showType + priority + "000" + showTime + limitStyle;
+            short requestData = (short)  ByteUtils.binaryStringToInt(request);
+            String  textCont = jsonObject.get("textCont").toString();
             ByteBuf byteBuf1 = Unpooled.buffer();
-            byte[] bytes1 = ByteUtils.shortToByte2(s);
+            byte[] bytes1 = ByteUtils.shortToByte2(requestData);
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytes1,2));
             // todo 暂时写死  后面在改
             byte[] num = new byte[2];
             ByteBuf byteBuf = Unpooled.buffer();
             // 文本消息内容
-            String str = "千钧一发";
-//            String s1 = ByteUtils.string2Unicode(str);
-            byte[] bytesStr = ByteUtils.strToBytes(str);
+            byte[] bytesStr = ByteUtils.strToBytes(textCont);
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytesStr,250));
 
             for (int i = 0; i < 247; i++) {
