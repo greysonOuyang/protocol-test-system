@@ -46,7 +46,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             int currentFieldLength = param.getLength();
             String value = param.getValue().trim();
             FieldType type = param.getType();
-            // 发给对方时的字节数, 默认是当前参数自带的length字段；如果当前参数是ASCII形式，则取上一个字段的值 即lenList的内容
+            // 发给对方时的字节数, 默认是当前参数自带的length字段
             int storeLength = currentFieldLength;
             byte[] tempBytes = null;
             // 解析数据转成字节数组bytes
@@ -84,7 +84,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
-        log.info("sourceByteArr=====",sourceByteArr);
         ctx.channel().writeAndFlush(sourceByteArr);
     }
 }

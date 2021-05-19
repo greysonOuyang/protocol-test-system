@@ -4,20 +4,18 @@ import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.InterfaceMessageType;
 import com.yuyi.pts.common.util.CommonUtil;
+import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * description
+ * 接口管理
  *
  * @author greyson
  * @since 2021/5/12
@@ -128,6 +126,63 @@ public class InterfaceController {
             newServiceInterface.setInterfaceId(newInterfaceId);
             InterfaceCache.put(newInterfaceId, newServiceInterface);
         }
+    }
+
+    @PostMapping("/interface/add")
+    public String addInterface(@RequestBody ServiceInterface serviceInterface) {
+        String uuid = UUID.randomUUID().toString();
+        int startNum = getCacheSize();
+        InterfaceCache.put(uuid, serviceInterface);
+        int endNum = InterfaceCache.INTERFACE_MAP.size();
+        int number = endNum - startNum;
+        if(endNum-startNum>=1){
+            return ResultEntity.successWithData(number);
+        }else {
+            return ResultEntity.failedWithData("新增失败，请重新尝试");
+        }
+    }
+
+    @GetMapping("interface/findAll")
+    public List<ServiceInterface> findAllInterface() {
+        List<ServiceInterface> serviceInterfaceList = new ArrayList<>();
+        InterfaceCache.INTERFACE_MAP.forEach((k, v) -> {
+            serviceInterfaceList.add(v);
+        });
+        return serviceInterfaceList;
+    }
+
+    @PostMapping("interface/delete")
+    public String deleteInterface(@RequestBody List<Map> idList) {
+
+        int startNum = getCacheSize();
+        InterfaceCache.remove(idList);
+        // 拿最开始的缓存数据 减去删除后的缓存数据
+        int endNum = InterfaceCache.INTERFACE_MAP.size();
+        int number = startNum - endNum;
+        if(number>=1){
+            return ResultEntity.successWithData(number);
+        }else{
+            return ResultEntity.failedWithData("删除失败，请重新尝试");
+        }
+    }
+
+    @PostMapping("interface/deleteAll")
+    public String deleteAllInterface() {
+        InterfaceCache.INTERFACE_MAP.clear();
+        int num = InterfaceCache.INTERFACE_MAP.size();
+        if(num>0){
+            return ResultEntity.failedWithData("删除失败，请重新尝试");
+        }else{
+            return ResultEntity.successWithData("删除成功");
+        }
+    }
+
+    /**
+     * 获取到初始值
+     * @return
+     */
+    public int getCacheSize(){
+        return InterfaceCache.INTERFACE_MAP.size();
     }
 
     public Param setValue(Param param, Map<String, String> map) {
