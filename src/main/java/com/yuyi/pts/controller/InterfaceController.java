@@ -1,12 +1,16 @@
 package com.yuyi.pts.controller;
 
+import com.yuyi.pts.common.cache.ClientInterfaceCache;
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.InterfaceMessageType;
+import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.model.client.ClientInterface;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,6 +136,7 @@ public class InterfaceController {
     public String addInterface(@RequestBody ServiceInterface serviceInterface) {
         String uuid = UUID.randomUUID().toString();
         int startNum = getCacheSize();
+        serviceInterface.setInterfaceId(uuid);
         InterfaceCache.put(uuid, serviceInterface);
         int endNum = InterfaceCache.INTERFACE_MAP.size();
         int number = endNum - startNum;
@@ -177,6 +182,17 @@ public class InterfaceController {
         }
     }
 
+    @PostMapping("/request/config/save")
+    public String saveRequestConfig(@RequestBody Map<String, Object> map) {
+        String id = (String) map.get("id");
+        ClientInterface clientInterface = ClientInterfaceCache.HTTP_INTERFACE_MAP.get(id);
+        List<ClientInterface.Config> configList1 = (ArrayList) map.get("configList");
+//        List<ClientInterface.Config> configList = (List< ClientInterface.Config>) map.get("configList");
+        clientInterface.setConfigList(configList1);
+        ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
+        return ResultEntity.successWithNothing();
+    }
+
     /**
      * 获取到初始值
      * @return
@@ -196,5 +212,31 @@ public class InterfaceController {
             }
         }
         return newParam;
+    }
+
+    /**
+     * 新增or更新接口-客户端
+     * @param map
+     */
+    @PostMapping("/interface/save")
+    public void saveClientInterface(@RequestBody ClientInterfaceVO clientInterfaceVO) {
+        RequestType requestType = clientInterfaceVO.getRequestType();
+        String id = UUID.randomUUID().toString();
+        ClientInterface clientInterface = clientInterfaceVO.getClientInterface();
+        if (RequestType.HTTP == requestType) {
+            clientInterface.setId(id);
+            ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
+        }
+    }
+
+    @GetMapping("/interface/http/getAll")
+    public List<ClientInterface> getAllHttp() {
+        ArrayList<ClientInterface> clientInterfaces = new ArrayList<>();
+        ClientInterfaceCache.HTTP_INTERFACE_MAP.forEach(
+                (k, v) -> {
+                    clientInterfaces.add(v);
+                }
+        );
+        return clientInterfaces;
     }
 }
