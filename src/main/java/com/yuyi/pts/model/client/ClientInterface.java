@@ -22,6 +22,7 @@ public class ClientInterface {
     private String url;
     private String requestMethod;
     private String content;
+    private String port;
     private List<Config> configList;
 
     public static class Config {
