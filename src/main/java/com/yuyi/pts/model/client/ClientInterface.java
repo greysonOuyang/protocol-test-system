@@ -25,8 +25,4 @@ public class ClientInterface {
     private String port;
     private List<Config> configList;
 
-    public static class Config {
-        private String configKey;
-        private String configName;
-    }
 }

@@ -8,6 +8,7 @@ import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.client.ClientInterface;
+import com.yuyi.pts.model.client.Config;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
@@ -186,12 +187,13 @@ public class InterfaceController {
     public String saveRequestConfig(@RequestBody Map<String, Object> map) {
         String id = (String) map.get("id");
         ClientInterface clientInterface = ClientInterfaceCache.HTTP_INTERFACE_MAP.get(id);
-        List<ClientInterface.Config> configList1 = (ArrayList) map.get("configList");
+        List<Config> configList1 = (ArrayList) map.get("configList");
 //        List<ClientInterface.Config> configList = (List< ClientInterface.Config>) map.get("configList");
         clientInterface.setConfigList(configList1);
         ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
         return ResultEntity.successWithNothing();
     }
+
 
     /**
      * 获取到初始值
