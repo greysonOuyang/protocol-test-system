@@ -12,7 +12,10 @@ import com.yuyi.pts.model.client.Config;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
+import com.yuyi.pts.service.impl.TConfigServiceImpl;
+import com.yuyi.pts.service.impl.TInterfaceConfigServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -31,6 +34,10 @@ import java.util.stream.Collectors;
 @RequestMapping("interfaceCtrl")
 public class InterfaceController {
 
+    @Autowired
+    private TConfigServiceImpl ConfigService;
+    @Autowired
+    private TInterfaceConfigServiceImpl InterfaceConfigService;
     /**
      * 根据传入的消息类型,基本接口 从缓存中取出默认的参数列表，根据用户传过来的列车趟数，自动生成参数信息，对原有接口进行更新保存
      * @param map
