@@ -65,4 +65,9 @@ public class TConfigServiceImpl implements TConfigService {
     public int updateByPrimaryKey(TConfig record) {
         return tConfigDao.updateByPrimaryKey(record);
     }
+
+    @Override
+    public void deleteAll() {
+        tConfigDao.deleteAll();
+    }
 }

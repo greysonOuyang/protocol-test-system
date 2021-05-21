@@ -95,4 +95,13 @@
       Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
     where config_id = #{configId,jdbcType=VARCHAR}
   </update>
+  <select id="selectByInfaceConfigId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_config
+    where Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteAll" >
+  delete from t_config
+  </delete>
 </mapper>

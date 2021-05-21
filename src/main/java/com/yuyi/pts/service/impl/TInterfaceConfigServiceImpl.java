@@ -1,8 +1,10 @@
 package com.yuyi.pts.service.impl;
 
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.dao.TConfigDao;
 import com.yuyi.pts.dao.TInterfaceConfigDao;
 import com.yuyi.pts.model.client.ClientInterface;
+import com.yuyi.pts.model.client.TConfig;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import com.yuyi.pts.service.TInterfaceConfigService;
@@ -10,7 +12,7 @@ import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @description:
@@ -19,9 +21,11 @@ import java.util.UUID;
  */
 @Service
 public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
-     @Autowired
-     private TInterfaceConfigDao tInterfaceConfigDao;
 
+    @Autowired
+    private TInterfaceConfigDao tInterfaceConfigDao;
+    @Autowired
+    private TConfigDao configDao;
 
     @Override
     public int deleteByPrimaryKey(String id) {
@@ -32,7 +36,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     public int insert(ClientInterfaceVO clientInterfaceVO) {
         RequestType requestType = clientInterfaceVO.getRequestType();
         TInterfaceConfig tInterfaceConfig = clientInterfaceVO.getTInterfaceConfig();
-        tInterfaceConfig.setInterfaceConfigId(UUID.randomUUID().toString().replace("-",""));
+        tInterfaceConfig.setInterfaceConfigId(UUID.randomUUID().toString().replace("-", ""));
         tInterfaceConfig.setRequestType(requestType.name());
         return tInterfaceConfigDao.insert(tInterfaceConfig);
     }
@@ -58,7 +62,20 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     }
 
     @Override
-    public TInterfaceConfig selectByRequestType(String type) {
-        return tInterfaceConfigDao.selectByRequestType(type);
+    public List<ClientInterface> selectByRequestType(String type) {
+        List<TInterfaceConfig> listTInterfaceConfig = tInterfaceConfigDao.selectByRequestType(type);
+        ClientInterface clientInterface = new ClientInterface();
+        List<ClientInterface> clientInterfaceList = new ArrayList<>();
+        listTInterfaceConfig.forEach(item -> {
+            String id = item.getInterfaceConfigId();
+            clientInterface.setConfigList(configDao.selectByInfaceConfigId(id));
+            clientInterfaceList.add(clientInterface);
+        });
+        return clientInterfaceList;
+    }
+
+    @Override
+    public void deleteAll() {
+        tInterfaceConfigDao.deleteAll();
     }
 }

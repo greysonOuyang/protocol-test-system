@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Mapper
 public interface TConfigDao {
@@ -16,7 +18,11 @@ public interface TConfigDao {
 
     TConfig selectByPrimaryKey(String configId);
 
+    List<TConfig> selectByInfaceConfigId(String interfaceConfigId);
+
     int updateByPrimaryKeySelective(TConfig record);
 
     int updateByPrimaryKey(TConfig record);
+
+    void deleteAll();
 }

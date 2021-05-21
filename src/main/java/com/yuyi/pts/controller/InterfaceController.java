@@ -39,7 +39,7 @@ public class InterfaceController {
     @Autowired
     private TConfigServiceImpl configService;
     @Autowired
-    private TInterfaceConfigServiceImpl InterfaceConfigService;
+    private TInterfaceConfigServiceImpl interfaceConfigService;
     /**
      * 根据传入的消息类型,基本接口 从缓存中取出默认的参数列表，根据用户传过来的列车趟数，自动生成参数信息，对原有接口进行更新保存
      * @param map
@@ -231,31 +231,58 @@ public class InterfaceController {
      */
     @PostMapping("/interface/save")
     public void saveClientInterface(@RequestBody ClientInterfaceVO clientInterfaceVO) {
-        InterfaceConfigService.insert(clientInterfaceVO);
+        interfaceConfigService.insert(clientInterfaceVO);
     }
 
-    @GetMapping("/interface/getAllInterfaceInfo")
-    public List<ClientInterface> getAllHttp(@RequestBody String type) {
-        InterfaceConfigService.selectByRequestType(type);
-        ArrayList<ClientInterface> clientInterfaces = new ArrayList<>();
-        ClientInterfaceCache.HTTP_INTERFACE_MAP.forEach(
-                (k, v) -> {
-                    clientInterfaces.add(v);
-                }
-        );
-        return clientInterfaces;
-    }
+    /**
+     * 查询对应的接口信息
+     * @param type
+     * @return
+     */
     @GetMapping("/interface/getAllInterfaceInfo")
     public List<ClientInterface> getAllInterfaceInfo(@RequestBody String type) {
-        ArrayList<ClientInterface> clientInterfaces = new ArrayList<>();
-
-        ClientInterfaceCache.HTTP_INTERFACE_MAP.forEach(
-                (k, v) -> {
-                    clientInterfaces.add(v);
-                }
-        );
-       List resultList =  clientInterfaces.stream().filter(p -> p.getRequestType().equals(type)).collect(Collectors.toList());
-        return resultList;
+        return interfaceConfigService.selectByRequestType(type);
     }
 
+    /**
+     * 删除接口
+     * @param id
+     * @return
+     */
+    @GetMapping("/interface/delInterface")
+    public String delInterface(@RequestBody String id) {
+         interfaceConfigService.deleteByPrimaryKey(id);
+        return ResultEntity.successWithNothing();
+    }
+    /**
+     * 删除配置
+     * @param id
+     * @return
+     */
+    @GetMapping("/interface/delConfig")
+    public String delConfig(@RequestBody String id) {
+         configService.deleteByPrimaryKey(id);
+        return ResultEntity.successWithNothing();
+    }
+    /**
+     * 清空接口
+     * @param
+     * @return
+     */
+    @GetMapping("/interface/delAllInterfaceInfo")
+    public String delAllInterfaceInfo() {
+        interfaceConfigService.deleteAll();
+        configService.deleteAll();
+        return ResultEntity.successWithNothing();
+    }
+    /**
+     * 清空配置
+     * @param
+     * @return
+     */
+    @GetMapping("/interface/delAllConfig")
+    public String delAllConfig() {
+        configService.deleteAll();
+        return ResultEntity.successWithNothing();
+    }
 }

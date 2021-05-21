@@ -114,4 +114,7 @@
     from t_interface_config
     where request_type = #{requestType,jdbcType=VARCHAR}
   </select>
+  <delete id="deleteAll" >
+    delete from t_config
+  </delete>
 </mapper>

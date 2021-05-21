@@ -26,4 +26,6 @@ public interface TConfigService {
     int updateByPrimaryKeySelective(TConfig record);
 
     int updateByPrimaryKey(TConfig record);
+
+    void deleteAll();
 }

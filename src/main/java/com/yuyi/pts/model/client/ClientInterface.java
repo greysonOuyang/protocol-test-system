@@ -23,6 +23,6 @@ public class ClientInterface {
     private String requestMethod;
     private String content;
     private int port;
-    private List<Config> configList;
+    private List<TConfig> configList;
 
 }

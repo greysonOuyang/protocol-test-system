@@ -1,7 +1,11 @@
 package com.yuyi.pts.dao;
 
 import com.yuyi.pts.model.client.TInterfaceConfig;
+import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
+@Mapper
 public interface TInterfaceConfigDao {
     int deleteByPrimaryKey(String interfaceConfigId);
 
@@ -15,5 +19,7 @@ public interface TInterfaceConfigDao {
 
     int updateByPrimaryKey(TInterfaceConfig record);
 
-    TInterfaceConfig selectByRequestType(String requestType);
+    List<TInterfaceConfig> selectByRequestType(String requestType);
+
+    void deleteAll();
 }
