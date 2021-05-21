@@ -1,18 +1,21 @@
 package com.yuyi.pts.service;
 
 import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import org.springframework.stereotype.Service;
 
 public interface TInterfaceConfigService {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(String id);
 
-    int insert(TInterfaceConfig record);
+    int insert(ClientInterfaceVO clientInterfaceVO);
 
     int insertSelective(TInterfaceConfig record);
 
-    TInterfaceConfig selectByPrimaryKey(Integer id);
+    TInterfaceConfig selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(TInterfaceConfig record);
 
     int updateByPrimaryKey(TInterfaceConfig record);
+
+    TInterfaceConfig selectByRequestType(String type);
 }

@@ -3,8 +3,15 @@ package com.yuyi.pts.service.impl;
 import com.yuyi.pts.dao.TConfigDao;
 import com.yuyi.pts.model.client.TConfig;
 import com.yuyi.pts.service.TConfigService;
+import org.apache.poi.hssf.record.PageBreakRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @description:
@@ -24,8 +31,19 @@ public class TConfigServiceImpl implements TConfigService {
     }
 
     @Override
-    public int insert(TConfig record) {
-        return tConfigDao.insert(record);
+    public boolean insert( Map<String, Object> map) {
+        AtomicBoolean flag = new AtomicBoolean(true);
+        String id = (String) map.get("id");
+        List<TConfig> configList = (ArrayList) map.get("configList");
+        configList.forEach(item-> {
+            item.setInterfaceConfigId(id);
+            item.setConfigId(UUID.randomUUID().toString().replace("-",""));
+            int i = tConfigDao.insert(item);
+            if(i!=1){
+                flag.set(false);
+            }
+        });
+        return flag.get();
     }
 
     @Override

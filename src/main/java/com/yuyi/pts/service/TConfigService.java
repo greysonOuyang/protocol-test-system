@@ -4,6 +4,8 @@ package com.yuyi.pts.service;
 import com.yuyi.pts.model.client.TConfig;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * 向第三方接口发送消息的服务
  *
@@ -15,7 +17,7 @@ public interface TConfigService {
 
     int deleteByPrimaryKey(String configId);
 
-    int insert(TConfig record);
+    boolean insert(Map<String, Object> map);
 
     int insertSelective(TConfig record);
 

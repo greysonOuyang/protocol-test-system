@@ -9,12 +9,14 @@ import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.client.ClientInterface;
 import com.yuyi.pts.model.client.Config;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import com.yuyi.pts.service.impl.TConfigServiceImpl;
 import com.yuyi.pts.service.impl.TInterfaceConfigServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.jcp.xml.dsig.internal.dom.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 public class InterfaceController {
 
     @Autowired
-    private TConfigServiceImpl ConfigService;
+    private TConfigServiceImpl configService;
     @Autowired
     private TInterfaceConfigServiceImpl InterfaceConfigService;
     /**
@@ -193,13 +195,12 @@ public class InterfaceController {
 
     @PostMapping("/request/config/save")
     public String saveRequestConfig(@RequestBody Map<String, Object> map) {
-        String id = (String) map.get("id");
-        ClientInterface clientInterface = ClientInterfaceCache.HTTP_INTERFACE_MAP.get(id);
-        List<Config> configList1 = (ArrayList) map.get("configList");
-//        List<ClientInterface.Config> configList = (List< ClientInterface.Config>) map.get("configList");
-        clientInterface.setConfigList(configList1);
-        ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
-        return ResultEntity.successWithNothing();
+        boolean flag = configService.insert(map);
+        if(flag){
+            return ResultEntity.successWithNothing();
+        }else {
+            return ResultEntity.failedWithMsg("配置失败");
+        }
     }
 
 
@@ -230,26 +231,12 @@ public class InterfaceController {
      */
     @PostMapping("/interface/save")
     public void saveClientInterface(@RequestBody ClientInterfaceVO clientInterfaceVO) {
-        RequestType requestType = clientInterfaceVO.getRequestType();
-        String id = UUID.randomUUID().toString();
-        ClientInterface clientInterface = clientInterfaceVO.getClientInterface();
-        clientInterface.setId(id);
-        if (RequestType.HTTP == requestType) {
-            ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
-        }else if(RequestType.TCP == requestType){
-            ClientInterfaceCache.TCP_INTERFACE_MAP.put(id, clientInterface);
-        }
-        else if(RequestType.WebSocket == requestType){
-            ClientInterfaceCache.WEBSOCKET_INTERFACE_MAP.put(id, clientInterface);
-        }
-        else if(RequestType.UDP == requestType){
-            ClientInterfaceCache.UDP_INTERFACE_MAP.put(id, clientInterface);
-        }
-
+        InterfaceConfigService.insert(clientInterfaceVO);
     }
 
-    @GetMapping("/interface/http/getAll")
-    public List<ClientInterface> getAllHttp() {
+    @GetMapping("/interface/getAllInterfaceInfo")
+    public List<ClientInterface> getAllHttp(@RequestBody String type) {
+        InterfaceConfigService.selectByRequestType(type);
         ArrayList<ClientInterface> clientInterfaces = new ArrayList<>();
         ClientInterfaceCache.HTTP_INTERFACE_MAP.forEach(
                 (k, v) -> {
