@@ -13,5 +13,8 @@ import java.util.Map;
  */
 public class ClientInterfaceCache {
     public static Map<String, ClientInterface> HTTP_INTERFACE_MAP = new HashMap<>();
+    public static Map<String, ClientInterface> WEBSOCKET_INTERFACE_MAP = new HashMap<>();
+    public static Map<String, ClientInterface> TCP_INTERFACE_MAP = new HashMap<>();
+    public static Map<String, ClientInterface> UDP_INTERFACE_MAP = new HashMap<>();
 
 }
