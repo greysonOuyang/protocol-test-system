@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 接口管理
@@ -218,17 +219,26 @@ public class InterfaceController {
 
     /**
      * 新增or更新接口-客户端
-     * @param map
+     * @param clientInterfaceVO
      */
     @PostMapping("/interface/save")
     public void saveClientInterface(@RequestBody ClientInterfaceVO clientInterfaceVO) {
         RequestType requestType = clientInterfaceVO.getRequestType();
         String id = UUID.randomUUID().toString();
         ClientInterface clientInterface = clientInterfaceVO.getClientInterface();
+        clientInterface.setId(id);
         if (RequestType.HTTP == requestType) {
-            clientInterface.setId(id);
             ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
+        }else if(RequestType.TCP == requestType){
+            ClientInterfaceCache.TCP_INTERFACE_MAP.put(id, clientInterface);
         }
+        else if(RequestType.WebSocket == requestType){
+            ClientInterfaceCache.WEBSOCKET_INTERFACE_MAP.put(id, clientInterface);
+        }
+        else if(RequestType.UDP == requestType){
+            ClientInterfaceCache.UDP_INTERFACE_MAP.put(id, clientInterface);
+        }
+
     }
 
     @GetMapping("/interface/http/getAll")
@@ -241,4 +251,17 @@ public class InterfaceController {
         );
         return clientInterfaces;
     }
+    @GetMapping("/interface/getAllInterfaceInfo")
+    public List<ClientInterface> getAllInterfaceInfo(@RequestBody String type) {
+        ArrayList<ClientInterface> clientInterfaces = new ArrayList<>();
+
+        ClientInterfaceCache.HTTP_INTERFACE_MAP.forEach(
+                (k, v) -> {
+                    clientInterfaces.add(v);
+                }
+        );
+       List resultList =  clientInterfaces.stream().filter(p -> p.getRequestType().equals(type)).collect(Collectors.toList());
+        return resultList;
+    }
+
 }
