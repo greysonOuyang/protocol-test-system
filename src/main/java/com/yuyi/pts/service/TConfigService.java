@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * @author wzl
  * @since 2021/5/21
  */
-@Service
+
 public interface TConfigService {
 
     int deleteByPrimaryKey(String configId);

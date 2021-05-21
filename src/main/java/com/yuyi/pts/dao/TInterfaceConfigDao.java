@@ -1,9 +1,11 @@
 package com.yuyi.pts.dao;
 
 import com.yuyi.pts.model.client.TInterfaceConfig;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository
+@Mapper
 public interface TInterfaceConfigDao {
     int deleteByPrimaryKey(Integer id);
 
