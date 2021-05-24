@@ -236,12 +236,15 @@ public class InterfaceController {
 
     /**
      * 查询对应的接口信息
-     * @param type
+     * @param map
      * @return
      */
-    @GetMapping("/interface/getAllInterfaceInfo")
-    public List<ClientInterface> getAllInterfaceInfo(@RequestBody String type) {
-        return interfaceConfigService.selectByRequestType(type);
+    @PostMapping ("/interface/getAllInterfaceInfo")
+    public List<ClientInterface> getAllInterfaceInfo(@RequestBody Map map) {
+        String interfaceType = map.get("interfaceType").toString();
+        List<ClientInterface> list = interfaceConfigService.selectByRequestType(interfaceType);
+        return list;
+
     }
 
     /**
@@ -261,7 +264,7 @@ public class InterfaceController {
      */
     @GetMapping("/interface/delConfig")
     public String delConfig(@RequestBody String id) {
-         configService.deleteByPrimaryKey(id);
+         configService.deleteByPrimaryKey(Integer.parseInt(id));
         return ResultEntity.successWithNothing();
     }
     /**

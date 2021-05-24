@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yuyi.pts.dao.TConfigDao">
   <resultMap id="BaseResultMap" type="com.yuyi.pts.model.client.TConfig">
-    <id column="config_id" jdbcType="VARCHAR" property="configId" />
+    <id column="config_id" jdbcType="INTEGER" property="configId" />
     <result column="config_key" jdbcType="VARCHAR" property="configKey" />
     <result column="config_name" jdbcType="VARCHAR" property="configName" />
     <result column="config_type" jdbcType="VARCHAR" property="configType" />
@@ -12,15 +12,15 @@
   <sql id="Base_Column_List">
     config_id, config_key, config_name, config_type, config_value, Interface_config_id
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_config
-    where config_id = #{configId,jdbcType=VARCHAR}
+    where config_id = #{configId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_config
-    where config_id = #{configId,jdbcType=VARCHAR}
+    where config_id = #{configId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="config_id" keyProperty="configId" parameterType="com.yuyi.pts.model.client.TConfig" useGeneratedKeys="true">
     insert into t_config (config_key, config_name, config_type, 
@@ -84,7 +84,7 @@
         Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR},
       </if>
     </set>
-    where config_id = #{configId,jdbcType=VARCHAR}
+    where config_id = #{configId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yuyi.pts.model.client.TConfig">
     update t_config
@@ -93,7 +93,7 @@
       config_type = #{configType,jdbcType=VARCHAR},
       config_value = #{configValue,jdbcType=VARCHAR},
       Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
-    where config_id = #{configId,jdbcType=VARCHAR}
+    where config_id = #{configId,jdbcType=INTEGER}
   </update>
   <select id="selectByInfaceConfigId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -102,6 +102,6 @@
     where Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteAll" >
-  delete from t_config
+    delete from t_config
   </delete>
 </mapper>

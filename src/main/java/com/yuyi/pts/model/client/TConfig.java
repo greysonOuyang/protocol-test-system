@@ -12,7 +12,7 @@ public class TConfig implements Serializable {
     /**
      * 唯一标识符
      */
-    private String configId;
+    private Integer configId;
 
     /**
      * 配置Key

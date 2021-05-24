@@ -26,7 +26,7 @@ public class TConfigServiceImpl implements TConfigService {
     private TConfigDao tConfigDao;
 
     @Override
-    public int deleteByPrimaryKey(String configId) {
+    public int deleteByPrimaryKey(Integer configId) {
         return tConfigDao.deleteByPrimaryKey(configId);
     }
 
@@ -34,11 +34,15 @@ public class TConfigServiceImpl implements TConfigService {
     public boolean insert( Map<String, Object> map) {
         AtomicBoolean flag = new AtomicBoolean(true);
         String id = (String) map.get("id");
-        List<TConfig> configList = (ArrayList) map.get("configList");
+        List<Map> configList = (ArrayList) map.get("configList");
         configList.forEach(item-> {
-            item.setInterfaceConfigId(id);
-            item.setConfigId(UUID.randomUUID().toString().replace("-",""));
-            int i = tConfigDao.insert(item);
+            TConfig tConfig = new TConfig();
+            tConfig.setConfigKey(item.get("configKey").toString());
+            tConfig.setInterfaceConfigId(id);
+            tConfig.setConfigType(item.get("configType").toString());
+            tConfig.setConfigName(item.get("configName").toString());
+
+            int i = tConfigDao.insert(tConfig);
             if(i!=1){
                 flag.set(false);
             }
@@ -52,7 +56,7 @@ public class TConfigServiceImpl implements TConfigService {
     }
 
     @Override
-    public TConfig selectByPrimaryKey(String configId) {
+    public TConfig selectByPrimaryKey(int configId) {
         return tConfigDao.selectByPrimaryKey(configId);
     }
 

@@ -35,7 +35,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     @Override
     public int insert(ClientInterfaceVO clientInterfaceVO) {
         RequestType requestType = clientInterfaceVO.getRequestType();
-        TInterfaceConfig tInterfaceConfig = clientInterfaceVO.getTInterfaceConfig();
+        TInterfaceConfig tInterfaceConfig = getTInterfaceConfig(clientInterfaceVO);
         tInterfaceConfig.setInterfaceConfigId(UUID.randomUUID().toString().replace("-", ""));
         tInterfaceConfig.setRequestType(requestType.name());
         return tInterfaceConfigDao.insert(tInterfaceConfig);
@@ -47,7 +47,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     }
 
     @Override
-    public TInterfaceConfig selectByPrimaryKey(String id) {
+    public TInterfaceConfig selectByPrimaryKey(int id) {
         return tInterfaceConfigDao.selectByPrimaryKey(id);
     }
 
@@ -64,11 +64,19 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     @Override
     public List<ClientInterface> selectByRequestType(String type) {
         List<TInterfaceConfig> listTInterfaceConfig = tInterfaceConfigDao.selectByRequestType(type);
-        ClientInterface clientInterface = new ClientInterface();
+
         List<ClientInterface> clientInterfaceList = new ArrayList<>();
         listTInterfaceConfig.forEach(item -> {
             String id = item.getInterfaceConfigId();
+            ClientInterface clientInterface = new ClientInterface();
             clientInterface.setConfigList(configDao.selectByInfaceConfigId(id));
+            clientInterface.setRequestType(item.getRequestType());
+            clientInterface.setContent(item.getContent());
+            clientInterface.setRequestMethod(item.getRequestMethod());
+            clientInterface.setRequestName(item.getRequestName());
+            clientInterface.setPort(item.getPort());
+            clientInterface.setUrl(item.getUrl());
+            clientInterface.setId(item.getInterfaceConfigId());
             clientInterfaceList.add(clientInterface);
         });
         return clientInterfaceList;
@@ -77,5 +85,22 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     @Override
     public void deleteAll() {
         tInterfaceConfigDao.deleteAll();
+    }
+
+    /**
+     * 获取到TInterfaceConfig实体类
+     * @param clientInterfaceVO
+     * @return
+     */
+    TInterfaceConfig getTInterfaceConfig(ClientInterfaceVO clientInterfaceVO){
+        ClientInterface clientInterface = clientInterfaceVO.getClientInterface();
+        TInterfaceConfig interfaceConfig = new TInterfaceConfig();
+        interfaceConfig.setContent(clientInterface.getContent());;
+        interfaceConfig.setRequestType(clientInterface.getRequestType());;
+        interfaceConfig.setPort(clientInterface.getPort());;
+        interfaceConfig.setRequestMethod(clientInterface.getRequestMethod());;
+        interfaceConfig.setRequestName(clientInterface.getRequestName());;
+        interfaceConfig.setUrl(clientInterface.getUrl());
+        return interfaceConfig;
     }
 }

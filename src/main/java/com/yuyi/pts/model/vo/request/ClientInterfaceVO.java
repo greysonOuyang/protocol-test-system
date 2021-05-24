@@ -18,5 +18,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ClientInterfaceVO {
     private RequestType requestType;
-    private TInterfaceConfig tInterfaceConfig;
+    private ClientInterface clientInterface;
 }

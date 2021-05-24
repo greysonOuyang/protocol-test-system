@@ -15,13 +15,13 @@ import java.util.Map;
 
 public interface TConfigService {
 
-    int deleteByPrimaryKey(String configId);
+    int deleteByPrimaryKey(Integer configId);
 
     boolean insert(Map<String, Object> map);
 
     int insertSelective(TConfig record);
 
-    TConfig selectByPrimaryKey(String configId);
+    TConfig selectByPrimaryKey(int configId);
 
     int updateByPrimaryKeySelective(TConfig record);
 

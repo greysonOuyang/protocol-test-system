@@ -14,7 +14,7 @@ public interface TInterfaceConfigService {
 
     int insertSelective(TInterfaceConfig record);
 
-    TInterfaceConfig selectByPrimaryKey(String id);
+    TInterfaceConfig selectByPrimaryKey(int id);
 
     int updateByPrimaryKeySelective(TInterfaceConfig record);
 
