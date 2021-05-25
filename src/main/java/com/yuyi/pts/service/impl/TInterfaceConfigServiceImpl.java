@@ -11,6 +11,7 @@ import com.yuyi.pts.service.TInterfaceConfigService;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.*;
 
@@ -28,8 +29,8 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     private TConfigDao configDao;
 
     @Override
-    public int deleteByPrimaryKey(String id) {
-        return 0;
+    public int deleteByPrimaryKey(Integer id) {
+       return tInterfaceConfigDao.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -80,6 +81,16 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
             clientInterfaceList.add(clientInterface);
         });
         return clientInterfaceList;
+    }
+
+    @Override
+    public int deleteByInfaceConfigId(String keyId) {
+        // 删除配置 和 接口
+       List<TConfig> tConfigList = configDao.selectByInfaceConfigId(keyId);
+        if(tConfigList.size()!=0){
+            configDao.delByInterfaceConfigId(keyId);
+        }
+        return tInterfaceConfigDao.deleteByInfaceConfigId(keyId);
     }
 
     @Override

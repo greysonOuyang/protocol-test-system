@@ -8,12 +8,14 @@
     <result column="config_type" jdbcType="VARCHAR" property="configType" />
     <result column="config_value" jdbcType="VARCHAR" property="configValue" />
     <result column="Interface_config_id" jdbcType="VARCHAR" property="interfaceConfigId" />
+    <result column="config_key_id" jdbcType="VARCHAR" property="configKeyId" />
   </resultMap>
   <sql id="Base_Column_List">
-    config_id, config_key, config_name, config_type, config_value, Interface_config_id
+    config_id, config_key, config_name, config_type, config_value, Interface_config_id,
+    config_key_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_config
     where config_id = #{configId,jdbcType=INTEGER}
@@ -23,10 +25,12 @@
     where config_id = #{configId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="config_id" keyProperty="configId" parameterType="com.yuyi.pts.model.client.TConfig" useGeneratedKeys="true">
-    insert into t_config (config_key, config_name, config_type, 
-      config_value, Interface_config_id)
-    values (#{configKey,jdbcType=VARCHAR}, #{configName,jdbcType=VARCHAR}, #{configType,jdbcType=VARCHAR}, 
-      #{configValue,jdbcType=VARCHAR}, #{interfaceConfigId,jdbcType=VARCHAR})
+    insert into t_config (config_key, config_name, config_type,
+                          config_value, Interface_config_id, config_key_id
+    )
+    values (#{configKey,jdbcType=VARCHAR}, #{configName,jdbcType=VARCHAR}, #{configType,jdbcType=VARCHAR},
+            #{configValue,jdbcType=VARCHAR}, #{interfaceConfigId,jdbcType=VARCHAR}, #{configKeyId,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" keyColumn="config_id" keyProperty="configId" parameterType="com.yuyi.pts.model.client.TConfig" useGeneratedKeys="true">
     insert into t_config
@@ -46,6 +50,9 @@
       <if test="interfaceConfigId != null">
         Interface_config_id,
       </if>
+      <if test="configKeyId != null">
+        config_key_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="configKey != null">
@@ -62,6 +69,9 @@
       </if>
       <if test="interfaceConfigId != null">
         #{interfaceConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="configKeyId != null">
+        #{configKeyId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -83,16 +93,20 @@
       <if test="interfaceConfigId != null">
         Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR},
       </if>
+      <if test="configKeyId != null">
+        config_key_id = #{configKeyId,jdbcType=VARCHAR},
+      </if>
     </set>
     where config_id = #{configId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yuyi.pts.model.client.TConfig">
     update t_config
     set config_key = #{configKey,jdbcType=VARCHAR},
-      config_name = #{configName,jdbcType=VARCHAR},
-      config_type = #{configType,jdbcType=VARCHAR},
-      config_value = #{configValue,jdbcType=VARCHAR},
-      Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
+        config_name = #{configName,jdbcType=VARCHAR},
+        config_type = #{configType,jdbcType=VARCHAR},
+        config_value = #{configValue,jdbcType=VARCHAR},
+        Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR},
+        config_key_id = #{configKeyId,jdbcType=VARCHAR}
     where config_id = #{configId,jdbcType=INTEGER}
   </update>
   <select id="selectByInfaceConfigId" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -103,5 +117,11 @@
   </select>
   <delete id="deleteAll" >
     delete from t_config
+  </delete>
+  <delete id="delByInterfaceConfigId" parameterType="java.lang.String" >
+    delete  from t_config where Interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delConfigKeyId" parameterType="java.lang.String" >
+    delete  from t_config where config_key_id = #{configKeyId,jdbcType=VARCHAR}
   </delete>
 </mapper>

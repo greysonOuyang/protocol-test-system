@@ -19,5 +19,10 @@ public interface TConfigDao {
     int updateByPrimaryKey(TConfig record);
 
     List<TConfig> selectByInfaceConfigId(String interfaceConfigId);
+
+    void delByInterfaceConfigId(String interfaceConfigId);
+
+    void delConfigKeyId(String configId);
+
     void deleteAll();
 }

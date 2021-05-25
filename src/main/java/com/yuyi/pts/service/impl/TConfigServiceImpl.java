@@ -56,7 +56,7 @@ public class TConfigServiceImpl implements TConfigService {
     }
 
     @Override
-    public TConfig selectByPrimaryKey(int configId) {
+    public TConfig selectByPrimaryKey(Integer configId) {
         return tConfigDao.selectByPrimaryKey(configId);
     }
 
@@ -73,5 +73,10 @@ public class TConfigServiceImpl implements TConfigService {
     @Override
     public void deleteAll() {
         tConfigDao.deleteAll();
+    }
+
+    @Override
+    public void delConfigKeyId(String configId) {
+        tConfigDao.delConfigKeyId(configId);
     }
 }

@@ -20,5 +20,9 @@ public interface TInterfaceConfigDao {
 
     List<TInterfaceConfig> selectByRequestType(String type);
 
+    int deleteByInfaceConfigId(String keyId);
+
     void deleteAll();
+
+    TInterfaceConfig selectByInfaceConfigId();
 }

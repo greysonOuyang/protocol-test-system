@@ -21,11 +21,13 @@ public interface TConfigService {
 
     int insertSelective(TConfig record);
 
-    TConfig selectByPrimaryKey(int configId);
+    TConfig selectByPrimaryKey(Integer configId);
 
     int updateByPrimaryKeySelective(TConfig record);
 
     int updateByPrimaryKey(TConfig record);
 
     void deleteAll();
+
+    void delConfigKeyId(String configId);
 }
