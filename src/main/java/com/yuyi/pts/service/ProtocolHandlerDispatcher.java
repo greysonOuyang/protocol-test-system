@@ -31,4 +31,6 @@ public interface ProtocolHandlerDispatcher {
 
     void submitUdpRequest(WebSocketSession session,  RequestDataDto dataContent);
 
+    void submitWebSocketRequest(WebSocketSession session,  RequestDataDto dataContent);
+
 }

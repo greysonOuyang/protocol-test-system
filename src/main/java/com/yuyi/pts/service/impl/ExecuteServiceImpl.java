@@ -152,6 +152,8 @@ public class ExecuteServiceImpl implements ExecuteService {
             protocolHandlerDispatcher.submitHttpRequest(session, requestDataDto);
         } else if (requestType == RequestType.UDP) {
             protocolHandlerDispatcher.submitUdpRequest(session, requestDataDto);
+        } else if (requestType == RequestType.WebSocket) {
+            protocolHandlerDispatcher.submitWebSocketRequest(session, requestDataDto);
         }
     }
 
