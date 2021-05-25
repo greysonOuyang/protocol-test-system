@@ -13,6 +13,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
+import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.util.CharsetUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +28,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URI;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -155,6 +161,24 @@ public class NettyClient {
      */
 
     private void doProcess(RequestType type,WebSocketSession session, RequestDataDto dataContent) {
+        if (type == RequestType.WebSocket) {
+            URI websocketURI = null;
+            try {
+                websocketURI = new URI(dataContent.getUrl());
+                HttpHeaders httpHeaders = new DefaultHttpHeaders();
+                //进行握手
+                WebSocketClientHandshaker handShaker = WebSocketClientHandshakerFactory.newHandshaker(
+                        websocketURI, WebSocketVersion.V13, (String)null, true, httpHeaders);
+                Channel channel = channelFuture.channel();
+                WebSocketRequestHandler handler = (WebSocketRequestHandler) channel.pipeline().get("hookedHandler");
+                handler.setHandShaker(handShaker);
+                handShaker.handshake(channel);
+                //阻塞等待是否握手成功
+                handler.handshakeFuture().sync();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         requestService.sendBinMessage(type,currentCtx, dataContent);
         CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
@@ -198,7 +222,6 @@ public class NettyClient {
     private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException, IOException {
 
        channelFuture = bootstrap.connect(getHost(), getPort()).sync();
-
         log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
 
         //注册连接事件
@@ -239,8 +262,6 @@ public class NettyClient {
             currentCtx = ModbusRequestHandler.myCtx;
         }else if (nettyClientInitializer instanceof UdpRequestInitializer) {
             currentCtx = UdpRequestHandler.myCtx;
-        } else if (nettyClientInitializer instanceof GzIscsInitializer) {
-            currentCtx = GzIscsRequestHandler.myCtx;
         }
     }
 

@@ -2,18 +2,18 @@ package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.cache.LocalDataCounter;
-import com.yuyi.pts.common.cache.OperateIdWithRequestDtoCache;
-import com.yuyi.pts.common.cache.OperateWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
+import com.yuyi.pts.common.enums.ProtocolType;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
+import com.yuyi.pts.config.NettyClientConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
+import com.yuyi.pts.netty.client.NettyClient;
+import com.yuyi.pts.netty.client.initializer.*;
 import com.yuyi.pts.service.ExecuteService;
-import com.yuyi.pts.service.ProtocolHandlerDispatcher;
 import com.yuyi.pts.service.ResponseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -38,21 +38,22 @@ import static com.yuyi.pts.common.util.ResultEntity.successWithData;
 @Slf4j
 public class ExecuteServiceImpl implements ExecuteService {
 
-
-    @Autowired
-    private ProtocolHandlerDispatcher protocolHandlerDispatcher;
-
     @Autowired
     private ResponseService responseService;
 
-
     private final ScheduledExecutorService scheduledExecutorService = ScheduledThreadPoolUtil.getInstance();
 
+    @Autowired
+    private NettyClient nettyClient;
+
+    @Autowired
+    private NettyClientInitializer nettyClientInitializer;
 
     /**
      * 请求类型
      */
     private RequestType requestType;
+
 
     @Override
     public void execute(WebSocketSession session, RequestDataDto requestDataDto) throws IOException {
@@ -82,9 +83,6 @@ public class ExecuteServiceImpl implements ExecuteService {
         }
     }
 
-    private void doCheck(WebSocketSession session, RequestDataDto requestDataDto) {
-        // todo 选择服务端  客户端
-    }
 
     private boolean checkOperattion(WebSocketSession session, RequestDataDto dataContent) {
         if (log.isDebugEnabled()) {
@@ -95,7 +93,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         SslCertType cert = dataContent.getCert();
         // 往下是对输入的参数合法性校验
         if (requestType == RequestType.HTTP) {
-           return checkHttpRequest(session,dataContent);
+            return checkHttpRequest(session, dataContent);
         } else {
             return true;
         }
@@ -103,21 +101,22 @@ public class ExecuteServiceImpl implements ExecuteService {
 
     /**
      * 检查Http请求
+     *
      * @param dataContent
      * @return
      */
-    private boolean checkHttpRequest(WebSocketSession session,RequestDataDto dataContent) {
+    private boolean checkHttpRequest(WebSocketSession session, RequestDataDto dataContent) {
         boolean flag = false;
         // 把url的字符串进行截取，拼接host和port
         String url = dataContent.getUrl();
-        String target = url.substring(0,7);
-        String targets = url.substring(0,8);
+        String target = url.substring(0, 7);
+        String targets = url.substring(0, 8);
         // 校验前7位
-        if("http://".equals(target)){
-            flag=true;
-        }else if ("https://".equals(targets)){
-            flag=true;
-        }else {
+        if ("http://".equals(target)) {
+            flag = true;
+        } else if ("https://".equals(targets)) {
+            flag = true;
+        } else {
             String responseData = ResultEntity.failedWithMsg(OperationCommand.MISSING_PARAMETER, "请输入正确的Ip地址");
             try {
                 session.sendMessage(new TextMessage(responseData));
@@ -132,31 +131,52 @@ public class ExecuteServiceImpl implements ExecuteService {
      * 真正执行测试的地方
      *
      * @param session     会话
-     * @param requestDataDto 数据
+     * @param dataContent 数据
      */
-    private void startTest(WebSocketSession session, RequestDataDto requestDataDto) {
-        // TODO 对请求进行校验 校验通过则根据protocolHandlerDispatcher进行任务分发，校验失败返回false到此处
-        String operateId = UUID.randomUUID().toString();
-        requestDataDto.setId(operateId);
-        requestDataDto.setId(session.getId());
-        // 存储需要请求的数量
-        LocalDataCounter.newCounter(operateId, ((long) requestDataDto.getAverage() * requestDataDto.getCount()));
-        // 共享WebSocketSession
-        OperateWithWebSocketSessionCache.put(operateId, session);
-        // 共享请求配置
-        OperateIdWithRequestDtoCache.put(operateId, requestDataDto);
-        doCheck(session, requestDataDto);
-        if (requestType == RequestType.TCP) {
-            protocolHandlerDispatcher.submitTCPRequest(session, requestDataDto);
-        } else if (requestType == RequestType.HTTP) {
-            protocolHandlerDispatcher.submitHttpRequest(session, requestDataDto);
+    private void startTest(WebSocketSession session, RequestDataDto dataContent) {
+        String host = dataContent.getHost();
+        int port = dataContent.getPort();
+        if (requestType == RequestType.HTTP || requestType == RequestType.WebSocket) {
+            try {
+                URI url = new URI(dataContent.getUrl());
+                host = url.getHost();
+                port = url.getPort();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (requestType == RequestType.UDP) {
-            protocolHandlerDispatcher.submitUdpRequest(session, requestDataDto);
-        } else if (requestType == RequestType.WebSocket) {
-            protocolHandlerDispatcher.submitWebSocketRequest(session, requestDataDto);
+            NettyClient client = NettyClientConfig.getNettyUdp();
+            nettyClient = client;
         }
+        chooseInitializer(dataContent);
+        nettyClient.setHost(host);
+        nettyClient.setPort(port);
+        nettyClient.setNettyClientInitializer(nettyClientInitializer);
+        nettyClient.start(dataContent.getType(), session, dataContent);
     }
 
+    /**
+     * 根据协议选择对应的处理器初始器 在nettyClient中还要通过chooseChannelHandlerContext()选择channelHandlerContext
+     *
+     * @param dataContent type--协议类型 ProtocolType--协议类型
+     */
+    public void chooseInitializer(RequestDataDto dataContent) {
+        RequestType type = dataContent.getType();
+        ProtocolType protocolType = dataContent.getProtocolType();
+        if (type == RequestType.TCP) {
+            if (protocolType == ProtocolType.modbus) {
+                nettyClientInitializer = new ModBusRequestInitializer();
+            } else {
+                nettyClientInitializer = new TcpRequestInitializer();
+            }
+        } else if (type == RequestType.HTTP) {
+            nettyClientInitializer = new HttpRequestInitializer();
+        } else if (type == RequestType.WebSocket) {
+            nettyClientInitializer = new WebSocketInitializer();
+        } else if (type == RequestType.UDP) {
+            nettyClientInitializer = new UdpRequestInitializer();
+        }
+    }
 
 
 }

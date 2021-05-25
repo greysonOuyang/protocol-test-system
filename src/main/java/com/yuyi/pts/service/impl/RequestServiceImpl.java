@@ -33,24 +33,34 @@ public class RequestServiceImpl implements RequestService {
         long interval = dataContent.getInterval();
         int value = new Long(interval).intValue();
         int count = dataContent.getCount();
+        String jsonString = JSONObject.toJSONString(dataContent.getBody());
+        log.debug("客户端往服务端发送的数据：{}", jsonString);
+        // 批量定时发送数据
+        Object finalToBeSendContent = getToBeSendContent(type, dataContent);
+        ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
+            currentCtx.writeAndFlush(finalToBeSendContent);
+        }, 0, value, count, TimeUnit.MILLISECONDS);
 
-        // tcp请求发数据给第三方
-        if(type == RequestType.TCP){
-            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
-                String jsonString = JSONObject.toJSONString(dataContent);
-                log.debug("客户端往服务端发送的数据：{}", jsonString);
-                currentCtx.writeAndFlush(dataContent);
-            }, 0, value, count, TimeUnit.MILLISECONDS);
-        }
-        // http给第三方发数据
-        else if (type == RequestType.HTTP){
+    }
+
+    /**
+     * 构造发送出去的请求
+     *
+     * @param type 请求类型
+     * @param dataContent 初始数据
+     * @return toBeSendContent 待发送的数据
+     */
+    private Object getToBeSendContent(RequestType type, RequestDataDto dataContent) {
+        Object toBeSendContent = null;
+        if (type == RequestType.HTTP){
+            // http给第三方发数据
             String url = dataContent.getUrl();
             String flag = url.substring(5,5);
             String urlResult = null;
             if("s".equals(flag)){
                 urlResult = url.substring(22);
             }else {
-                 urlResult = url.substring(21);
+                urlResult = url.substring(21);
             }
             String msg = dataContent.getBody().toString();
             byte[] bytes = msg.getBytes(CharsetUtil.UTF_8);
@@ -60,22 +70,10 @@ public class RequestServiceImpl implements RequestService {
             request= new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, urlResult, buf);
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
-            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
-                String jsonString = JSONObject.toJSONString(dataContent);
-                log.debug("客户端往服务端发送的数据：{}", jsonString);
-                currentCtx.writeAndFlush(request);
-            }, 0, value, count, TimeUnit.MILLISECONDS);
-        }else if(type == RequestType.UDP){
-
-            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
-                String jsonString = JSONObject.toJSONString(dataContent);
-                log.debug("客户端往服务端发送的数据：{}", jsonString);
-                currentCtx.writeAndFlush(dataContent);
-            }, 0, value, count, TimeUnit.MILLISECONDS);
-//            // TODO 这里行多次发送消息给服务端
-//            for (int i = 0; i < dataContent.getAverage(); i++) {
-//                currentCtx.writeAndFlush(dataContent);
-//            }
+            toBeSendContent = request;
+        }  else if (type == RequestType.TCP || type == RequestType.UDP || type == RequestType.WebSocket) {
+            toBeSendContent = dataContent;
         }
+        return toBeSendContent;
     }
 }
