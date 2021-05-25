@@ -249,22 +249,22 @@ public class InterfaceController {
 
     /**
      * 删除接口
-     * @param id
+     * @param map
      * @return
      */
-    @GetMapping("/interface/delInterface")
-    public String delInterface(@RequestBody String id) {
-         interfaceConfigService.deleteByPrimaryKey(id);
-        return ResultEntity.successWithNothing();
+    @PostMapping("/interface/delInterface")
+    public String delInterface(@RequestBody Map map) {
+         interfaceConfigService.deleteByInfaceConfigId(map.get("id").toString());
+         return ResultEntity.successWithNothing();
     }
     /**
      * 删除配置
-     * @param id
+     * @param map
      * @return
      */
-    @GetMapping("/interface/delConfig")
-    public String delConfig(@RequestBody String id) {
-         configService.deleteByPrimaryKey(Integer.parseInt(id));
+    @PostMapping("/interface/delConfig")
+    public String delConfig(@RequestBody Map map) {
+         configService.delConfigKeyId(map.get("id").toString());
         return ResultEntity.successWithNothing();
     }
     /**
@@ -272,7 +272,7 @@ public class InterfaceController {
      * @param
      * @return
      */
-    @GetMapping("/interface/delAllInterfaceInfo")
+    @PostMapping("/interface/delAllInterfaceInfo")
     public String delAllInterfaceInfo() {
         interfaceConfigService.deleteAll();
         configService.deleteAll();
@@ -283,7 +283,7 @@ public class InterfaceController {
      * @param
      * @return
      */
-    @GetMapping("/interface/delAllConfig")
+    @PostMapping("/interface/delAllConfig")
     public String delAllConfig() {
         configService.deleteAll();
         return ResultEntity.successWithNothing();

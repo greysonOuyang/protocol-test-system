@@ -39,6 +39,11 @@ public class TConfig implements Serializable {
      */
     private String interfaceConfigId;
 
+    /**
+     * 唯一标识符
+     */
+    private String configKeyId;
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -58,7 +63,8 @@ public class TConfig implements Serializable {
             && (this.getConfigName() == null ? other.getConfigName() == null : this.getConfigName().equals(other.getConfigName()))
             && (this.getConfigType() == null ? other.getConfigType() == null : this.getConfigType().equals(other.getConfigType()))
             && (this.getConfigValue() == null ? other.getConfigValue() == null : this.getConfigValue().equals(other.getConfigValue()))
-            && (this.getInterfaceConfigId() == null ? other.getInterfaceConfigId() == null : this.getInterfaceConfigId().equals(other.getInterfaceConfigId()));
+            && (this.getInterfaceConfigId() == null ? other.getInterfaceConfigId() == null : this.getInterfaceConfigId().equals(other.getInterfaceConfigId()))
+            && (this.getConfigKeyId() == null ? other.getConfigKeyId() == null : this.getConfigKeyId().equals(other.getConfigKeyId()));
     }
 
     @Override
@@ -71,6 +77,7 @@ public class TConfig implements Serializable {
         result = prime * result + ((getConfigType() == null) ? 0 : getConfigType().hashCode());
         result = prime * result + ((getConfigValue() == null) ? 0 : getConfigValue().hashCode());
         result = prime * result + ((getInterfaceConfigId() == null) ? 0 : getInterfaceConfigId().hashCode());
+        result = prime * result + ((getConfigKeyId() == null) ? 0 : getConfigKeyId().hashCode());
         return result;
     }
 
@@ -86,6 +93,7 @@ public class TConfig implements Serializable {
         sb.append(", configType=").append(configType);
         sb.append(", configValue=").append(configValue);
         sb.append(", interfaceConfigId=").append(interfaceConfigId);
+        sb.append(", configKeyId=").append(configKeyId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

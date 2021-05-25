@@ -137,7 +137,17 @@
     from t_interface_config
     where request_type = #{requestType,jdbcType=VARCHAR}
   </select>
+  <select id="selectByInfaceConfigId" resultType="com.yuyi.pts.model.client.TInterfaceConfig">
+      select
+      <include refid="Base_Column_List" />
+      from t_interface_config
+      where interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteAll" >
-    delete from t_config
+    delete from t_interface_config
   </delete>
+    <delete id="deleteByInfaceConfigId" parameterType="java.lang.String">
+      delete from t_interface_config
+      where interface_config_id = #{interfaceConfigId,jdbcType=INTEGER}
+    </delete>
 </mapper>

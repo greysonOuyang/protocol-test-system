@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface TInterfaceConfigService {
-    int deleteByPrimaryKey(String id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(ClientInterfaceVO clientInterfaceVO);
 
@@ -21,6 +21,8 @@ public interface TInterfaceConfigService {
     int updateByPrimaryKey(TInterfaceConfig record);
 
     List<ClientInterface> selectByRequestType(String type);
+
+    int deleteByInfaceConfigId(String keyId);
 
      void deleteAll();
 }
