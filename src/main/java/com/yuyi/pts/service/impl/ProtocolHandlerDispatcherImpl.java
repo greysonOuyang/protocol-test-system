@@ -68,7 +68,6 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
 
     @Override
     public void submitUdpRequest(WebSocketSession session, RequestDataDto dataContent) {
-//        NettyClient client = new NettyClient(dataContent.getHost());
         NettyClient client = NettyClientConfig.getNettyUdp();
         chooseInitializer(dataContent);
         client.setHost(dataContent.getHost());
@@ -77,6 +76,14 @@ public class ProtocolHandlerDispatcherImpl implements ProtocolHandlerDispatcher 
         client.start(dataContent.getType(),session, dataContent);
     }
 
+    @Override
+    public void submitWebSocketRequest(WebSocketSession session, RequestDataDto dataContent) {
+        chooseInitializer(dataContent);
+        nettyClient.setHost(dataContent.getHost());
+        nettyClient.setPort(dataContent.getPort());
+        nettyClient.setNettyClientInitializer(nettyClientInitializer);
+        nettyClient.start(dataContent.getType(),session, dataContent);
+    }
 
 
     /**
