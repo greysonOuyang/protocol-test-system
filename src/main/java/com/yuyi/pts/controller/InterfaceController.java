@@ -196,6 +196,11 @@ public class InterfaceController {
         String id = (String) map.get("id");
         ClientInterface clientInterface = ClientInterfaceCache.HTTP_INTERFACE_MAP.get(id);
         List<Config> configList1 = (ArrayList) map.get("configList");
+        List<Config> configList = clientInterface.getConfigList();
+        if (configList != null) {
+            configList1.addAll(configList);
+        }
+//        configList.addAll(configList1);
 //        List<ClientInterface.Config> configList = (List< ClientInterface.Config>) map.get("configList");
         clientInterface.setConfigList(configList1);
         ClientInterfaceCache.HTTP_INTERFACE_MAP.put(id, clientInterface);
