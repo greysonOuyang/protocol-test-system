@@ -13,11 +13,11 @@ import io.netty.channel.ChannelHandlerContext;
 public interface RequestService {
 
     /**
-     * 往第三方接口系统发送二进制数据、即序列化后的结果 只处理发送数的数据
+     * 往第三方接口系统发送文本
      *
-     * @param currentCtx
-     * @param dataContent
+     * @param currentCtx 当前handler处理器上下文
+     * @param dataContent 原始数据
      */
-    void sendBinMessage(RequestType type,ChannelHandlerContext currentCtx, RequestDataDto dataContent);
+    void sendTextMessage(RequestType type, ChannelHandlerContext currentCtx, RequestDataDto dataContent);
 
 }

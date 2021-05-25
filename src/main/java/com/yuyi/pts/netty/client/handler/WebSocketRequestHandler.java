@@ -52,7 +52,7 @@ public class WebSocketRequestHandler extends SimpleChannelInboundHandler<Object>
                 this.handshakeFuture.setFailure(new Exception(errorMsg));
             }
         } else if (msg instanceof FullHttpResponse) {
-            response = (FullHttpResponse)msg;
+            response = (FullHttpResponse) msg;
             throw new IllegalStateException("Unexpected FullHttpResponse (getStatus=" + response.status() + ", content=" + response.content().toString(CharsetUtil.UTF_8) + ')');
         } else {
             WebSocketFrame frame = (WebSocketFrame) msg;

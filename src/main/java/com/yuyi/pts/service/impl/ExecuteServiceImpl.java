@@ -134,8 +134,8 @@ public class ExecuteServiceImpl implements ExecuteService {
      * @param dataContent 数据
      */
     private void startTest(WebSocketSession session, RequestDataDto dataContent) {
-        String host = dataContent.getHost();
-        int port = dataContent.getPort();
+        String host = "";
+        int port = 0;
         if (requestType == RequestType.HTTP || requestType == RequestType.WebSocket) {
             try {
                 URI url = new URI(dataContent.getUrl());
@@ -145,8 +145,13 @@ public class ExecuteServiceImpl implements ExecuteService {
                 e.printStackTrace();
             }
         } else if (requestType == RequestType.UDP) {
+            host = dataContent.getHost();
+            port = dataContent.getPort();
             NettyClient client = NettyClientConfig.getNettyUdp();
             nettyClient = client;
+        } else if (requestType == RequestType.TCP) {
+            host = dataContent.getHost();
+            port = dataContent.getPort();
         }
         chooseInitializer(dataContent);
         nettyClient.setHost(host);

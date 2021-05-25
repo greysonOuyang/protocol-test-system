@@ -28,7 +28,7 @@ public class RequestServiceImpl implements RequestService {
 
     private FullHttpRequest request = null;
     @Override
-    public void sendBinMessage(RequestType type,ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
+    public void sendTextMessage(RequestType type, ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
         // 发送时间间隔
         long interval = dataContent.getInterval();
         int value = new Long(interval).intValue();

@@ -160,7 +160,7 @@ public class NettyClient {
      * @param dataContent
      */
 
-    private void doProcess(RequestType type,WebSocketSession session, RequestDataDto dataContent) {
+    private void doProcess(RequestType type, WebSocketSession session, RequestDataDto dataContent) {
         if (type == RequestType.WebSocket) {
             URI websocketURI = null;
             try {
@@ -179,7 +179,7 @@ public class NettyClient {
                 e.printStackTrace();
             }
         }
-        requestService.sendBinMessage(type,currentCtx, dataContent);
+        requestService.sendTextMessage(type,currentCtx, dataContent);
         CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
 
