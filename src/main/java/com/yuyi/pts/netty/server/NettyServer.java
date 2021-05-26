@@ -1,5 +1,6 @@
 package com.yuyi.pts.netty.server;
 
+import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.controller.MainController;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
@@ -71,14 +72,17 @@ public class NettyServer {
         try{
             future = serverBootstrap.bind(this.port).sync();
             if(future.isSuccess()){
-                log.info("nettyServer 完成启动 ");
-                MainController.STATUS_MAP.put(port, true);
+                String result = ResultEntity.successWithNothing();
+                MainController.STATUS_MAP.put(port, result);
             } else {
-                MainController.STATUS_MAP.put(port, false);
+                String result = ResultEntity.failedWithMsg("启动失败");
+                MainController.STATUS_MAP.put(port, result);
             }
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();
         }catch (Exception e){
+            String result = ResultEntity.failedWithMsg(e.getMessage());
+            MainController.STATUS_MAP.put(port, result);
             log.info("nettyServer 启动时发生异常---------------{}", e.getMessage());
             log.info(e.getMessage());
         }finally {

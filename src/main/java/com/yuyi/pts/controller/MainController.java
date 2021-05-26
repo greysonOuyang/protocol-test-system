@@ -25,7 +25,7 @@ public class MainController {
 
     private final ScheduledExecutorService scheduledExecutorService = ScheduledThreadPoolUtil.getInstance();
 
-    public static final Map<Integer, Boolean> STATUS_MAP = new HashMap<>();
+    public static final Map<Integer, String> STATUS_MAP = new HashMap<>();
 
     NettyServer nettyServer;
 
@@ -41,8 +41,12 @@ public class MainController {
     }
 
     @GetMapping("/server/status")
-    public boolean getServerStatus(String port) {
-        return STATUS_MAP.get(Integer.parseInt(port));
+    public String getServerStatus(String port) {
+        if (STATUS_MAP.get(Integer.parseInt(port)) != null) {
+            return STATUS_MAP.get(Integer.parseInt(port));
+        } else {
+            return "initializing";
+        }
     }
 
     /**
@@ -52,7 +56,7 @@ public class MainController {
      */
     @GetMapping("/stop/server")
     public boolean stopServer(String port) {
-        STATUS_MAP.put(Integer.parseInt(port), false);
+        STATUS_MAP.put(Integer.parseInt(port), "initializing");
         return nettyServer.stop();
     }
 
