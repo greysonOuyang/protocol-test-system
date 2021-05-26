@@ -102,10 +102,7 @@ public class NettyClient {
                 log.info("当前NettyClientInitializer类型为：" + nettyClientInitializer);
             }
             bootstrap.handler(nettyClientInitializer);
-            // TODO 每隔一秒建立一个连接 并行执行
-//            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
-//            }, 0, 1, dataContent.getCount(), TimeUnit.MILLISECONDS);
-            // udp不需要建立连接,其他类型需要建立连接
+            // udp不需要建立连接,其他类型需要建立连接 TODO UDP分成客户端和服务端，支持广播和单播
             if(RequestType.UDP.equals(type)){
                 doPostAndReceive(session, dataContent);
             } else {
@@ -114,7 +111,6 @@ public class NettyClient {
                 doProcess(type,session, dataContent);
                 // TODO 何时调用关闭待确定
                 doClose();
-                doClear(session);
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
@@ -184,18 +180,6 @@ public class NettyClient {
         CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
 
-    /**
-     * 关闭或者结束时清理请求
-     *
-     * @param session 会话
-     */
-    private void doClear(WebSocketSession session) {
-        channelFuture.addListener(ctl -> {
-            String id = session.getId();
-//            session.close();
-            // 各个缓存清除数据
-        });
-    }
 
     /**
      * 注册关闭事件
