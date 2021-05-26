@@ -11,7 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 
 /**
- * 发送数据到前端
+ * 发送数据到前端 TODO 并发发送数据的时候有BUG，不能用同步，会取不到session，后续使用cas处理
  *
  * @author greyson
  * @since 2021/4/16
@@ -23,9 +23,7 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     public void sendTextMsg(WebSocketSession session, String result) {
         try {
-            synchronized (session) {
-                session.sendMessage(new TextMessage(result));
-            }
+            session.sendMessage(new TextMessage(result));
         } catch (IOException e) {
             log.error("Session--{}发送消息失败", session.getId());
             e.printStackTrace();
@@ -36,9 +34,7 @@ public class ResponseServiceImpl implements ResponseService {
     public void sendTextMsg(ChannelHandlerContext ctx, String result) {
         WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
         try {
-            synchronized (session) {
-                session.sendMessage(new TextMessage(result));
-            }
+            session.sendMessage(new TextMessage(result));
         } catch (IOException e) {
             log.error("Session--{}发送消息失败", session.getId());
             e.printStackTrace();

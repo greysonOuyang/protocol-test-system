@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 public class RequestServiceImpl implements RequestService {
 
 
-    private FullHttpRequest request = null;
     @Override
     public void sendTextMessage(RequestType type, ChannelHandlerContext currentCtx, RequestDataDto dataContent) {
         // 发送时间间隔
@@ -39,6 +38,7 @@ public class RequestServiceImpl implements RequestService {
         log.debug("客户端往服务端发送的数据：{}", jsonString);
         // 批量定时发送数据
         Object finalToBeSendContent = getToBeSendContent(type, dataContent);
+//        TODO 在执行完所有的发送后对session以及服务进行关闭
         ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
             currentCtx.writeAndFlush(finalToBeSendContent);
         }, 0, value, count, TimeUnit.MILLISECONDS);
@@ -69,9 +69,9 @@ public class RequestServiceImpl implements RequestService {
             ByteBuf buf = Unpooled.wrappedBuffer(bytes);
             dataContent.getMethod();
             HttpMethod method = HttpMethod.valueOf(dataContent.getMethod().name());
-            request= new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, urlResult, buf);
+            FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, method, urlResult, buf);
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
-            request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
+            request.headers().add(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
             toBeSendContent = request;
         }  else if (type == RequestType.TCP || type == RequestType.UDP) {
             toBeSendContent = dataContent.getBody();
