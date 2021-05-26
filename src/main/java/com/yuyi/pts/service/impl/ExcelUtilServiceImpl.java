@@ -8,12 +8,17 @@ import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.dao.ParamDao;
+import com.yuyi.pts.dao.TInterfaceConfigDao;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.excel.ExcelLogs;
 import com.yuyi.pts.model.excel.ExcelUtil;
-import com.yuyi.pts.model.server.Param;
+import com.yuyi.pts.model.client.Param;
+import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -31,6 +36,11 @@ import java.util.*;
 @Service
 @Slf4j
 public class ExcelUtilServiceImpl implements ExcelUtilService {
+    @Autowired
+    private TInterfaceConfigDao tInterfaceConfigDao;
+    @Autowired
+    private ParamDao paramDao;
+
     @Override
     public void downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException {
         // 获取到接口名称，根据接口名称去配置对应的excel文件
@@ -68,47 +78,72 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 return ResultEntity.failedWithMsg("无法获取到文件");
             }
             try (InputStream inputStream = file.getInputStream()) {
+              String tInterfaceConfigId = UUID.randomUUID().toString().replace("-", "");
                 ExcelLogs logs = new ExcelLogs();
                 Map map = ExcelUtil.importExcel(Map.class, inputStream, "yyyy/MM/dd HH:mm:ss", logs, 0);
-                ServiceInterface serviceInterface = new ServiceInterface();
+                ServiceInterfaceJDBC serviceInterface = new ServiceInterfaceJDBC();
                 List<Map> messageType = (List)  map.get("messageType");
                 for (Map res : messageType) {
                     String type = (String) res.get("消息类型");
                     serviceInterface.setInterfaceType(type);
                 }
                 List<Map> inputMapList = (List) map.get("Input");
-                List<Param> input = new ArrayList<>();
                 for (Map res : inputMapList) {
-                    Param param = CommonUtil.mapToJavaBean(res, Param.class);
-                    input.add(param);
-                }
-                if (input != null && !input.isEmpty()) {
-                    serviceInterface.setInput(input);
+                    Param param = getParam(res);
+                    param.setParamIo("input");
+                    param.setParamInterfaceId(tInterfaceConfigId);
+                    param.setParamKeyId(UUID.randomUUID().toString().replace("-",""));
+                    paramDao.insert(param);
+
                 }
                 List<Map> outputMapList = (List) map.get("Output");
-                List<Param> output = new ArrayList<>();
-
                 for (Map res : outputMapList) {
-                    Param param = CommonUtil.mapToJavaBean(res, Param.class);
-                    output.add(param);
-                }
-                if (output != null && !output.isEmpty()) {
-                    serviceInterface.setOutput(output);
-                    System.out.println("serviceInterface 获取成功");
+                    Param param = getParam(res);
+                    param.setParamIo("output");
+                    param.setParamInterfaceId(tInterfaceConfigId);
+                    param.setParamKeyId(UUID.randomUUID().toString().replace("-",""));
+                    paramDao.insert(param);
+
                 }
                 // TODO UUID不唯一
                 serviceInterface.setInterfaceId(UUID.randomUUID().toString().replace("-", ""));
                 String originalFilename = file.getOriginalFilename();
-                int length = originalFilename.length();
-                String fileName = originalFilename.substring(0, length - 5);
-                serviceInterface.setInterfaceName(fileName);
-                InterfaceCache.put(serviceInterface.getInterfaceId(), serviceInterface);
+                TInterfaceConfig tInterfaceConfig = new TInterfaceConfig();
+                tInterfaceConfig.setCurrentmode("server");
+                // 文件名称作为 接口名称 //首先获取字符的位置
+                int loc = originalFilename.indexOf(".xls");
+                //再对字符串进行截取，获得想要得到的字符串
+                String requestName = originalFilename.substring(0,loc);
+                tInterfaceConfig.setRequestName(requestName);
+                tInterfaceConfig.setInterfaceConfigId(tInterfaceConfigId);
+                tInterfaceConfig.setRequestType(serviceInterface.getInterfaceType());
+                tInterfaceConfigDao.insert(tInterfaceConfig);
             } catch (IOException e) {
                 log.error("读取Excel文件出错：{}", e.getMessage());
                 return ResultEntity.failedWithMsg("解析文件出错");
             }
         }
         return ResultEntity.successWithNothing();
+    }
+
+    private Param getParam(Map res) {
+        Param param = new Param();
+        if(res.get("value")!=null){
+            param.setParamValue(res.get("value").toString());
+        }
+        if(res.get("length")!=null){
+            param.setParamLength(Integer.parseInt(res.get("length").toString()));
+        }
+        if(res.get("index")!=null){
+            param.setParamIndex(Integer.parseInt(res.get("index").toString()));
+        }
+        if(res.get("field")!=null){
+            param.setParamField(res.get("field").toString());
+        }
+        if(res.get("type")!=null){
+            param.setParamType(res.get("type").toString());
+        }
+        return param;
     }
 
     @Override
