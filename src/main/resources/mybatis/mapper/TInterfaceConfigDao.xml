@@ -11,13 +11,14 @@
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="port" jdbcType="INTEGER" property="port" />
     <result column="new_column" jdbcType="INTEGER" property="newColumn" />
+    <result column="currentMode" jdbcType="VARCHAR" property="currentmode" />
   </resultMap>
   <sql id="Base_Column_List">
-    key_id, interface_config_id, request_name, request_type, url, request_method, content, 
-    port, new_column
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, new_column, currentMode
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_interface_config
     where key_id = #{keyId,jdbcType=INTEGER}
@@ -27,12 +28,14 @@
     where key_id = #{keyId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="key_id" keyProperty="keyId" parameterType="com.yuyi.pts.model.client.TInterfaceConfig" useGeneratedKeys="true">
-    insert into t_interface_config (interface_config_id, request_name, request_type, 
-      url, request_method, content, 
-      port, new_column)
-    values (#{interfaceConfigId,jdbcType=VARCHAR}, #{requestName,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{requestMethod,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
-      #{port,jdbcType=INTEGER}, #{newColumn,jdbcType=INTEGER})
+    insert into t_interface_config (interface_config_id, request_name, request_type,
+                                    url, request_method, content,
+                                    port, new_column, currentMode
+    )
+    values (#{interfaceConfigId,jdbcType=VARCHAR}, #{requestName,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR},
+            #{url,jdbcType=VARCHAR}, #{requestMethod,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+            #{port,jdbcType=INTEGER}, #{newColumn,jdbcType=INTEGER}, #{currentmode,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" keyColumn="key_id" keyProperty="keyId" parameterType="com.yuyi.pts.model.client.TInterfaceConfig" useGeneratedKeys="true">
     insert into t_interface_config
@@ -61,6 +64,9 @@
       <if test="newColumn != null">
         new_column,
       </if>
+      <if test="currentmode != null">
+        currentMode,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="interfaceConfigId != null">
@@ -86,6 +92,9 @@
       </if>
       <if test="newColumn != null">
         #{newColumn,jdbcType=INTEGER},
+      </if>
+      <if test="currentmode != null">
+        #{currentmode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -116,19 +125,23 @@
       <if test="newColumn != null">
         new_column = #{newColumn,jdbcType=INTEGER},
       </if>
+      <if test="currentmode != null">
+        currentMode = #{currentmode,jdbcType=VARCHAR},
+      </if>
     </set>
     where key_id = #{keyId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yuyi.pts.model.client.TInterfaceConfig">
     update t_interface_config
     set interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR},
-      request_name = #{requestName,jdbcType=VARCHAR},
-      request_type = #{requestType,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR},
-      request_method = #{requestMethod,jdbcType=VARCHAR},
-      content = #{content,jdbcType=VARCHAR},
-      port = #{port,jdbcType=INTEGER},
-      new_column = #{newColumn,jdbcType=INTEGER}
+        request_name = #{requestName,jdbcType=VARCHAR},
+        request_type = #{requestType,jdbcType=VARCHAR},
+        url = #{url,jdbcType=VARCHAR},
+        request_method = #{requestMethod,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        port = #{port,jdbcType=INTEGER},
+        new_column = #{newColumn,jdbcType=INTEGER},
+        currentMode = #{currentmode,jdbcType=VARCHAR}
     where key_id = #{keyId,jdbcType=INTEGER}
   </update>
   <select id="selectByRequestType" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -137,11 +150,17 @@
     from t_interface_config
     where request_type = #{requestType,jdbcType=VARCHAR}
   </select>
-  <select id="selectByInfaceConfigId" resultType="com.yuyi.pts.model.client.TInterfaceConfig">
+  <select id="selectByInfaceConfigId" resultMap="BaseResultMap">
       select
       <include refid="Base_Column_List" />
       from t_interface_config
       where interface_config_id = #{interfaceConfigId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCurrentMode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_interface_config
+    where currentMode = #{currentmode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteAll" >
     delete from t_interface_config
@@ -150,4 +169,8 @@
       delete from t_interface_config
       where interface_config_id = #{interfaceConfigId,jdbcType=INTEGER}
     </delete>
+  <delete id="deleteByRequestType" parameterType="java.lang.String">
+    delete from t_interface_config
+    where request_type = #{requestType,jdbcType=INTEGER}
+  </delete>
 </mapper>

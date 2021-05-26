@@ -1,5 +1,6 @@
-package com.yuyi.pts.model.server;
+package com.yuyi.pts.model.client;
 
+import com.yuyi.pts.model.client.Param;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class ServiceInterface {
+public class ServiceInterfaceJDBC {
     /**
      * 消息类型 对应枚举类InterfaceMessageType
      */

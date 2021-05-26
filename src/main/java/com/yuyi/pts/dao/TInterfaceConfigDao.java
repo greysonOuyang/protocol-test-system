@@ -1,5 +1,6 @@
 package com.yuyi.pts.dao;
 
+import com.yuyi.pts.model.client.ClientInterface;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,7 +23,11 @@ public interface TInterfaceConfigDao {
 
     int deleteByInfaceConfigId(String keyId);
 
+    int deleteByRequestType(String requestType);
+
     void deleteAll();
 
     TInterfaceConfig selectByInfaceConfigId();
+
+    List<TInterfaceConfig> selectByCurrentMode(String currentMode);
 }

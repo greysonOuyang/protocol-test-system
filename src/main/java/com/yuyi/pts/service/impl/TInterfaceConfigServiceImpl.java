@@ -1,19 +1,18 @@
 package com.yuyi.pts.service.impl;
 
+import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.dao.ParamDao;
 import com.yuyi.pts.dao.TConfigDao;
 import com.yuyi.pts.dao.TInterfaceConfigDao;
-import com.yuyi.pts.model.client.ClientInterface;
-import com.yuyi.pts.model.client.TConfig;
-import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.model.client.*;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import com.yuyi.pts.service.TInterfaceConfigService;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.events.Event;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -27,10 +26,12 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     private TInterfaceConfigDao tInterfaceConfigDao;
     @Autowired
     private TConfigDao configDao;
+    @Autowired
+    private ParamDao paramDao;
 
     @Override
     public int deleteByPrimaryKey(Integer id) {
-       return tInterfaceConfigDao.deleteByPrimaryKey(id);
+        return tInterfaceConfigDao.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -86,16 +87,72 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     @Override
     public int deleteByInfaceConfigId(String keyId) {
         // 删除配置 和 接口
-       List<TConfig> tConfigList = configDao.selectByInfaceConfigId(keyId);
+        List<Param> tConfigList = paramDao.selectByInfaceConfigId(keyId);
         if(tConfigList.size()!=0){
-            configDao.delByInterfaceConfigId(keyId);
+            paramDao.delByInterfaceConfigId(keyId);
         }
         return tInterfaceConfigDao.deleteByInfaceConfigId(keyId);
     }
 
     @Override
+    public int deleteByRequestType(String requestType) {
+        List<TInterfaceConfig> list = tInterfaceConfigDao.selectByRequestType(requestType);
+        list.forEach(item->{
+            String interfaceConfigId = item.getInterfaceConfigId();
+            configDao.delByInterfaceConfigId(interfaceConfigId);
+        });
+        tInterfaceConfigDao.deleteByRequestType(requestType);
+        return 0;
+    }
+
+    @Override
     public void deleteAll() {
         tInterfaceConfigDao.deleteAll();
+    }
+
+    @Override
+    public List<ServiceInterfaceJDBC> selectByCurrentMode(String currentMode) {
+        List<TInterfaceConfig> list = tInterfaceConfigDao.selectByCurrentMode(currentMode);
+        List<ServiceInterfaceJDBC> listResult = new ArrayList<>();
+        list.forEach(item->{
+            ServiceInterfaceJDBC serviceInterfaceJDBC = new ServiceInterfaceJDBC();
+            String id = item.getInterfaceConfigId();
+            serviceInterfaceJDBC.setInterfaceId(id);
+            serviceInterfaceJDBC.setInterfaceName(item.getRequestName());
+            serviceInterfaceJDBC.setInterfaceType(item.getRequestType());
+            serviceInterfaceJDBC.setCurrentMode(item.getCurrentmode());
+            List<Param> paramInput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("input")).collect(Collectors.toList());
+            List<Param> paramOutput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("output")).collect(Collectors.toList());
+            //  输入参数 和 输出 分开保存
+            if(paramInput.size()>0){
+                serviceInterfaceJDBC.setInput(paramInput);
+            }
+            if(paramOutput.size()>0){
+                serviceInterfaceJDBC.setOutput(paramOutput);
+            }
+            listResult.add(serviceInterfaceJDBC);
+
+        });
+        return listResult;
+    }
+
+    private FieldType getParamType(String paramType) {
+        switch (paramType){
+            case "Hex":
+                return FieldType.Hex;
+            case "String":
+                return FieldType.String;
+            case "ASCII":
+                return FieldType.ASCII;
+            case "Time":
+                return FieldType.Time;
+            case "Int":
+                return FieldType.Int;
+            case "null":
+                return FieldType.Unkonw;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -113,5 +170,17 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
         interfaceConfig.setRequestName(clientInterface.getRequestName());;
         interfaceConfig.setUrl(clientInterface.getUrl());
         return interfaceConfig;
+    }
+
+    @Override
+    public void insertServer(ServiceInterfaceJDBC serviceInterfaceJDBC) {
+        serviceInterfaceJDBC.getInterfaceName();
+        TInterfaceConfig tInterfaceConfig = new TInterfaceConfig();
+        tInterfaceConfig.setRequestType(serviceInterfaceJDBC.getInterfaceType());
+        //  请求名称 与 接口名称进行匹配
+        tInterfaceConfig.setRequestName(serviceInterfaceJDBC.getInterfaceName());
+        tInterfaceConfig.setCurrentmode(serviceInterfaceJDBC.getCurrentMode());
+        tInterfaceConfig.setInterfaceConfigId(UUID.randomUUID().toString().replace("-",""));
+        tInterfaceConfigDao.insert(tInterfaceConfig);
     }
 }

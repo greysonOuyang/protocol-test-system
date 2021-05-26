@@ -48,6 +48,11 @@ public class TInterfaceConfig implements Serializable {
 
     private Integer newColumn;
 
+    /**
+     * 客户端/服务端
+     */
+    private String currentmode;
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -70,7 +75,8 @@ public class TInterfaceConfig implements Serializable {
             && (this.getRequestMethod() == null ? other.getRequestMethod() == null : this.getRequestMethod().equals(other.getRequestMethod()))
             && (this.getContent() == null ? other.getContent() == null : this.getContent().equals(other.getContent()))
             && (this.getPort() == null ? other.getPort() == null : this.getPort().equals(other.getPort()))
-            && (this.getNewColumn() == null ? other.getNewColumn() == null : this.getNewColumn().equals(other.getNewColumn()));
+            && (this.getNewColumn() == null ? other.getNewColumn() == null : this.getNewColumn().equals(other.getNewColumn()))
+            && (this.getCurrentmode() == null ? other.getCurrentmode() == null : this.getCurrentmode().equals(other.getCurrentmode()));
     }
 
     @Override
@@ -86,6 +92,7 @@ public class TInterfaceConfig implements Serializable {
         result = prime * result + ((getContent() == null) ? 0 : getContent().hashCode());
         result = prime * result + ((getPort() == null) ? 0 : getPort().hashCode());
         result = prime * result + ((getNewColumn() == null) ? 0 : getNewColumn().hashCode());
+        result = prime * result + ((getCurrentmode() == null) ? 0 : getCurrentmode().hashCode());
         return result;
     }
 
@@ -104,6 +111,7 @@ public class TInterfaceConfig implements Serializable {
         sb.append(", content=").append(content);
         sb.append(", port=").append(port);
         sb.append(", newColumn=").append(newColumn);
+        sb.append(", currentmode=").append(currentmode);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
