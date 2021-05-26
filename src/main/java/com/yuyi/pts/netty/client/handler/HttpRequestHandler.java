@@ -42,7 +42,7 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         myCtx = ctx;
         super.channelActive(ctx);
-        log.info("客户端已经被激活:" + ctx.channel().remoteAddress().toString());
+        log.info("HTTP客户端已经被激活:" + ctx.channel().remoteAddress().toString());
         ctx.flush();
     }
 

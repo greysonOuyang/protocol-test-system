@@ -34,6 +34,13 @@ public class WebSocketRequestHandler extends SimpleChannelInboundHandler<Object>
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        myCtx = ctx;
+        super.channelActive(ctx);
+        ctx.flush();
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("等待握手完成：{} ", this.handShaker.isHandshakeComplete());
         Channel ch = ctx.channel();

@@ -23,7 +23,9 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     public void sendTextMsg(WebSocketSession session, String result) {
         try {
-            session.sendMessage(new TextMessage(result));
+            synchronized (session) {
+                session.sendMessage(new TextMessage(result));
+            }
         } catch (IOException e) {
             log.error("Session--{}发送消息失败", session.getId());
             e.printStackTrace();
@@ -34,7 +36,9 @@ public class ResponseServiceImpl implements ResponseService {
     public void sendTextMsg(ChannelHandlerContext ctx, String result) {
         WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
         try {
-            session.sendMessage(new TextMessage(result));
+            synchronized (session) {
+                session.sendMessage(new TextMessage(result));
+            }
         } catch (IOException e) {
             log.error("Session--{}发送消息失败", session.getId());
             e.printStackTrace();

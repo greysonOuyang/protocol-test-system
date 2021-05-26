@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ public class RequestServiceImpl implements RequestService {
         // 发送时间间隔
         long interval = dataContent.getInterval();
         int value = new Long(interval).intValue();
-        int count = dataContent.getCount();
+        // 每个连接发送几次请求
+        int count = dataContent.getAverage();
         String jsonString = JSONObject.toJSONString(dataContent.getBody());
         log.debug("客户端往服务端发送的数据：{}", jsonString);
         // 批量定时发送数据
@@ -71,8 +73,12 @@ public class RequestServiceImpl implements RequestService {
             request.headers().add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH,request.content().readableBytes());
             toBeSendContent = request;
-        }  else if (type == RequestType.TCP || type == RequestType.UDP || type == RequestType.WebSocket) {
-            toBeSendContent = dataContent;
+        }  else if (type == RequestType.TCP || type == RequestType.UDP) {
+            toBeSendContent = dataContent.getBody();
+        } else if (type == RequestType.WebSocket) {
+// TODO           待支持更多类型的消息 ping pong bin
+            TextWebSocketFrame text = new TextWebSocketFrame((String) dataContent.getBody());
+            toBeSendContent = text;
         }
         return toBeSendContent;
     }

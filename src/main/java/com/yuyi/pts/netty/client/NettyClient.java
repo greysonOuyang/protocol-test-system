@@ -102,18 +102,19 @@ public class NettyClient {
                 log.info("当前NettyClientInitializer类型为：" + nettyClientInitializer);
             }
             bootstrap.handler(nettyClientInitializer);
-            for (int i = 0; i < dataContent.getCount(); i++) {
-                // udp不需要建立连接,其他类型需要建立连接
-                if(RequestType.UDP.equals(type)){
-                    doPostAndReceive(session, dataContent);
-                } else {
-                    doConnect(session, dataContent);
-                    chooseChannelHandlerContext(nettyClientInitializer);
-                    doProcess(type,session, dataContent);
-                    // TODO 何时调用关闭待确定
-                    doClose();
-                    doClear(session);
-                }
+            // TODO 每隔一秒建立一个连接 并行执行
+//            ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
+//            }, 0, 1, dataContent.getCount(), TimeUnit.MILLISECONDS);
+            // udp不需要建立连接,其他类型需要建立连接
+            if(RequestType.UDP.equals(type)){
+                doPostAndReceive(session, dataContent);
+            } else {
+                doConnect(session, dataContent);
+                chooseChannelHandlerContext(nettyClientInitializer);
+                doProcess(type,session, dataContent);
+                // TODO 何时调用关闭待确定
+                doClose();
+                doClear(session);
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
@@ -179,7 +180,7 @@ public class NettyClient {
                 e.printStackTrace();
             }
         }
-        requestService.sendTextMessage(type,currentCtx, dataContent);
+        requestService.sendTextMessage(type, currentCtx, dataContent);
         CtxWithWebSocketSessionCache.put(currentCtx, session);
     }
 
