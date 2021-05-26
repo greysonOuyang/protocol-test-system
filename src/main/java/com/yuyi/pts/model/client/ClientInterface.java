@@ -18,6 +18,7 @@ import java.util.List;
 public class ClientInterface {
     private String id;
     private String requestName;
+    private String currentMode;
     private String requestType;
     private String url;
     private String requestMethod;

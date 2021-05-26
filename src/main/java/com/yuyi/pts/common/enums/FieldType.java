@@ -16,14 +16,14 @@ public enum FieldType {
      */
     String,
     /**
-     * ASCII
+     * ASCIIa
      */
     ASCII,
     /**
      * 时间
      */
     Time,
-
+    Unkonw,
     Int
     ;
 }

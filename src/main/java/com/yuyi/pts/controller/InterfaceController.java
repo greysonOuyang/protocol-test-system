@@ -1,29 +1,25 @@
 package com.yuyi.pts.controller;
 
-import com.yuyi.pts.common.cache.ClientInterfaceCache;
+
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.InterfaceMessageType;
-import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.client.ClientInterface;
-import com.yuyi.pts.model.client.Config;
-import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import com.yuyi.pts.service.impl.TConfigServiceImpl;
 import com.yuyi.pts.service.impl.TInterfaceConfigServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.jcp.xml.dsig.internal.dom.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 接口管理
@@ -58,7 +54,7 @@ public class InterfaceController {
         String trainCount = map.get("trainCount");
         // TODO 先根据趟数组织站台列车数据，每站包含多趟列车数据；总数居又包含多个站
         if (interfaceType.equals(InterfaceMessageType.PLAN_INFO.getDescription())) {
-            ServiceInterface serviceInterface = InterfaceCache.get(interfaceId);
+            com.yuyi.pts.model.server.ServiceInterface serviceInterface = InterfaceCache.get(interfaceId);
             List<Param> terminalList = new ArrayList<>();
             Param param1 = new Param();
             param1.setField("站台数");
@@ -167,19 +163,13 @@ public class InterfaceController {
         return serviceInterfaceList;
     }
 
-    @PostMapping("interface/delete")
+    @PostMapping("interface/delServerInterfaceConfig")
     public String deleteInterface(@RequestBody List<Map> idList) {
+        idList.forEach(item->{
+            interfaceConfigService.deleteByInfaceConfigId(item.get("interfaceConfigId").toString());
+        });
+        return ResultEntity.successWithNothing();
 
-        int startNum = getCacheSize();
-        InterfaceCache.remove(idList);
-        // 拿最开始的缓存数据 减去删除后的缓存数据
-        int endNum = InterfaceCache.INTERFACE_MAP.size();
-        int number = startNum - endNum;
-        if(number>=1){
-            return ResultEntity.successWithData(number);
-        }else{
-            return ResultEntity.failedWithData("删除失败，请重新尝试");
-        }
     }
 
     @PostMapping("interface/deleteAll")
@@ -249,14 +239,17 @@ public class InterfaceController {
 
     /**
      * 删除接口
-     * @param map
+     * @param idList
      * @return
      */
-    @PostMapping("/interface/delInterface")
-    public String delInterface(@RequestBody Map map) {
-         interfaceConfigService.deleteByInfaceConfigId(map.get("id").toString());
-         return ResultEntity.successWithNothing();
+    @PostMapping("/interface/delInterfaceConfig")
+    public String delInterface(@RequestBody List<Map> idList) {
+        idList.forEach(item->{
+            interfaceConfigService.deleteByInfaceConfigId(item.get("interfaceConfigId").toString());
+        });
+        return ResultEntity.successWithNothing();
     }
+
     /**
      * 删除配置
      * @param map
@@ -273,9 +266,10 @@ public class InterfaceController {
      * @return
      */
     @PostMapping("/interface/delAllInterfaceInfo")
-    public String delAllInterfaceInfo() {
-        interfaceConfigService.deleteAll();
-        configService.deleteAll();
+    public String delAllInterfaceInfo(@RequestBody Map map) {
+        String requestType = map.get("requestType").toString();
+        String currentMode =   map.get("currentMode").toString();
+        interfaceConfigService.deleteByRequestType(requestType);
         return ResultEntity.successWithNothing();
     }
     /**
@@ -288,4 +282,30 @@ public class InterfaceController {
         configService.deleteAll();
         return ResultEntity.successWithNothing();
     }
+
+    /**
+     *   服务端增加
+     * @param serviceInterfaceJDBC
+     * @return
+     */
+    @PostMapping("/interface/server/add")
+    public String addServerInterface(@RequestBody ServiceInterfaceJDBC serviceInterfaceJDBC) {
+        interfaceConfigService.insertServer(serviceInterfaceJDBC);
+        return ResultEntity.successWithNothing();
+    }
+
+    /**
+     *  服务端减少
+     * @param map
+     * @return
+     */
+    @PostMapping ("/interface/getAllServerInterfaceInfo")
+    public List<ServiceInterfaceJDBC> getAllServerInterfaceInfo(@RequestBody Map map) {
+        String currentMode = map.get("currentMode").toString();
+        List<ServiceInterfaceJDBC> list = interfaceConfigService.selectByCurrentMode(currentMode);
+        return list;
+
+    }
+
+
 }

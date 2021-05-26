@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuyi.pts.dao.ParamDao">
+  <resultMap id="BaseResultMap" type="com.yuyi.pts.model.client.Param">
+    <id column="param_id" jdbcType="INTEGER" property="paramId" />
+    <result column="param_interface_id" jdbcType="VARCHAR" property="paramInterfaceId" />
+    <result column="param_key_id" jdbcType="VARCHAR" property="paramKeyId" />
+    <result column="param_index" jdbcType="INTEGER" property="paramIndex" />
+    <result column="param_length" jdbcType="INTEGER" property="paramLength" />
+    <result column="param_field" jdbcType="VARCHAR" property="paramField" />
+    <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+    <result column="param_io" jdbcType="VARCHAR" property="paramIo" />
+    <result column="extend3" jdbcType="INTEGER" property="extend3" />
+    <result column="extend4" jdbcType="INTEGER" property="extend4" />
+    <result column="extend5" jdbcType="INTEGER" property="extend5" />
+    <result column="extend6" jdbcType="INTEGER" property="extend6" />
+    <result column="extend7" jdbcType="INTEGER" property="extend7" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    param_id, param_interface_id, param_key_id, param_index, param_length, param_field, 
+    param_value, param_type, param_io, extend3, extend4, extend5, extend6, extend7
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from param
+    where param_id = #{paramId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByInfaceConfigId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from param
+    where param_interface_id = #{paramInterfaceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from param
+    where param_id = #{paramId,jdbcType=INTEGER}
+  </delete>
+  <delete id="delByInterfaceConfigId" parameterType="java.lang.String">
+    delete from param
+    where param_interface_id = #{paramInterfaceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="param_id" keyProperty="paramId" parameterType="com.yuyi.pts.model.client.Param" useGeneratedKeys="true">
+    insert into param (param_interface_id, param_key_id, param_index, 
+      param_length, param_field, param_value, 
+      param_type, param_io, extend3, 
+      extend4, extend5, extend6, 
+      extend7)
+    values (#{paramInterfaceId,jdbcType=VARCHAR}, #{paramKeyId,jdbcType=VARCHAR}, #{paramIndex,jdbcType=INTEGER}, 
+      #{paramLength,jdbcType=INTEGER}, #{paramField,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR}, 
+      #{paramType,jdbcType=INTEGER}, #{paramIo,jdbcType=VARCHAR}, #{extend3,jdbcType=INTEGER}, 
+      #{extend4,jdbcType=INTEGER}, #{extend5,jdbcType=INTEGER}, #{extend6,jdbcType=INTEGER}, 
+      #{extend7,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="param_id" keyProperty="paramId" parameterType="com.yuyi.pts.model.client.Param" useGeneratedKeys="true">
+    insert into param
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paramInterfaceId != null">
+        param_interface_id,
+      </if>
+      <if test="paramKeyId != null">
+        param_key_id,
+      </if>
+      <if test="paramIndex != null">
+        param_index,
+      </if>
+      <if test="paramLength != null">
+        param_length,
+      </if>
+      <if test="paramField != null">
+        param_field,
+      </if>
+      <if test="paramValue != null">
+        param_value,
+      </if>
+      <if test="paramType != null">
+        param_type,
+      </if>
+      <if test="paramIo != null">
+        param_io,
+      </if>
+      <if test="extend3 != null">
+        extend3,
+      </if>
+      <if test="extend4 != null">
+        extend4,
+      </if>
+      <if test="extend5 != null">
+        extend5,
+      </if>
+      <if test="extend6 != null">
+        extend6,
+      </if>
+      <if test="extend7 != null">
+        extend7,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paramInterfaceId != null">
+        #{paramInterfaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="paramKeyId != null">
+        #{paramKeyId,jdbcType=VARCHAR},
+      </if>
+      <if test="paramIndex != null">
+        #{paramIndex,jdbcType=INTEGER},
+      </if>
+      <if test="paramLength != null">
+        #{paramLength,jdbcType=INTEGER},
+      </if>
+      <if test="paramField != null">
+        #{paramField,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null">
+        #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="paramType != null">
+        #{paramType,jdbcType=INTEGER},
+      </if>
+      <if test="paramIo != null">
+        #{paramIo,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        #{extend3,jdbcType=INTEGER},
+      </if>
+      <if test="extend4 != null">
+        #{extend4,jdbcType=INTEGER},
+      </if>
+      <if test="extend5 != null">
+        #{extend5,jdbcType=INTEGER},
+      </if>
+      <if test="extend6 != null">
+        #{extend6,jdbcType=INTEGER},
+      </if>
+      <if test="extend7 != null">
+        #{extend7,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yuyi.pts.model.client.Param">
+    update param
+    <set>
+      <if test="paramInterfaceId != null">
+        param_interface_id = #{paramInterfaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="paramKeyId != null">
+        param_key_id = #{paramKeyId,jdbcType=VARCHAR},
+      </if>
+      <if test="paramIndex != null">
+        param_index = #{paramIndex,jdbcType=INTEGER},
+      </if>
+      <if test="paramLength != null">
+        param_length = #{paramLength,jdbcType=INTEGER},
+      </if>
+      <if test="paramField != null">
+        param_field = #{paramField,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null">
+        param_value = #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="paramType != null">
+        param_type = #{paramType,jdbcType=INTEGER},
+      </if>
+      <if test="paramIo != null">
+        param_io = #{paramIo,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        extend3 = #{extend3,jdbcType=INTEGER},
+      </if>
+      <if test="extend4 != null">
+        extend4 = #{extend4,jdbcType=INTEGER},
+      </if>
+      <if test="extend5 != null">
+        extend5 = #{extend5,jdbcType=INTEGER},
+      </if>
+      <if test="extend6 != null">
+        extend6 = #{extend6,jdbcType=INTEGER},
+      </if>
+      <if test="extend7 != null">
+        extend7 = #{extend7,jdbcType=INTEGER},
+      </if>
+    </set>
+    where param_id = #{paramId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yuyi.pts.model.client.Param">
+    update param
+    set param_interface_id = #{paramInterfaceId,jdbcType=VARCHAR},
+      param_key_id = #{paramKeyId,jdbcType=VARCHAR},
+      param_index = #{paramIndex,jdbcType=INTEGER},
+      param_length = #{paramLength,jdbcType=INTEGER},
+      param_field = #{paramField,jdbcType=VARCHAR},
+      param_value = #{paramValue,jdbcType=VARCHAR},
+      param_type = #{paramType,jdbcType=INTEGER},
+      param_io = #{paramIo,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=INTEGER},
+      extend4 = #{extend4,jdbcType=INTEGER},
+      extend5 = #{extend5,jdbcType=INTEGER},
+      extend6 = #{extend6,jdbcType=INTEGER},
+      extend7 = #{extend7,jdbcType=INTEGER}
+    where param_id = #{paramId,jdbcType=INTEGER}
+  </update>
+</mapper>
