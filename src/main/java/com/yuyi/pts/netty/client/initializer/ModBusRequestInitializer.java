@@ -17,9 +17,9 @@ public class ModBusRequestInitializer extends NettyClientInitializer<SocketChann
         ch.pipeline()
                 .addLast(
                         // 自定义解码
-                        new ModBusDecoder(),
                         new ModBusEncoder(),
                         new IdleStateHandler(3, 0, 0),
+                        new ModBusDecoder(),
                         //自定义的处理器
                         new ModbusRequestHandler());
     }
