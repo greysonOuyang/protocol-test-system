@@ -136,6 +136,11 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
         return listResult;
     }
 
+    @Override
+    public void insert(TInterfaceConfig tInterfaceConfig) {
+        tInterfaceConfigDao.insert(tInterfaceConfig);
+    }
+
     private FieldType getParamType(String paramType) {
         switch (paramType){
             case "Hex":

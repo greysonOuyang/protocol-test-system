@@ -77,4 +77,14 @@ public class ParamServiceImpl implements ParamService {
     public int updateByPrimaryKey(Param record) {
         return paramDao.updateByPrimaryKey(record);
     }
+
+    @Override
+    public List<Param> selectByInterfaceConfigId(String interfaceId) {
+        return paramDao.selectByInfaceConfigId(interfaceId);
+    }
+
+    @Override
+    public void insert(Param item) {
+        paramDao.insert(item);
+    }
 }

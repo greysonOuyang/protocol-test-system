@@ -27,7 +27,7 @@ public interface TInterfaceConfigDao {
 
     void deleteAll();
 
-    TInterfaceConfig selectByInfaceConfigId();
+    TInterfaceConfig selectByInfaceConfigId(String id);
 
     List<TInterfaceConfig> selectByCurrentMode(String currentMode);
 }
