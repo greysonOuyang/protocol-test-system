@@ -1,0 +1,1 @@
+INSERT INTO pis.t_config (config_key, config_name, config_type, config_value, config_id, Interface_config_id, config_key_id) VALUES ('3', '3', 'input', null, 1134, 'ad3b27aadc2448bf80cd74bd5a836cd4', null);
