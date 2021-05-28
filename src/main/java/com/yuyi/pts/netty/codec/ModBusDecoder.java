@@ -58,7 +58,7 @@ public class ModBusDecoder extends ByteToMessageDecoder {
         //功能码
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(body[0]);
-        if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"06".equals(ByteBufUtil.hexDump(buffer))){
+        if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"10".equals(ByteBufUtil.hexDump(buffer))){
             buffer.writeByte(body[1]);
         }
         modBusMessage.setCode(ByteBufUtil.hexDump(buffer));
@@ -66,7 +66,7 @@ public class ModBusDecoder extends ByteToMessageDecoder {
 // 数据
         byte[] data = null ;
         int length;
-        if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"06".equals(ByteBufUtil.hexDump(buffer))){
+        if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"10".equals(ByteBufUtil.hexDump(buffer))){
             data = new byte[bodylength-2];
             length=bodylength-2;
         }else {
