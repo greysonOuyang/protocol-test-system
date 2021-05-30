@@ -5,12 +5,16 @@ import com.yuyi.pts.common.enums.InterfaceMessageType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.model.server.Param;
 import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.netty.ChannelSupervise;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 服务器处理程序
@@ -21,6 +25,8 @@ import java.util.List;
 @Slf4j
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
+    public static Map<String, Object> RETURN_MAP = new HashMap<String, Object>();
+
     ServiceInterface serviceInterface = null;
 
     public NettyServerHandler(ServiceInterface serviceInterface){
@@ -28,9 +34,18 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        //添加连接
+        log.debug("客户端加入连接："+ctx.channel());
+        ChannelSupervise.addChannel(ctx.channel());
+    }
 
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+         Map<String, Object> messageMap = new HashMap<String, Object>();
+
+        super.channelRead(ctx, msg);
+        messageMap.put("input", msg);
         List<Param> outputList = serviceInterface.getOutput();
         String interfaceType = serviceInterface.getInterfaceType();
         byte[] sourceByteArr = null;
@@ -84,6 +99,15 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
+        messageMap.put("output", sourceByteArr);
+        RETURN_MAP.put(UUID.randomUUID().toString(), messageMap);
         ctx.channel().writeAndFlush(sourceByteArr);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //断开连接
+        log.debug("客户端断开连接："+ctx.channel());
+        ChannelSupervise.removeChannel(ctx.channel());
     }
 }

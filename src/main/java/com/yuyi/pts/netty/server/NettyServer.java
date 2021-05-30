@@ -1,6 +1,7 @@
 package com.yuyi.pts.netty.server;
 
 import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
@@ -16,6 +17,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 /**
@@ -52,9 +54,15 @@ public class NettyServer {
         return false;
     }
 
-    public void start(){
-        log.info(" nettyServer 正在启动");
 
+    @PostConstruct()
+    public void start() {
+        //需要开启一个新的线程来执行netty server 服务器
+        ScheduledThreadPoolUtil.getInstance().execute(this::init);
+    }
+
+    public void init(){
+        log.info(" nettyServer 正在启动");
         boss = new NioEventLoopGroup();
         worker = new NioEventLoopGroup();
 

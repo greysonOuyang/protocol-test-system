@@ -4,6 +4,7 @@ import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
+import com.yuyi.pts.netty.ChannelSupervise;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.channel.*;
@@ -36,7 +37,6 @@ public class WebSocketRequestHandler extends SimpleChannelInboundHandler<Object>
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         myCtx = ctx;
-        super.channelActive(ctx);
         ctx.flush();
     }
 
@@ -62,6 +62,7 @@ public class WebSocketRequestHandler extends SimpleChannelInboundHandler<Object>
             response = (FullHttpResponse) msg;
             throw new IllegalStateException("Unexpected FullHttpResponse (getStatus=" + response.status() + ", content=" + response.content().toString(CharsetUtil.UTF_8) + ')');
         } else {
+//            TODO 暂时只支持文本消息发送 其他消息待做
             WebSocketFrame frame = (WebSocketFrame) msg;
             String content = "";
             if (frame instanceof TextWebSocketFrame) {
@@ -80,6 +81,10 @@ public class WebSocketRequestHandler extends SimpleChannelInboundHandler<Object>
             String result = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
             responseService.sendTextMsg(ctx, result);
         }
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     }
 
     @Override

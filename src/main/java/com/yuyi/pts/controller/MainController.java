@@ -36,8 +36,7 @@ public class MainController {
         int port = request.getPort();
         nettyServer = new NettyServer(serviceInterface, port);
         nettyServer.start();
-//        scheduledExecutorService.execute(() -> {
-//        });
+
     }
 
     @GetMapping("/server/status")
