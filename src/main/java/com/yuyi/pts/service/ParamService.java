@@ -3,6 +3,8 @@ package com.yuyi.pts.service;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 
+import java.util.List;
+
 public interface ParamService {
     int deleteByPrimaryKey(Integer paramId);
 
@@ -15,4 +17,8 @@ public interface ParamService {
     int updateByPrimaryKeySelective(Param record);
 
     int updateByPrimaryKey(Param record);
+
+    List<Param> selectByInterfaceConfigId(String interfaceId);
+
+    void insert(Param item);
 }

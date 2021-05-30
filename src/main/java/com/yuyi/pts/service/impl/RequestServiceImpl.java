@@ -74,7 +74,7 @@ public class RequestServiceImpl implements RequestService {
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
             toBeSendContent = request;
         }  else if (type == RequestType.TCP || type == RequestType.UDP) {
-            toBeSendContent = dataContent.getBody();
+            toBeSendContent = dataContent;
         } else if (type == RequestType.WebSocket) {
 // TODO           待支持更多类型的消息 ping pong bin
             TextWebSocketFrame text = new TextWebSocketFrame((String) dataContent.getBody());

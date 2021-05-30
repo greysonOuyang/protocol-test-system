@@ -31,4 +31,6 @@ public interface TInterfaceConfigService {
      void deleteAll();
 
     List<ServiceInterfaceJDBC>selectByCurrentMode(String currentMode);
+
+    void insert(TInterfaceConfig tInterfaceConfig);
 }

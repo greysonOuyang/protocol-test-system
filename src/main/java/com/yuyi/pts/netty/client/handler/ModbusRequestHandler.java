@@ -73,7 +73,6 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         int code = Integer.parseInt(codeHexStr);
         String body = result.getBody();//05
         String returnMsg = "";
-        // TODO 验证大小端模式
         if (!"04".equals(codeHexStr) && !"10".equals(codeHexStr)) {
             log.info("服务端返回了异常消息...");
             if ("00".equals(body)) {
@@ -98,12 +97,4 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         String response = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE,  responseInfo);
         responseService.sendTextMsg(ctx, response);
     }
-
-
-//    @Override
-//    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-//        log.error("ModbusRequestHandler出现错误：{}", cause.getMessage());
-//    }
-
-
 }
