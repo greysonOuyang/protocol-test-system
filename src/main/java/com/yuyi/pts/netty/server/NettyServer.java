@@ -3,6 +3,7 @@ package com.yuyi.pts.netty.server;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -32,10 +33,10 @@ public class NettyServer {
     EventLoopGroup boss =null;
     EventLoopGroup worker =null;
     public ChannelFuture future = null;
-    ServiceInterface serviceInterface;
+    TInterfaceConfig serviceInterface;
     int port;
 
-    public NettyServer(ServiceInterface service, int port){
+    public NettyServer(TInterfaceConfig service, int port){
         this.serviceInterface = service;
         this.port = port;
     }

@@ -5,14 +5,18 @@ import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.dao.ParamDao;
 import com.yuyi.pts.dao.TConfigDao;
 import com.yuyi.pts.dao.TInterfaceConfigDao;
-import com.yuyi.pts.model.client.*;
+import com.yuyi.pts.model.client.ClientInterface;
+import com.yuyi.pts.model.client.Param;
+import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.ClientInterfaceVO;
 import com.yuyi.pts.service.TInterfaceConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @description:
@@ -121,15 +125,15 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
             serviceInterfaceJDBC.setInterfaceName(item.getRequestName());
             serviceInterfaceJDBC.setInterfaceType(item.getRequestType());
             serviceInterfaceJDBC.setCurrentMode(item.getCurrentmode());
-            List<Param> paramInput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("input")).collect(Collectors.toList());
-            List<Param> paramOutput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("output")).collect(Collectors.toList());
-            //  输入参数 和 输出 分开保存
-            if(paramInput.size()>0){
-                serviceInterfaceJDBC.setInput(paramInput);
-            }
-            if(paramOutput.size()>0){
-                serviceInterfaceJDBC.setOutput(paramOutput);
-            }
+//            List<Param> paramInput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("input")).collect(Collectors.toList());
+//            List<Param> paramOutput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("output")).collect(Collectors.toList());
+//            //  输入参数 和 输出 分开保存
+//            if(paramInput.size()>0){
+//                serviceInterfaceJDBC.setInput(paramInput);
+//            }
+//            if(paramOutput.size()>0){
+//                serviceInterfaceJDBC.setOutput(paramOutput);
+//            }
             listResult.add(serviceInterfaceJDBC);
 
         });

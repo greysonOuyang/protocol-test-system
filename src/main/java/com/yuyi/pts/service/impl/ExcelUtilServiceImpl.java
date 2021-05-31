@@ -1,20 +1,19 @@
 package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.constant.ExcelConstant;
 import com.yuyi.pts.common.constant.ParamConstant;
-import com.yuyi.pts.common.util.CommonUtil;
+import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.dao.ParamDao;
 import com.yuyi.pts.dao.TInterfaceConfigDao;
+import com.yuyi.pts.model.client.Param;
+import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.excel.ExcelLogs;
 import com.yuyi.pts.model.excel.ExcelUtil;
-import com.yuyi.pts.model.client.Param;
-import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
@@ -141,7 +140,7 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             param.setParamField(res.get("field").toString());
         }
         if(res.get("type")!=null){
-            param.setParamType(res.get("type").toString());
+            param.setParamType((FieldType) res.get("type"));
         }
         return param;
     }

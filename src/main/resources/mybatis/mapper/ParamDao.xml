@@ -33,7 +33,14 @@
     from param
     where param_interface_id = #{paramInterfaceId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="findOutPut" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from param
+      where param_interface_id = #{paramInterfaceId,jdbcType=INTEGER}
+        and param_io = 'output';
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from param
     where param_id = #{paramId,jdbcType=INTEGER}
   </delete>

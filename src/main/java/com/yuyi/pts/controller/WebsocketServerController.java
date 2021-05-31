@@ -1,7 +1,9 @@
 package com.yuyi.pts.controller;
 
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.ServerRequestDto;
 import com.yuyi.pts.netty.server.NettyServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -15,21 +17,27 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class WebsocketServerController {
 
-    NettyServer nettyServer;
+    public static NettyServer nettyServer;
+
+    @Autowired
+    InterfaceService interfaceService;
 
     @MessageMapping("/start/server")
     @SendTo("/topic/response")
     public String execute(ServerRequestDto request) {
-//        String jsonString = JSON.toJSONString(request);
         System.out.println(request);
-//        String serviceInterfaceId = request.getInterfaceId();
+
+        String serviceInterfaceId = request.getInterfaceId();
+        TInterfaceConfig tInterfaceConfig = interfaceService.selectInterfaceById(serviceInterfaceId);
+
 //        ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
-//        int port = request.getPort();
-//        nettyServer = new NettyServer(serviceInterface, port);
+        int port = request.getPort();
+        nettyServer = new NettyServer(tInterfaceConfig, port);
         nettyServer.start();
 //        NettyServerHandler.RETURN_MAP.forEach(item -> {
 //
 //        });
         return "success";
     }
+
 }

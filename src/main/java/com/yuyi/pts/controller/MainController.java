@@ -3,7 +3,6 @@ package com.yuyi.pts.controller;
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.server.ServiceInterface;
-import com.yuyi.pts.model.vo.request.ServerRequestDto;
 import com.yuyi.pts.netty.server.NettyServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +28,15 @@ public class MainController {
 
     NettyServer nettyServer;
 
-    @PostMapping("/start/server")
-    public void execute(@RequestBody ServerRequestDto request) {
-        String serviceInterfaceId = request.getInterfaceId();
-        ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
-        int port = request.getPort();
-        nettyServer = new NettyServer(serviceInterface, port);
-        nettyServer.start();
-
-    }
+//    @PostMapping("/start/server")
+//    public void execute(@RequestBody ServerRequestDto request) {
+//        String serviceInterfaceId = request.getInterfaceId();
+//        ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
+//        int port = request.getPort();
+//        nettyServer = new NettyServer(serviceInterface, port);
+//        nettyServer.start();
+//
+//    }
 
     @GetMapping("/server/status")
     public String getServerStatus(String port) {
@@ -56,7 +55,7 @@ public class MainController {
     @GetMapping("/stop/server")
     public boolean stopServer(String port) {
         STATUS_MAP.put(Integer.parseInt(port), "initializing");
-        return nettyServer.stop();
+        return WebsocketServerController.nettyServer.stop();
     }
 
 

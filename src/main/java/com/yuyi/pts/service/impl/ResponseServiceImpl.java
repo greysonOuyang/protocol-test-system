@@ -4,6 +4,8 @@ import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.service.ResponseService;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -19,6 +21,9 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class ResponseServiceImpl implements ResponseService {
+
+    @Autowired
+    private SimpMessageSendingOperations simpMessageSendingOperations;
 
     @Override
     public void sendTextMsg(WebSocketSession session, String result) {
@@ -39,5 +44,15 @@ public class ResponseServiceImpl implements ResponseService {
             log.error("Session--{}发送消息失败", session.getId());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * stomp协议广播消息，不指定用户，所有订阅此的用户都能收到消息
+     *
+     * @param msg
+     */
+    @Override
+    public void broadcast(Object msg) {
+        simpMessageSendingOperations.convertAndSend("/topic/response", msg);
     }
 }

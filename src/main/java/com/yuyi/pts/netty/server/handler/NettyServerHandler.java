@@ -3,9 +3,12 @@ package com.yuyi.pts.netty.server.handler;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.InterfaceMessageType;
 import com.yuyi.pts.common.util.ByteUtils;
-import com.yuyi.pts.model.server.Param;
-import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.common.util.SpringUtils;
+import com.yuyi.pts.model.client.Param;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.netty.ChannelSupervise;
+import com.yuyi.pts.service.ResponseService;
+import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * 服务器处理程序
@@ -25,29 +27,34 @@ import java.util.UUID;
 @Slf4j
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
-    public static Map<String, Object> RETURN_MAP = new HashMap<String, Object>();
+    public static ResponseService responseService;
 
-    ServiceInterface serviceInterface = null;
+    static {
+        responseService = SpringUtils.getBean(ResponseServiceImpl.class);
+    }
 
-    public NettyServerHandler(ServiceInterface serviceInterface){
+    public static Map<String, Object> RETURN_MAP = new HashMap<>();
+
+    TInterfaceConfig serviceInterface = null;
+
+    public NettyServerHandler(TInterfaceConfig serviceInterface) {
         this.serviceInterface = serviceInterface;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //添加连接
-        log.debug("客户端加入连接："+ctx.channel());
+        log.debug("客户端加入连接：" + ctx.channel());
         ChannelSupervise.addChannel(ctx.channel());
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-         Map<String, Object> messageMap = new HashMap<String, Object>();
-
-        super.channelRead(ctx, msg);
+        Map<String, Object> messageMap = new HashMap<String, Object>();
         messageMap.put("input", msg);
+        super.channelRead(ctx, msg);
         List<Param> outputList = serviceInterface.getOutput();
-        String interfaceType = serviceInterface.getInterfaceType();
+        String interfaceType = serviceInterface.getRequestType();
         byte[] sourceByteArr = null;
         // 写入消息类型 供编码使用 一个自己
         String messageType = InterfaceMessageType.stream()
@@ -58,9 +65,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         // 写入数据，组织成对方想要的数据
         for (Param param : outputList) {
             // 当前字段长度
-            int currentFieldLength = param.getLength();
-            String value = param.getValue().trim();
-            FieldType type = param.getType();
+            int currentFieldLength = param.getParamLength();
+            String value = param.getParamValue().trim();
+            FieldType type = param.getParamType();
             // 发给对方时的字节数, 默认是当前参数自带的length字段
             int storeLength = currentFieldLength;
             byte[] tempBytes = null;
@@ -100,14 +107,14 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             }
         }
         messageMap.put("output", sourceByteArr);
-        RETURN_MAP.put(UUID.randomUUID().toString(), messageMap);
+        responseService.broadcast(messageMap);
         ctx.channel().writeAndFlush(sourceByteArr);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //断开连接
-        log.debug("客户端断开连接："+ctx.channel());
+        log.debug("客户端断开连接：" + ctx.channel());
         ChannelSupervise.removeChannel(ctx.channel());
     }
 }

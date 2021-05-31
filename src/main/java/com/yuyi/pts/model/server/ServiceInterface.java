@@ -25,11 +25,12 @@ public class ServiceInterface {
     private String interfaceId;
     private String interfaceName;
     private String currentMode;
-    private String paramIO;
+    private String paramId;
     /**
      * 输入参数列表
      */
     private List<Param> input;
+
     /**
      * 输出参数列表
      */

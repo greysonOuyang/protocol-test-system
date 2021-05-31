@@ -1,11 +1,12 @@
 package com.yuyi.pts.model.client;
 
-import java.io.Serializable;
-
+import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.InstanceFactory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * param
@@ -55,7 +56,7 @@ public class Param implements Serializable {
     /**
      * 参数类型
      */
-    private String paramType;
+    private FieldType paramType;
 
     /**
      * 输入输出

@@ -1,7 +1,7 @@
 package com.yuyi.pts.netty.server.initializer;
 
 import com.yuyi.pts.common.constant.Constant;
-import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.netty.codec.ModBusDecoder;
 import com.yuyi.pts.netty.codec.SmartCarEncoder;
 import com.yuyi.pts.netty.server.handler.NettyServerHandler;
@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    ServiceInterface serviceInterface = null;
+    TInterfaceConfig serviceInterface = null;
 
-    public NettyServerInitializer(ServiceInterface serviceInterface){
+    public NettyServerInitializer(TInterfaceConfig serviceInterface){
         this.serviceInterface = serviceInterface;
     }
 

@@ -1,6 +1,5 @@
 package com.yuyi.pts.dao;
 
-import com.yuyi.pts.model.client.ClientInterface;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -30,4 +29,5 @@ public interface TInterfaceConfigDao {
     TInterfaceConfig selectByInfaceConfigId(String id);
 
     List<TInterfaceConfig> selectByCurrentMode(String currentMode);
+
 }
