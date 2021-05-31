@@ -24,20 +24,12 @@ public class WebsocketServerController {
 
     @MessageMapping("/start/server")
     @SendTo("/topic/response")
-    public String execute(ServerRequestDto request) {
-        System.out.println(request);
-
+    public void execute(ServerRequestDto request) {
         String serviceInterfaceId = request.getInterfaceId();
         TInterfaceConfig tInterfaceConfig = interfaceService.selectInterfaceById(serviceInterfaceId);
-
-//        ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
         int port = request.getPort();
         nettyServer = new NettyServer(tInterfaceConfig, port);
         nettyServer.start();
-//        NettyServerHandler.RETURN_MAP.forEach(item -> {
-//
-//        });
-        return "success";
     }
 
 }
