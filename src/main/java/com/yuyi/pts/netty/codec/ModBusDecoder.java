@@ -63,7 +63,7 @@ public class ModBusDecoder extends ByteToMessageDecoder {
         }
         modBusMessage.setCode(ByteBufUtil.hexDump(buffer));
 
-// 数据
+        // 数据
         byte[] data = null ;
         int length;
         if(!"04".equals(ByteBufUtil.hexDump(buffer))&&!"10".equals(ByteBufUtil.hexDump(buffer))){

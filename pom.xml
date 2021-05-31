@@ -39,6 +39,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.ssssssss</groupId>
+            <artifactId>magic-api-spring-boot-starter</artifactId>
+            <version>0.7.1</version>
+        </dependency>
         <!--spring boot 整合mybatis的初始依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

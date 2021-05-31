@@ -207,4 +207,51 @@
       extend7 = #{extend7,jdbcType=INTEGER}
     where param_id = #{paramId,jdbcType=INTEGER}
   </update>
+
+  <resultMap type="com.yuyi.pts.model.client.ServiceInterfaceJDBC" id="test1">
+<!--  private String paramIO;-->
+    <result column="interface_config_id" jdbcType="VARCHAR" property="interfaceId" />
+    <result column="request_name" jdbcType="VARCHAR" property="interfaceName" />
+    <result column="request_type" jdbcType="VARCHAR" property="interfaceType" />
+    <result column="currentMode" jdbcType="VARCHAR" property="currentMode" />
+    <collection property="input" ofType="com.yuyi.pts.model.client.Param" javaType="java.util.List">
+      <id column="param_id" jdbcType="INTEGER" property="paramId" />
+      <result column="param_interface_id" jdbcType="VARCHAR" property="paramInterfaceId" />
+      <result column="param_key_id" jdbcType="VARCHAR" property="paramKeyId" />
+      <result column="param_index" jdbcType="INTEGER" property="paramIndex" />
+      <result column="param_length" jdbcType="INTEGER" property="paramLength" />
+      <result column="param_field" jdbcType="VARCHAR" property="paramField" />
+      <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+      <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+      <result column="param_io" jdbcType="VARCHAR" property="paramIo" />
+    </collection>
+    <collection property="output" ofType="com.yuyi.pts.model.client.Param" javaType="java.util.List">
+      <id column="param_id" jdbcType="INTEGER" property="paramId" />
+      <result column="param_interface_id" jdbcType="VARCHAR" property="paramInterfaceId" />
+      <result column="param_key_id" jdbcType="VARCHAR" property="paramKeyId" />
+      <result column="param_index" jdbcType="INTEGER" property="paramIndex" />
+      <result column="param_length" jdbcType="INTEGER" property="paramLength" />
+      <result column="param_field" jdbcType="VARCHAR" property="paramField" />
+      <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+      <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+      <result column="param_io" jdbcType="VARCHAR" property="paramIo" />
+    </collection>
+  </resultMap>
+  <select id="selectTest" resultMap="test1">
+    SELECT
+      interface_config_id,
+      request_name,
+      request_type,
+      currentMode,
+      param.param_interface_id AS param_interface_id,
+      param.param_key_id AS param_key_id,
+      param.param_index AS param_index,
+      param.param_length AS param_length,
+      param.param_field AS param_field,
+      param.param_value AS param_value,
+      param.param_type AS param_type,
+      param.param_io AS param_io
+    FROM t_interface_config
+           LEFT JOIN  param ON param_interface_id=#{paramInterfaceId,jdbcType=INTEGER} where interface_config_id = param_interface_id
+  </select>
 </mapper>

@@ -1,6 +1,8 @@
 package com.yuyi.pts.dao;
 
 import com.yuyi.pts.model.client.Param;
+import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
+import com.yuyi.pts.model.client.TConfig;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -24,5 +26,7 @@ public interface ParamDao {
     List<Param> findOutPut(String interfaceConfigId);
 
     void delByInterfaceConfigId(String keyId);
+
+    List<ServiceInterfaceJDBC> selectTest(String interfaceConfigId);
 
 }
