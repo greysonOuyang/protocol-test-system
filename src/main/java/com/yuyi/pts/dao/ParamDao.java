@@ -27,6 +27,5 @@ public interface ParamDao {
 
     void delByInterfaceConfigId(String keyId);
 
-    List<ServiceInterfaceJDBC> selectTest(String interfaceConfigId);
 
 }

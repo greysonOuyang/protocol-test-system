@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -70,7 +71,6 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     @Override
     public List<ClientInterface> selectByRequestType(String type) {
         List<TInterfaceConfig> listTInterfaceConfig = tInterfaceConfigDao.selectByRequestType(type);
-
         List<ClientInterface> clientInterfaceList = new ArrayList<>();
         listTInterfaceConfig.forEach(item -> {
             String id = item.getInterfaceConfigId();
@@ -116,6 +116,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
 
     @Override
     public List<ServiceInterfaceJDBC> selectByCurrentMode(String currentMode) {
+
         List<TInterfaceConfig> list = tInterfaceConfigDao.selectByCurrentMode(currentMode);
         List<ServiceInterfaceJDBC> listResult = new ArrayList<>();
         list.forEach(item->{

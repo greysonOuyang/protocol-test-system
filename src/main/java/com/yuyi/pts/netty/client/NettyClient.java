@@ -130,7 +130,7 @@ public class NettyClient {
             ch = bootstrap.bind(8888).sync().channel();
             // 向网段类所有机器广播发UDP，这是想客户端发送内容
             ch.writeAndFlush(new DatagramPacket(
-                    Unpooled.copiedBuffer("我是在客户端写的！！！", CharsetUtil.UTF_8),
+                    Unpooled.copiedBuffer(dataContent.getBody().toString(), CharsetUtil.UTF_8),
                     //地址
                     new InetSocketAddress(
                             dataContent.getHost(),port
