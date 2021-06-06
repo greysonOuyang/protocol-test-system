@@ -4,7 +4,6 @@ import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
 import com.yuyi.pts.model.client.TInterfaceConfig;
-import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -85,7 +84,9 @@ public class NettyServer {
                 MainController.STATUS_MAP.put(port, result);
             } else {
                 String result = ResultEntity.failedWithMsg("启动失败");
-                MainController.STATUS_MAP.put(port, result);
+                if (MainController.STATUS_MAP.get(port) != null) {
+                    MainController.STATUS_MAP.put(port, result);
+                }
             }
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();

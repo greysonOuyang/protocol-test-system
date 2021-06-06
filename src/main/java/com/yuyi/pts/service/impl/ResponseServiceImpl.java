@@ -52,7 +52,7 @@ public class ResponseServiceImpl implements ResponseService {
      * @param msg
      */
     @Override
-    public void broadcast(Object msg) {
-        simpMessageSendingOperations.convertAndSend("/topic/response", msg);
+    public void broadcast(String topic, Object msg) {
+        simpMessageSendingOperations.convertAndSend(topic, msg);
     }
 }

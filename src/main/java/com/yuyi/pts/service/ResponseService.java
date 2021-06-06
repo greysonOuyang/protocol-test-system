@@ -29,6 +29,6 @@ public interface ResponseService {
      */
     void sendTextMsg(ChannelHandlerContext ctx, String result);
 
-    void broadcast(Object msg);
+    void broadcast(String topic, Object msg);
 
 }
