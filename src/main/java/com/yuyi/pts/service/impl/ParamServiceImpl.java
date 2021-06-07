@@ -46,11 +46,11 @@ public class ParamServiceImpl implements ParamService {
                    param.setParamIo(paramIO);
                    param.setParamInterfaceId(interfaceId);
                    param.setParamKeyId(UUID.randomUUID().toString().replace("-",""));
-                   param.setParamField(item.getParamField());
-                   param.setParamIndex(item.getParamIndex());
-                   param.setParamType(item.getParamType());
-                   param.setParamLength(item.getParamLength());
-                   param.setParamValue(item.getParamValue());
+                   param.setField(item.getField());
+                   param.setIndex(item.getIndex());
+                   param.setType(item.getType());
+                   param.setLength(item.getLength());
+                   param.setValue(item.getValue());
                    paramDao.insert(param);
                }
 

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.constant.ExcelConstant;
 import com.yuyi.pts.common.constant.ParamConstant;
 import com.yuyi.pts.common.enums.FieldType;
+import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.common.util.ResultEntity;
@@ -88,7 +89,9 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 }
                 List<Map> inputMapList = (List) map.get("Input");
                 for (Map res : inputMapList) {
-                    Param param = getParam(res);
+//                    Param param = (Param) res;
+                    Param param = CommonUtil.mapToJavaBean(res, Param.class);
+//                    Param param = getParam(res);
                     param.setParamIo("input");
                     param.setParamInterfaceId(tInterfaceConfigId);
                     param.setParamKeyId(UUID.randomUUID().toString().replace("-",""));
@@ -97,7 +100,10 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 }
                 List<Map> outputMapList = (List) map.get("Output");
                 for (Map res : outputMapList) {
-                    Param param = getParam(res);
+//                    Param param = (Param) res;
+//                    Param param = getParam(res);
+                    Param param = CommonUtil.mapToJavaBean(res, Param.class);
+
                     param.setParamIo("output");
                     param.setParamInterfaceId(tInterfaceConfigId);
                     param.setParamKeyId(UUID.randomUUID().toString().replace("-",""));
@@ -128,19 +134,19 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
     private Param getParam(Map res) {
         Param param = new Param();
         if(res.get("value")!=null){
-            param.setParamValue(res.get("value").toString());
+            param.setValue(res.get("value").toString());
         }
         if(res.get("length")!=null){
-            param.setParamLength(Integer.parseInt(res.get("length").toString()));
+            param.setLength(Integer.parseInt(res.get("length").toString()));
         }
         if(res.get("index")!=null){
-            param.setParamIndex(Integer.parseInt(res.get("index").toString()));
+            param.setIndex(Integer.parseInt(res.get("index").toString()));
         }
         if(res.get("field")!=null){
-            param.setParamField(res.get("field").toString());
+            param.setField(res.get("field").toString());
         }
         if(res.get("type")!=null){
-            param.setParamType((FieldType) res.get("type"));
+            param.setType((FieldType) res.get("type"));
         }
         return param;
     }

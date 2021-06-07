@@ -5,11 +5,11 @@
     <id column="param_id" jdbcType="INTEGER" property="paramId" />
     <result column="param_interface_id" jdbcType="VARCHAR" property="paramInterfaceId" />
     <result column="param_key_id" jdbcType="VARCHAR" property="paramKeyId" />
-    <result column="param_index" jdbcType="INTEGER" property="paramIndex" />
-    <result column="param_length" jdbcType="INTEGER" property="paramLength" />
-    <result column="param_field" jdbcType="VARCHAR" property="paramField" />
-    <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
-    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+    <result column="param_index" jdbcType="INTEGER" property="index" />
+    <result column="param_length" jdbcType="INTEGER" property="length" />
+    <result column="param_field" jdbcType="VARCHAR" property="field" />
+    <result column="param_value" jdbcType="VARCHAR" property="value" />
+    <result column="param_type" jdbcType="VARCHAR" property="type" />
     <result column="param_io" jdbcType="VARCHAR" property="paramIo" />
     <result column="extend3" jdbcType="INTEGER" property="extend3" />
     <result column="extend4" jdbcType="INTEGER" property="extend4" />
@@ -54,9 +54,9 @@
       param_type, param_io, extend3, 
       extend4, extend5, extend6, 
       extend7)
-    values (#{paramInterfaceId,jdbcType=VARCHAR}, #{paramKeyId,jdbcType=VARCHAR}, #{paramIndex,jdbcType=INTEGER}, 
-      #{paramLength,jdbcType=INTEGER}, #{paramField,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR}, 
-      #{paramType,jdbcType=INTEGER}, #{paramIo,jdbcType=VARCHAR}, #{extend3,jdbcType=INTEGER}, 
+    values (#{paramInterfaceId,jdbcType=VARCHAR}, #{paramKeyId,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER},
+      #{length,jdbcType=INTEGER}, #{field,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR},
+      #{type,jdbcType=VARCHAR}, #{paramIo,jdbcType=VARCHAR}, #{extend3,jdbcType=INTEGER},
       #{extend4,jdbcType=INTEGER}, #{extend5,jdbcType=INTEGER}, #{extend6,jdbcType=INTEGER}, 
       #{extend7,jdbcType=INTEGER})
   </insert>

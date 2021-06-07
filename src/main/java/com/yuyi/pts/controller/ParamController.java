@@ -66,32 +66,32 @@ public class ParamController {
             List<Param> paramList = paramService.selectByInterfaceConfigId(interfaceId);
             List<Param> terminalList = new ArrayList<>();
             Param param1 = new Param();
-            param1.setParamField("站台数");
-            param1.setParamValue(stationCount);
-            param1.setParamType(FieldType.Int);
-            param1.setParamLength(2);
+            param1.setField("站台数");
+            param1.setValue(stationCount);
+            param1.setType(FieldType.Int);
+            param1.setLength(2);
             terminalList.add(param1);
             for (int i = 0; i < Integer.parseInt(stationCount); i++) {
                 Param param2 = new Param();
-                param2.setParamField("车站编号");
+                param2.setField("车站编号");
                 int stationCode = Integer.parseInt(CommonUtil.random1To18IntStr());
-                param2.setParamValue(String.valueOf(stationCode));
-                param2.setParamType(FieldType.Int);
-                param2.setParamLength(2);
+                param2.setValue(String.valueOf(stationCode));
+                param2.setType(FieldType.Int);
+                param2.setLength(2);
                 terminalList.add(param2);
                 Param param3 = new Param();
-                param3.setParamField("站台编号");
+                param3.setField("站台编号");
                 String stationNumber = CommonUtil.random1To10IntStr();
                 int index = Integer.parseInt(stationNumber);
-                param3.setParamValue(stationNumber);
-                param3.setParamType(FieldType.Int);
-                param3.setParamLength(1);
+                param3.setValue(stationNumber);
+                param3.setType(FieldType.Int);
+                param3.setLength(1);
                 terminalList.add(param3);
                 Param param4 = new Param();
-                param4.setParamField("站台列车趟数");
-                param4.setParamValue(trainCount);
-                param4.setParamType(FieldType.Int);
-                param4.setParamLength(2);
+                param4.setField("站台列车趟数");
+                param4.setValue(trainCount);
+                param4.setType(FieldType.Int);
+                param4.setLength(2);
                 terminalList.add(param4);
                 // 获取模板配置
                 List<Param> output = paramList.stream().filter(p->p.getParamIo().equals("output")).collect(Collectors.toList());
@@ -160,8 +160,8 @@ public class ParamController {
     public Param setValue(Param param, Map<String, String> map) {
         Param newParam = null;
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (param.getParamField().equals(entry.getKey())) {
-                param.setParamValue(entry.getValue());
+            if (param.getField().equals(entry.getKey())) {
+                param.setValue(entry.getValue());
                 // paramFactory获取多例对象 单例存在以下bug：字段名相同，多轮循环返回的是同一个对象
                 newParam = Param.paramFactory.get(param);;
                 break;

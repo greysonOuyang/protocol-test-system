@@ -59,9 +59,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         // 写入数据，组织成对方想要的数据
         for (Param param : outputList) {
             // 当前字段长度
-            int currentFieldLength = param.getParamLength();
-            String value = param.getParamValue().trim();
-            FieldType type = param.getParamType();
+            int currentFieldLength = param.getLength();
+            String value = param.getValue().trim();
+            FieldType type = param.getType();
             // 发给对方时的字节数, 默认是当前参数自带的length字段
             int storeLength = currentFieldLength;
             byte[] tempBytes = null;

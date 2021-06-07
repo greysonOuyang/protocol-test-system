@@ -36,27 +36,27 @@ public class Param implements Serializable {
     /**
      * 写入下标
      */
-    private Integer paramIndex;
+    private Integer index;
 
     /**
      * 参数长度
      */
-    private Integer paramLength;
+    private Integer length;
 
     /**
      * 参数名称
      */
-    private String paramField;
+    private String field;
 
     /**
      * 参数值
      */
-    private String paramValue;
+    private String value;
 
     /**
      * 参数类型
      */
-    private FieldType paramType;
+    private FieldType type;
 
     /**
      * 输入输出
@@ -79,12 +79,12 @@ public class Param implements Serializable {
         this.paramId = param.paramId;
         this.paramInterfaceId = param.paramInterfaceId;
         this.paramKeyId = param.paramKeyId;
-        this.paramIndex = param.paramIndex;
-        this.paramLength = param.paramLength;
+        this.index = param.index;
+        this.length = param.length;
 
-        this.paramField = param.paramField;
-        this.paramValue = param.paramValue;
-        this.paramType = param.paramType;
+        this.field = param.field;
+        this.value = param.value;
+        this.type = param.type;
         this.paramIo = param.paramIo;
         this.extend3 = param.extend3;
 

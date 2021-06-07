@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -126,15 +126,15 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
             serviceInterfaceJDBC.setInterfaceName(item.getRequestName());
             serviceInterfaceJDBC.setInterfaceType(item.getRequestType());
             serviceInterfaceJDBC.setCurrentMode(item.getCurrentmode());
-//            List<Param> paramInput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("input")).collect(Collectors.toList());
-//            List<Param> paramOutput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("output")).collect(Collectors.toList());
-//            //  输入参数 和 输出 分开保存
-//            if(paramInput.size()>0){
-//                serviceInterfaceJDBC.setInput(paramInput);
-//            }
-//            if(paramOutput.size()>0){
-//                serviceInterfaceJDBC.setOutput(paramOutput);
-//            }
+            List<Param> paramInput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("input")).collect(Collectors.toList());
+            List<Param> paramOutput = paramDao.selectByInfaceConfigId(id).stream().filter(p->p.getParamIo().equals("output")).collect(Collectors.toList());
+            //  输入参数 和 输出 分开保存
+            if(paramInput.size()>0){
+                serviceInterfaceJDBC.setInput(paramInput);
+            }
+            if(paramOutput.size()>0){
+                serviceInterfaceJDBC.setOutput(paramOutput);
+            }
             listResult.add(serviceInterfaceJDBC);
 
         });
