@@ -19,7 +19,7 @@ import io.netty.util.CharsetUtil;
  * @author greyson
  * @since 2021/4/11
  */
-public class MyServer {
+public class MyServer2 {
 
 
     public static void main(String[] args) {
@@ -50,7 +50,7 @@ public class MyServer {
 
                     );
             System.out.println("服务端已经准备就绪...");
-            ChannelFuture channelFuture = serverBootstrap.bind(2100).sync();
+            ChannelFuture channelFuture = serverBootstrap.bind(2200).sync();
             //对关闭通道进行监听
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {

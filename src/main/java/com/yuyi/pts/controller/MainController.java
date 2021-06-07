@@ -40,11 +40,14 @@ public class MainController {
 
     @GetMapping("/server/status")
     public String getServerStatus(String port) {
-        if (STATUS_MAP.get(Integer.parseInt(port)) != null) {
-            return STATUS_MAP.get(Integer.parseInt(port));
-        } else {
-            return "initializing";
+        if (port != null) {
+            if (STATUS_MAP.get(Integer.parseInt(port)) != null) {
+                return STATUS_MAP.get(Integer.parseInt(port));
+            } else {
+                return "initializing";
+            }
         }
+        return null;
     }
 
     /**

@@ -54,14 +54,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         messageMap.put("input", msg);
         super.channelRead(ctx, msg);
         List<Param> outputList = serviceInterface.getOutput();
-        String interfaceType = serviceInterface.getRequestType();
-        byte[] sourceByteArr = null;
-        // 写入消息类型 供编码使用 一个自己
-        String messageType = InterfaceMessageType.stream()
-                .filter(d -> d.getDescription().equals(interfaceType))
-                .findFirst()
-                .get().getType();
-        sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(messageType), 2);
+        byte[] sourceByteArr = buildMessageType();
+
         // 写入数据，组织成对方想要的数据
         for (Param param : outputList) {
             // 当前字段长度
@@ -109,6 +103,23 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         messageMap.put("output", sourceByteArr);
         responseService.broadcast("/topic/response", messageMap);
         ctx.channel().writeAndFlush(sourceByteArr);
+    }
+
+    /**
+     * 12-18号线的接口需要传输MessageType
+     */
+    private byte[] buildMessageType() {
+        byte[] sourceByteArr = null;
+        if (serviceInterface.getRequestType() != null) {
+            String interfaceType = serviceInterface.getRequestType();
+            // 写入消息类型 供编码使用 一个字节
+            String messageType = InterfaceMessageType.stream()
+                    .filter(d -> d.getDescription().equals(interfaceType))
+                    .findFirst()
+                    .get().getType();
+            sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(messageType), 2);
+        }
+        return sourceByteArr;
     }
 
     @Override

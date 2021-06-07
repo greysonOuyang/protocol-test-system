@@ -19,7 +19,6 @@ public enum InterfaceMessageType {
     TRAIN_SCHEDULE("0x04","首末班信息"),
     DOOR_ISOLATION_STATUS("0x05","车门隔离状态信息"),
     STATION_ISOLATION_STATUS("0x06","站台门隔离状态信息"),
-
    ;
 
     /**
