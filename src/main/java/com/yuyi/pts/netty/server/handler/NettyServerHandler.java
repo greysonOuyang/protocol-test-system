@@ -9,6 +9,8 @@ import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.netty.ChannelSupervise;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -76,15 +78,21 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 tempBytes = ByteUtils.asciiToHex(value);
 
             } else if (type == FieldType.Time) {
+                ByteBuf byteBuf = Unpooled.buffer();
                 // Todo 年份的解析存在问题，不确定要解析成何种数据，由于pis暂未使用这个字段，故不处理
                 byte[] timeByteArr = new byte[7];
                 String[] timeStr = value.split("-");
                 for (String str : timeStr) {
-                    String hex = Integer.toHexString(Integer.parseInt(str));
-                    byte[] hexByte = ByteUtils.convertHEXString2ByteArray(hex);
-                    timeByteArr = ByteUtils.addByteArrays(timeByteArr, hexByte);
+                    byte[] bytes = ByteUtils.shortToByte2SmallEnd(ByteUtils.intToShort(Integer.parseInt(str)));
+                    if (bytes[1] == 0) {
+                        bytes = ByteUtils.storeInBytes(bytes, 1);
+                    }
+                    byteBuf.writeBytes(bytes);
+//                    String hex = Integer.toHexString(Integer.parseInt(str));
+//                    byte[] hexByte = ByteUtils.convertHEXString2ByteArray(hex);
+//                    timeByteArr = bytes;
                 }
-
+                byteBuf.readBytes(timeByteArr);
                 tempBytes = timeByteArr;
             }
             // 计算长度
@@ -106,7 +114,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         }
         messageMap.put("output", sourceByteArr);
         responseService.broadcast("/topic/response", messageMap);
-        ctx.channel().writeAndFlush(sourceByteArr);
+//        ctx.channel().writeAndFlush(sourceByteArr);
     }
 
     /**
