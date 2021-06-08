@@ -154,20 +154,20 @@
       <if test="paramKeyId != null">
         param_key_id = #{paramKeyId,jdbcType=VARCHAR},
       </if>
-      <if test="paramIndex != null">
-        param_index = #{paramIndex,jdbcType=INTEGER},
+      <if test="index != null">
+        param_index = #{index,jdbcType=INTEGER},
       </if>
-      <if test="paramLength != null">
-        param_length = #{paramLength,jdbcType=INTEGER},
+      <if test="length != null">
+        param_length = #{length,jdbcType=INTEGER},
       </if>
-      <if test="paramField != null">
-        param_field = #{paramField,jdbcType=VARCHAR},
+      <if test="field != null">
+        param_field = #{field,jdbcType=VARCHAR},
       </if>
-      <if test="paramValue != null">
-        param_value = #{paramValue,jdbcType=VARCHAR},
+      <if test="value != null">
+        param_value = #{value,jdbcType=VARCHAR},
       </if>
-      <if test="paramType != null">
-        param_type = #{paramType,jdbcType=INTEGER},
+      <if test="type != null">
+        param_type = #{type,jdbcType=VARCHAR},
       </if>
       <if test="paramIo != null">
         param_io = #{paramIo,jdbcType=VARCHAR},

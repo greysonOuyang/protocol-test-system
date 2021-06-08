@@ -5,9 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -526,6 +524,9 @@ public class ByteUtils {
      * @return 新数组
      */
     public static byte[] storeInBytes(byte[] source, int size) {
+        if (source == null) {
+            return null;
+        }
         byte[] target = new byte[size];
         return storeInBytes(source, target);
     }
@@ -539,7 +540,6 @@ public class ByteUtils {
      */
     public static byte[] storeInBytes(byte[] source, byte[] target) {
         return storeInBytes(source, target, true);
-
     }
 
     /**
@@ -595,6 +595,33 @@ public class ByteUtils {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
+    /**
+     * <pre>
+     * 长度为1的8位byte数组转换为一个16位short数字.
+     * </pre>
+     *
+     * @param arr
+     * @return
+     */
+    public static short byteToShort(byte[] arr) {
+        if (arr != null && arr.length != 1) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+        }
+        return (short) ((short) arr[0] & 0xff);
+    }
+
+    /**
+     * int 转 short
+     *
+     * @param i int
+     * @return short
+     */
+    public static Short intToShort(int i) {
+        if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
+            return (short) i;
+        }
+        return null;
+    }
 
     /**
      * 二进制字符串转int

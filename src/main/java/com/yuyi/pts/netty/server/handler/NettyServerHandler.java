@@ -74,10 +74,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 tempBytes = value.getBytes(StandardCharsets.UTF_8);
             } else if (type == FieldType.ASCII) {
                 tempBytes = ByteUtils.asciiToHex(value);
-                int length = tempBytes.length;
-                // 如果是ascii码形式，计算当前数据长度并赋值给上一个参数的长度字段
-                sourceByteArr[sourceByteArr.length - 1] = ByteUtils.intToByte(length);
-                storeLength = length;
+
             } else if (type == FieldType.Time) {
                 // Todo 年份的解析存在问题，不确定要解析成何种数据，由于pis暂未使用这个字段，故不处理
                 byte[] timeByteArr = new byte[7];
@@ -89,6 +86,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
 
                 tempBytes = timeByteArr;
+            }
+            // 计算长度
+            if (currentFieldLength == -1) {
+                int length = tempBytes.length;
+                // 如果是ascii码形式，计算当前数据长度并赋值给上一个参数的Value
+                sourceByteArr[sourceByteArr.length - 1] = ByteUtils.intToByte(length);
+                storeLength = length;
             }
 
             if (tempBytes != null) {
