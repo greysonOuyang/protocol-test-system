@@ -21,6 +21,16 @@ public class TInterfaceConfig implements Serializable {
     private Integer keyId;
 
     /**
+     * 解码类型
+     */
+    private Integer decoderType;
+
+    /**
+     * 编码类型
+     */
+    private Integer encoderType;
+
+    /**
      * 唯一标识符
      */
     private String interfaceConfigId;

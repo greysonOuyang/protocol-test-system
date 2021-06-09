@@ -114,7 +114,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         }
         messageMap.put("output", sourceByteArr);
         responseService.broadcast("/topic/response", messageMap);
-//        ctx.channel().writeAndFlush(sourceByteArr);
+        ctx.channel().writeAndFlush(sourceByteArr);
     }
 
     /**
