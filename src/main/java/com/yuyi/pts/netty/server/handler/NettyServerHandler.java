@@ -55,7 +55,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         Map<String, Object> messageMap = new HashMap<String, Object>();
         messageMap.put("input", msg);
         super.channelRead(ctx, msg);
-        serviceInterface.getRequestType();
         List<Param> outputList = serviceInterface.getOutput();
         byte[] sourceByteArr = buildMessageType();
 
@@ -126,11 +125,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (serviceInterface.getRequestType() != null) {
             String interfaceType = serviceInterface.getRequestType();
             // 写入消息类型 供编码使用 一个字节
-            String messageType = InterfaceMessageType.stream()
-                    .filter(d -> d.getDescription().equals(interfaceType))
-                    .findFirst()
-                    .get().getType();
-            sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(messageType), 2);
+//            String messageType = InterfaceMessageType.stream()
+//                    .filter(d -> d.getDescription().equals(interfaceType))
+//                    .findFirst()
+//                    .get().getType();
+            sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 2);
         }
         return sourceByteArr;
     }

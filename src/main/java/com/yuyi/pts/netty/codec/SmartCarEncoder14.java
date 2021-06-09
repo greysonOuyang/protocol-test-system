@@ -4,6 +4,7 @@ import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.server.SmartCarProtocol;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,8 @@ public class SmartCarEncoder14 extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext channelHandlerContext, Object obj, ByteBuf byteBuf) throws Exception {
         log.info("进入了Ats编码");
         byte[] sourceByteArr = (byte[]) obj;
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeBytes(sourceByteArr);
         byte[] dataHead = ByteUtils.shortToByte2SmallEnd(protocol.getFrameHead());
         byteBuf.writeBytes(dataHead);
         // 信息正文长度
@@ -69,8 +72,8 @@ public class SmartCarEncoder14 extends MessageToByteEncoder<Object> {
         byte[] spare = new byte[18];
         Arrays.fill(spare, (byte) 0xEF);
         byteBuf.writeBytes(spare);
-        byte messageId = protocol.getMessageId();
-        byteBuf.writeByte(messageId);
+   //     byte[] messageId = buf.readShort();
+        byteBuf.writeByte(buf.readShort());
         byte[] version = ByteUtils.hexString2Bytes(protocol.getVersion());
         byteBuf.writeBytes(version);
         byte[] content = sourceByteArr;
