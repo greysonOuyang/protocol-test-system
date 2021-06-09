@@ -27,6 +27,8 @@ public class ServiceInterfaceJDBC {
     private String interfaceName;
     private String currentMode;
     private String paramIO;
+    private String description;
+    private String lineNumber;
     /**
      * 输入参数列表
      */

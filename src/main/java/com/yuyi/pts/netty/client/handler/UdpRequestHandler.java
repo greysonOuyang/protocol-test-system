@@ -17,6 +17,10 @@ import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.util.Date;
+
 /**
  * @author : wzl
  * @date : 2021/4/20/9:22
@@ -33,27 +37,61 @@ public class UdpRequestHandler extends SimpleChannelInboundHandler<DatagramPacke
     }
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        log.info("Tcp处理器已经被添加");
+        log.info("udp处理器已经被添加");
         myCtx = ctx;
         super.handlerAdded(ctx);
     }
-    //接受服务端发送的内容
+    /**
+     *接受服务端发送的内容
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         log.info("进入了udp请求处理器");
         ResponseInfo responseInfo = new ResponseInfo();
-            String  body =  msg.content().toString(CharsetUtil.UTF_8);
+        String  body =  msg.content().toString(CharsetUtil.UTF_8);
         responseInfo.setState(1);
         responseInfo.setBody(body);
         String result = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
         responseService.sendTextMsg(ctx, result);
         System.out.println(body+"这是服务端发送的内容");
-        // 将服务端返回的数据进行组播或者广播
+
+        //组播地址
+        InetAddress group = InetAddress.getByName("239.0.0.0");
+        int port = 4321;
+        //创建组播套接字
+        MulticastSocket msr = null;
+        try {
+            msr = new MulticastSocket(port);
+            //加入连接
+            msr.joinGroup(group);
+            byte[] buffer = new byte[8192];
+            System.out.println("接收数据包启动！(启动时间: "+new Date()+")");
+            while(true){
+                //建立一个指定缓冲区大小的数据包
+                java.net.DatagramPacket dp = new java.net.DatagramPacket(buffer, buffer.length);
+                msr.receive(dp);
+                String s = new String(dp.getData(),0,dp.getLength());
+                //解码组播数据包
+                System.out.println(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            if(msr!=null){
+                try {
+                    msr.leaveGroup(group);
+                    msr.close();
+                } catch (Exception e2) {
+                }
+            }
+        }
         UDPUtil.multicastSend(body.getBytes());
         //这里接收到服务端发送的1内容
     }
 
-    //捕获异常
+    /**
+     *捕获异常
+     */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();

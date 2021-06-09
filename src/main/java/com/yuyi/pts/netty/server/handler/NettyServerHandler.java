@@ -55,6 +55,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         Map<String, Object> messageMap = new HashMap<String, Object>();
         messageMap.put("input", msg);
         super.channelRead(ctx, msg);
+        serviceInterface.getRequestType();
         List<Param> outputList = serviceInterface.getOutput();
         byte[] sourceByteArr = buildMessageType();
 

@@ -1,5 +1,6 @@
 package com.yuyi.pts.service.impl;
 
+import com.yuyi.pts.common.constant.MessageInfoMap;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.dao.ParamDao;
@@ -14,9 +15,7 @@ import com.yuyi.pts.service.TInterfaceConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -123,6 +122,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
             ServiceInterfaceJDBC serviceInterfaceJDBC = new ServiceInterfaceJDBC();
             String id = item.getInterfaceConfigId();
             serviceInterfaceJDBC.setInterfaceId(id);
+            serviceInterfaceJDBC.setDescription(item.getDescription());
             serviceInterfaceJDBC.setInterfaceName(item.getRequestName());
             serviceInterfaceJDBC.setInterfaceType(item.getRequestType());
             serviceInterfaceJDBC.setCurrentMode(item.getCurrentmode());
@@ -186,6 +186,15 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     public void insertServer(ServiceInterfaceJDBC serviceInterfaceJDBC) {
         serviceInterfaceJDBC.getInterfaceName();
         TInterfaceConfig tInterfaceConfig = new TInterfaceConfig();
+        int lineNumber = Integer.parseInt(serviceInterfaceJDBC.getLineNumber());
+        Map map = new HashMap();
+        if(18==lineNumber){
+           map = MessageInfoMap.get18Map();
+        } else{
+           map = MessageInfoMap.get14Map();
+        }
+        String description = map.get(serviceInterfaceJDBC.getInterfaceType()).toString();
+        tInterfaceConfig.setDescription(description);
         tInterfaceConfig.setRequestType(serviceInterfaceJDBC.getInterfaceType());
         //  请求名称 与 接口名称进行匹配
         tInterfaceConfig.setRequestName(serviceInterfaceJDBC.getInterfaceName());

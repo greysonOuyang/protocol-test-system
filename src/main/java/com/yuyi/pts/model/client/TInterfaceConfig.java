@@ -65,7 +65,7 @@ public class TInterfaceConfig implements Serializable {
      */
     private Integer port;
 
-    private Integer newColumn;
+    private String description;
 
     /**
      * 客户端/服务端
