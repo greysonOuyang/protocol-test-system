@@ -6,6 +6,7 @@ import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.model.server.SmartCarProtocol;
 import com.yuyi.pts.netty.ChannelSupervise;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
@@ -14,6 +15,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -29,6 +31,11 @@ import java.util.Map;
 @Slf4j
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
+    static SmartCarProtocol protocol;
+
+    static {
+        protocol = SpringUtils.getBean(SmartCarProtocol.class);
+    }
     public static ResponseService responseService;
 
     static {
@@ -124,12 +131,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         byte[] sourceByteArr = null;
         if (serviceInterface.getRequestType() != null) {
             String interfaceType = serviceInterface.getRequestType();
-            // 写入消息类型 供编码使用 一个字节
-//            String messageType = InterfaceMessageType.stream()
-//                    .filter(d -> d.getDescription().equals(interfaceType))
-//                    .findFirst()
-//                    .get().getType();
-            sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 2);
+              if(protocol.getLineId()==14){
+                  sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 1);
+              }else {
+                  sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 2);
+              }
         }
         return sourceByteArr;
     }

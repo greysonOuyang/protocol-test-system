@@ -36,12 +36,10 @@ public class SmartCarEncoder14 extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext channelHandlerContext, Object obj, ByteBuf byteBuf) throws Exception {
         log.info("进入了Ats编码");
         byte[] sourceByteArr = (byte[]) obj;
-        ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes(sourceByteArr);
         byte[] dataHead = ByteUtils.shortToByte2SmallEnd(protocol.getFrameHead());
         byteBuf.writeBytes(dataHead);
-        // 信息正文长度
-        int length = sourceByteArr.length;
+        // 信息正文长度 减去类型 1个字节
+        int length = sourceByteArr.length-1;
         byte[] frameCount = ByteUtils.storeInBytes(ByteUtils.intToBytesLow(protocol.getFrameCount()), 1);
         byteBuf.writeBytes(frameCount);
         byte[] frameIndex = ByteUtils.storeInBytes(ByteUtils.intToBytesLow(protocol.getFrameIndex()), 1);
@@ -72,11 +70,13 @@ public class SmartCarEncoder14 extends MessageToByteEncoder<Object> {
         byte[] spare = new byte[18];
         Arrays.fill(spare, (byte) 0xEF);
         byteBuf.writeBytes(spare);
-   //     byte[] messageId = buf.readShort();
-        byteBuf.writeByte(buf.readShort());
+        byte[] messageId = new byte[1];
+        messageId[0] = sourceByteArr[0];
+        byteBuf.writeByte(messageId[0]);
         byte[] version = ByteUtils.hexString2Bytes(protocol.getVersion());
         byteBuf.writeBytes(version);
-        byte[] content = sourceByteArr;
+        byte[] content = new byte[sourceByteArr.length-1];
+        System.arraycopy(sourceByteArr, 1, content, 0, sourceByteArr.length-1);
         byteBuf.writeBytes(content);
         byte[] frameTail = ByteUtils.shortToByte2SmallEnd(
                 protocol.getFrameTail());
