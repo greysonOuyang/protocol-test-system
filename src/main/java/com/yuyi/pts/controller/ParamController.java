@@ -2,7 +2,6 @@ package com.yuyi.pts.controller;
 
 
 
-import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.InterfaceMessageType;
 import com.yuyi.pts.common.util.CommonUtil;
@@ -10,7 +9,6 @@ import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.client.TInterfaceConfig;
-import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.service.impl.ParamServiceImpl;
 import com.yuyi.pts.service.impl.TInterfaceConfigServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +57,7 @@ public class ParamController {
         String interfaceName = map.get("interfaceName");
         // 站台列车趟数
         String trainCount = map.get("trainCount");
-        // TODO 先根据趟数组织站台列车数据，每站包含多趟列车数据；总数居又包含多个站
         if (interfaceType.equals(InterfaceMessageType.PLAN_INFO.getDescription())) {
-            ServiceInterface serviceInterface = InterfaceCache.get(interfaceId);
             String interfaceConfigId = UUID.randomUUID().toString().replace("-","");
             List<Param> paramList = paramService.selectByInterfaceConfigId(interfaceId);
             List<Param> terminalList = new ArrayList<>();

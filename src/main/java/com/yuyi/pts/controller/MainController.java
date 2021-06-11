@@ -1,15 +1,12 @@
 package com.yuyi.pts.controller;
 
 import com.yuyi.pts.common.cache.InterfaceCache;
-import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.server.ServiceInterface;
-import com.yuyi.pts.netty.NettyServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * description
@@ -22,11 +19,8 @@ import java.util.concurrent.ScheduledExecutorService;
 @RequestMapping("/main")
 public class MainController {
 
-    private final ScheduledExecutorService scheduledExecutorService = ScheduledThreadPoolUtil.getInstance();
 
     public static final Map<Integer, String> STATUS_MAP = new HashMap<>();
-
-    NettyServer nettyServer;
 
 
     @GetMapping("/server/status")

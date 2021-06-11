@@ -1,4 +1,4 @@
-package com.yuyi.pts.controller;
+package com.yuyi.pts.service.impl;
 
 import com.yuyi.pts.dao.ParamDao;
 import com.yuyi.pts.dao.TInterfaceConfigDao;

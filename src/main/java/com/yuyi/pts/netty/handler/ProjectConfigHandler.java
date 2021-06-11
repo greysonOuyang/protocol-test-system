@@ -38,7 +38,6 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
     static {
         protocol = SpringUtils.getBean(SmartCarProtocol.class);
         responseService = SpringUtils.getBean(ResponseServiceImpl.class);
-
     }
 
 
