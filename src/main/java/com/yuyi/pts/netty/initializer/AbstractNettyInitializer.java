@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.client.initializer;
+package com.yuyi.pts.netty.initializer;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
  * @since 2021/4/11
  */
 @Component
-public abstract class NettyClientInitializer<T extends Channel> extends ChannelInitializer<T> {
+public abstract class AbstractNettyInitializer<T extends Channel> extends ChannelInitializer<T> {
 }

@@ -19,6 +19,7 @@ public class Constant {
     public static final String CLIENT = "client";
 
     public static final String SERVER = "server";
+
     /**
      * 自定义协议头
      */
@@ -27,6 +28,9 @@ public class Constant {
      * 自定义协议头
      */
     public static final int TAIL_DATA = -515;
+
+    /** 常量code */
+    public final static String PLAN_INFO = "planInfo";
 
     public static final int SERVER_READ_IDLE_TIME_OUT = 3;
     public static final int SERVER_WRITE_IDLE_TIME_OUT = 0;

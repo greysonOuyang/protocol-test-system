@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.client.handler;
+package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.common.enums.FieldType;
@@ -8,7 +8,6 @@ import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.server.SmartCarProtocol;
-import com.yuyi.pts.netty.ChannelSupervise;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
@@ -59,7 +58,6 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //添加连接
         log.debug("客户端加入连接：" + ctx.channel());
-        ChannelSupervise.addChannel(ctx.channel());
         if (Constant.CLIENT.equals(mode)) {
             byte[] sourceByteArr = buildMsg();
             ScheduledThreadPoolUtil.scheduleAtFixedRateByTime(()-> {
@@ -161,6 +159,5 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //断开连接
         log.debug("客户端断开连接：" + ctx.channel());
-        ChannelSupervise.removeChannel(ctx.channel());
     }
 }

@@ -1,10 +1,12 @@
 package com.yuyi.pts.controller;
 
+import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.ServerRequestDto;
-import com.yuyi.pts.netty.client.NettyClient;
-import com.yuyi.pts.netty.client.initializer.ProjectClientInitializer;
-import com.yuyi.pts.netty.server.NettyServer;
+import com.yuyi.pts.netty.NettyClient;
+import com.yuyi.pts.netty.initializer.NettyServerInitializer;
+import com.yuyi.pts.netty.initializer.ProjectClientInitializer;
+import com.yuyi.pts.netty.NettyServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -32,15 +34,16 @@ public class WebsocketServerController {
         String host = request.getHost();
         int port = request.getPort();
         String mode = request.getMode();
-        if ("client".equals(mode)) {
+        if (Constant.CLIENT.equals(mode)) {
             NettyClient nettyClient = new NettyClient();
             nettyClient.setHost(host);
             nettyClient.setPort(port);
             nettyClient.setServiceInterface(tInterfaceConfig);
-            nettyClient.setNettyClientInitializer(new ProjectClientInitializer(tInterfaceConfig));
+            nettyClient.setAbstractNettyInitializer(new ProjectClientInitializer(tInterfaceConfig));
             nettyClient.start();
-        } else if ("server".equals(mode)) {
-            nettyServer = new NettyServer(tInterfaceConfig, port);
+        } else if (Constant.SERVER.equals(mode)) {
+            NettyServerInitializer nettyServerInitializer = new NettyServerInitializer(tInterfaceConfig);
+            nettyServer = new NettyServer(nettyServerInitializer, port);
             nettyServer.start();
         }
 

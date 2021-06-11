@@ -1,6 +1,6 @@
-package com.yuyi.pts.netty.client.initializer;
+package com.yuyi.pts.netty.initializer;
 
-import com.yuyi.pts.netty.client.handler.UdpRequestHandler;
+import com.yuyi.pts.netty.handler.UdpRequestHandler;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
@@ -13,7 +13,7 @@ import io.netty.util.CharsetUtil;
  * @date : 2021/4/20/9:21
  * @description:
  */
-public class UdpRequestInitializer extends NettyClientInitializer<NioDatagramChannel> {
+public class UdpRequestInitializer extends AbstractNettyInitializer<NioDatagramChannel> {
     @Override
     protected void initChannel(NioDatagramChannel ch) throws Exception {
         ch.pipeline()

@@ -1,10 +1,9 @@
-package com.yuyi.pts.netty.client.handler;
+package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.enums.OperationCommand;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
-import com.yuyi.pts.netty.ChannelSupervise;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.channel.*;

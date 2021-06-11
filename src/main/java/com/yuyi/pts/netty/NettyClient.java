@@ -1,11 +1,11 @@
-package com.yuyi.pts.netty.client;
+package com.yuyi.pts.netty;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.handler.*;
-import com.yuyi.pts.netty.client.initializer.*;
+import com.yuyi.pts.netty.handler.*;
+import com.yuyi.pts.netty.initializer.*;
 import com.yuyi.pts.service.RequestService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -49,19 +49,16 @@ public class NettyClient {
     private int port;
 
     @Autowired
-    private NettyClientInitializer nettyClientInitializer;
-
-    @Autowired
-    private TcpRequestHandler tcpRequestHandler;
+    private AbstractNettyInitializer abstractNettyInitializer;
 
     @Autowired
     private RequestService requestService;
 
     private ChannelHandlerContext currentCtx;
 
-    private final NioEventLoopGroup group;
+    private NioEventLoopGroup group;
 
-    private final Bootstrap bootstrap;
+    private Bootstrap bootstrap;
 
     private ChannelFuture channelFuture;
 
@@ -74,44 +71,45 @@ public class NettyClient {
     private Channel clientChannel;
 
     public NettyClient() {
-        group = new NioEventLoopGroup();
-        bootstrap = new Bootstrap();
-        bootstrap.channel(NioSocketChannel.class);
-        bootstrap.group(group);
+        new NettyClient(NioSocketChannel.class);
     }
-    public NettyClient(String str) {
-        group = new NioEventLoopGroup();
-        //开始客户端的服务，和管道的设置
-        bootstrap = new Bootstrap();
-        bootstrap.channel(NioDatagramChannel.class);
-        bootstrap.option(ChannelOption.SO_BROADCAST,true);
-                // 设置UDP读缓冲区为2M
-        bootstrap.option(ChannelOption.SO_RCVBUF, 2048 * 1024);
-                // 设置UDP写缓冲区为1M
-        bootstrap.option(ChannelOption.SO_SNDBUF, 1024 * 1024);
 
+    public NettyClient(Class clazz) {
+        group = new NioEventLoopGroup();
+        bootstrap = new Bootstrap();
+        bootstrap.channel(clazz);
         bootstrap.group(group);
+        if (clazz == NioDatagramChannel.class) {
+            bootstrap.option(ChannelOption.SO_BROADCAST,true);
+            // 设置UDP读缓冲区为2M
+            bootstrap.option(ChannelOption.SO_RCVBUF, 2048 * 1024);
+            // 设置UDP写缓冲区为1M
+            bootstrap.option(ChannelOption.SO_SNDBUF, 1024 * 1024);
+        }
     }
+
+
     /**
      * 启动前需要初始化nettyClientInitializer、host、port
      *
      * @param session 会话
      * @param dataContent 数据
      */
-    public void start(RequestType type,WebSocketSession session, RequestDataDto dataContent) {
+    public void start(WebSocketSession session, RequestDataDto dataContent) {
+        RequestType type = dataContent.getType();
         try {
-            if (nettyClientInitializer == null) {
+            if (abstractNettyInitializer == null) {
                 log.error("未能成功初始化NettyClientInitializer");
             } else {
-                log.info("当前NettyClientInitializer类型为：" + nettyClientInitializer);
+                log.info("当前NettyClientInitializer类型为：" + abstractNettyInitializer);
             }
-            bootstrap.handler(nettyClientInitializer);
+            bootstrap.handler(abstractNettyInitializer);
             // udp不需要建立连接,其他类型需要建立连接 TODO UDP分成客户端和服务端，支持广播和单播
             if(RequestType.UDP.equals(type)){
                 doPostAndReceive(session, dataContent);
             } else {
                 doConnect();
-                chooseChannelHandlerContext(nettyClientInitializer);
+                chooseChannelHandlerContext(abstractNettyInitializer);
                 doProcess(type,session, dataContent);
                 // TODO 何时调用关闭待确定
                 doClose();
@@ -123,7 +121,7 @@ public class NettyClient {
     }
 
     public void start() {
-        bootstrap.handler(nettyClientInitializer);
+        bootstrap.handler(abstractNettyInitializer);
         try {
             doConnect();
         } catch (Exception e) {
@@ -148,7 +146,7 @@ public class NettyClient {
                     new InetSocketAddress(
                             dataContent.getHost(),port
                     ))).sync();
-            chooseChannelHandlerContext(nettyClientInitializer);
+            chooseChannelHandlerContext(abstractNettyInitializer);
             CtxWithWebSocketSessionCache.put(currentCtx, session);
             //如果超过长时间则表示超时
             if(!ch.closeFuture().await(100)){
@@ -245,18 +243,18 @@ public class NettyClient {
     /**
      * 选择真正处理请求的协议处理器
      *
-     * @param nettyClientInitializer 处理器加载器
+     * @param abstractNettyInitializer 处理器加载器
      */
-    private void chooseChannelHandlerContext(NettyClientInitializer nettyClientInitializer) {
-        if (nettyClientInitializer instanceof TcpRequestInitializer) {
+    private void chooseChannelHandlerContext(AbstractNettyInitializer abstractNettyInitializer) {
+        if (abstractNettyInitializer instanceof TcpRequestInitializer) {
             currentCtx = TcpRequestHandler.myCtx;
-        } else if (nettyClientInitializer instanceof WebSocketInitializer) {
+        } else if (abstractNettyInitializer instanceof WebSocketInitializer) {
             currentCtx = WebSocketRequestHandler.myCtx;
-        } else if (nettyClientInitializer instanceof HttpRequestInitializer) {
+        } else if (abstractNettyInitializer instanceof HttpRequestInitializer) {
           currentCtx = HttpRequestHandler.myCtx;
-        } else if (nettyClientInitializer instanceof ModBusRequestInitializer) {
+        } else if (abstractNettyInitializer instanceof ModBusRequestInitializer) {
             currentCtx = ModbusRequestHandler.myCtx;
-        }else if (nettyClientInitializer instanceof UdpRequestInitializer) {
+        }else if (abstractNettyInitializer instanceof UdpRequestInitializer) {
             currentCtx = UdpRequestHandler.myCtx;
         }
     }

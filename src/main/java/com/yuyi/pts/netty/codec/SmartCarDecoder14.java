@@ -1,6 +1,6 @@
 package com.yuyi.pts.netty.codec;
 
-import com.yuyi.pts.common.constant.ConstanValue;
+import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.common.util.DateUtils;
 import com.yuyi.pts.model.server.SmartCarProtocol;
 import io.netty.buffer.ByteBuf;
@@ -42,7 +42,7 @@ public class SmartCarDecoder14 extends ByteToMessageDecoder {
                 buffer.markReaderIndex();
                 // 读到了协议的开始标志，结束while循环
                 // 若读取到data_head为帧头两个字节，0xEF,0xEF，说明读取当前字节流开始位置了
-                if (buffer.readShort() == ConstanValue.HEED_DATA) {
+                if (buffer.readShort() == Constant.HEED_DATA) {
                     break;
                 }
                 // 未读到包头，略过一个字节

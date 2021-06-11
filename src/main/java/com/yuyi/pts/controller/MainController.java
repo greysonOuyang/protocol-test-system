@@ -3,7 +3,7 @@ package com.yuyi.pts.controller;
 import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.server.ServiceInterface;
-import com.yuyi.pts.netty.server.NettyServer;
+import com.yuyi.pts.netty.NettyServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

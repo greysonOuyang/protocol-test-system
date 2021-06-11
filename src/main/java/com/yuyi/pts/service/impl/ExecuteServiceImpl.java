@@ -9,12 +9,12 @@ import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
-import com.yuyi.pts.config.NettyClientConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
-import com.yuyi.pts.netty.client.NettyClient;
-import com.yuyi.pts.netty.client.initializer.*;
+import com.yuyi.pts.netty.NettyClient;
+import com.yuyi.pts.netty.initializer.*;
 import com.yuyi.pts.service.ExecuteService;
 import com.yuyi.pts.service.ResponseService;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,7 @@ public class ExecuteServiceImpl implements ExecuteService {
     private NettyClient nettyClient;
 
     @Autowired
-    private NettyClientInitializer nettyClientInitializer;
+    private AbstractNettyInitializer abstractNettyInitializer;
 
     /**
      * 请求类型
@@ -147,8 +147,8 @@ public class ExecuteServiceImpl implements ExecuteService {
         } else if (requestType == RequestType.UDP) {
             host = dataContent.getHost();
             port = dataContent.getPort();
-            NettyClient client = NettyClientConfig.getNettyUdp();
-            nettyClient = client;
+            NettyClient client = new NettyClient(NioDatagramChannel.class);
+            this.nettyClient = client;
         } else if (requestType == RequestType.TCP) {
             host = dataContent.getHost();
             port = dataContent.getPort();
@@ -156,8 +156,8 @@ public class ExecuteServiceImpl implements ExecuteService {
         chooseInitializer(dataContent);
         nettyClient.setHost(host);
         nettyClient.setPort(port);
-        nettyClient.setNettyClientInitializer(nettyClientInitializer);
-        nettyClient.start(dataContent.getType(), session, dataContent);
+        nettyClient.setAbstractNettyInitializer(abstractNettyInitializer);
+        nettyClient.start(session, dataContent);
     }
 
     /**
@@ -170,16 +170,16 @@ public class ExecuteServiceImpl implements ExecuteService {
         ProtocolType protocolType = dataContent.getProtocolType();
         if (type == RequestType.TCP) {
             if (protocolType == ProtocolType.modbus) {
-                nettyClientInitializer = new ModBusRequestInitializer();
+                abstractNettyInitializer = new ModBusRequestInitializer();
             } else {
-                nettyClientInitializer = new TcpRequestInitializer();
+                abstractNettyInitializer = new TcpRequestInitializer();
             }
         } else if (type == RequestType.HTTP) {
-            nettyClientInitializer = new HttpRequestInitializer();
+            abstractNettyInitializer = new HttpRequestInitializer();
         } else if (type == RequestType.WebSocket) {
-            nettyClientInitializer = new WebSocketInitializer();
+            abstractNettyInitializer = new WebSocketInitializer();
         } else if (type == RequestType.UDP) {
-            nettyClientInitializer = new UdpRequestInitializer();
+            abstractNettyInitializer = new UdpRequestInitializer();
         }
     }
 

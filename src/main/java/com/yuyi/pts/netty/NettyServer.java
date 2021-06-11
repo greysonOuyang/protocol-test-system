@@ -1,10 +1,9 @@
-package com.yuyi.pts.netty.server;
+package com.yuyi.pts.netty;
 
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
-import com.yuyi.pts.model.client.TInterfaceConfig;
-import com.yuyi.pts.netty.server.initializer.NettyServerInitializer;
+import com.yuyi.pts.netty.initializer.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -32,11 +31,12 @@ public class NettyServer {
     EventLoopGroup boss =null;
     EventLoopGroup worker =null;
     public ChannelFuture future = null;
-    TInterfaceConfig serviceInterface;
-    int port;
 
-    public NettyServer(TInterfaceConfig service, int port){
-        this.serviceInterface = service;
+    int port;
+    NettyServerInitializer nettyServerInitializer;
+
+    public NettyServer(NettyServerInitializer nettyServerInitializer, int port){
+        this.nettyServerInitializer = nettyServerInitializer;
         this.port = port;
     }
 
@@ -75,7 +75,7 @@ public class NettyServer {
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .option(ChannelOption.TCP_NODELAY,true)
                 .childOption(ChannelOption.SO_KEEPALIVE,true)
-                .childHandler(new NettyServerInitializer(serviceInterface));
+                .childHandler(nettyServerInitializer);
 
         try{
             future = serverBootstrap.bind(this.port).sync();

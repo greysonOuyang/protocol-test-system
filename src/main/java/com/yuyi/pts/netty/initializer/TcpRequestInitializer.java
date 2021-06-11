@@ -1,7 +1,6 @@
-package com.yuyi.pts.netty.client.initializer;
+package com.yuyi.pts.netty.initializer;
 
-import com.yuyi.pts.netty.client.handler.TcpRequestHandler;
-import com.yuyi.pts.netty.codec.SmartCarEncoder;
+import com.yuyi.pts.netty.handler.TcpRequestHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
@@ -16,19 +15,16 @@ import org.springframework.stereotype.Service;
  * @since 2021/4/13
  */
 @Service
-public class TcpRequestInitializer extends NettyClientInitializer<SocketChannel> {
+public class TcpRequestInitializer extends AbstractNettyInitializer<SocketChannel> {
 
     public TcpRequestHandler TCP_HANDLER = new TcpRequestHandler();
-
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
                 .addLast(new IdleStateHandler(3, 0, 0))
-                .addLast(new SmartCarEncoder())
+                .addLast(new StringDecoder(CharsetUtil.UTF_8))
                 .addLast("encoder", new StringEncoder(CharsetUtil.UTF_8))
-//                .addLast(new JsonObjectDecoder())
-//                .addLast(new StringDecoder(Charset.forName("utf-8")))
                 .addLast(TCP_HANDLER);
     }
 }

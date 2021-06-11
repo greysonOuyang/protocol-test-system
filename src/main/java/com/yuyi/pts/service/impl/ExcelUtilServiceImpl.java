@@ -1,7 +1,7 @@
 package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.constant.ExcelConstant;
+import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.common.constant.ParamConstant;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.CommonUtil;
@@ -45,7 +45,7 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
     public void downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException {
         // 获取到接口名称，根据接口名称去配置对应的excel文件
         String interfaceName = object.get("interfaceName").toString();
-        if (ExcelConstant.PLAN_INFO.equals(interfaceName)) {
+        if (Constant.PLAN_INFO.equals(interfaceName)) {
             //   给serviceInterfaceInput赋初始值 表格内容赋值
             ServiceInterface serviceInterfaceInput = ParamConstant.SERVICE_INTERFACE;
             Collection<Object> dataInput = new ArrayList<>();

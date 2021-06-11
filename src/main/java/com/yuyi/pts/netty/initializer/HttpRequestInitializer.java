@@ -1,6 +1,6 @@
-package com.yuyi.pts.netty.client.initializer;
+package com.yuyi.pts.netty.initializer;
 
-import com.yuyi.pts.netty.client.handler.HttpRequestHandler;
+import com.yuyi.pts.netty.handler.HttpRequestHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -12,7 +12,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @author greyson
  * @since 2021/4/13
  */
-public class HttpRequestInitializer extends NettyClientInitializer<SocketChannel> {
+public class HttpRequestInitializer extends AbstractNettyInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
