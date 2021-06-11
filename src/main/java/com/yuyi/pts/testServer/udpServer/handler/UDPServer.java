@@ -1,8 +1,4 @@
-package com.yuyi.pts.testServer.udpServer.handler;/*
- * @author : wzl
- * @date   : 2021/4/9/15:56
- * @description:
- */
+package com.yuyi.pts.testServer.udpServer.handler;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
