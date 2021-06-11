@@ -67,8 +67,6 @@ public class TempClientHandler extends ChannelInboundHandlerAdapter {
 
     public void sendMsg(ChannelHandlerContext ctx) {
         Map<String, Object> messageMap = new HashMap<String, Object>();
-//        messageMap.put("input", msg);
-//        super.channelRead(ctx, msg);
         List<Param> outputList = serviceInterface.getOutput();
         byte[] sourceByteArr = buildMessageType();
 

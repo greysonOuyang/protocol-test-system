@@ -31,14 +31,19 @@ public class WebsocketServerController {
         TInterfaceConfig tInterfaceConfig = interfaceService.selectInterfaceById(serviceInterfaceId);
         String host = request.getHost();
         int port = request.getPort();
-//        nettyServer = new NettyServer(tInterfaceConfig, port);
-//        nettyServer.start();
-        NettyClient nettyClient = new NettyClient();
-        nettyClient.setHost(host);
-        nettyClient.setPort(port);
-        nettyClient.setServiceInterface(tInterfaceConfig);
-        nettyClient.setNettyClientInitializer(new TempClientInitializer(tInterfaceConfig));
-        nettyClient.start();
+        String mode = request.getMode();
+        if ("client".equals(mode)) {
+            NettyClient nettyClient = new NettyClient();
+            nettyClient.setHost(host);
+            nettyClient.setPort(port);
+            nettyClient.setServiceInterface(tInterfaceConfig);
+            nettyClient.setNettyClientInitializer(new TempClientInitializer(tInterfaceConfig));
+            nettyClient.start();
+        } else if ("server".equals(mode)) {
+            nettyServer = new NettyServer(tInterfaceConfig, port);
+            nettyServer.start();
+        }
+
     }
 
 }

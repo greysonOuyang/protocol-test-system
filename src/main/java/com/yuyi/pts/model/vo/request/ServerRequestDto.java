@@ -21,7 +21,12 @@ public class ServerRequestDto implements Serializable {
      */
     private int port;
 
+    /**
+     * ip地址
+     */
     private String host;
+
+    private String mode;
 
     /**
      * 接口Id
