@@ -28,15 +28,6 @@ public class MainController {
 
     NettyServer nettyServer;
 
-//    @PostMapping("/start/server")
-//    public void execute(@RequestBody ServerRequestDto request) {
-//        String serviceInterfaceId = request.getInterfaceId();
-//        ServiceInterface serviceInterface = InterfaceCache.get(serviceInterfaceId);
-//        int port = request.getPort();
-//        nettyServer = new NettyServer(serviceInterface, port);
-//        nettyServer.start();
-//
-//    }
 
     @GetMapping("/server/status")
     public String getServerStatus(String port) {

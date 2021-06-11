@@ -15,6 +15,10 @@ public class Constant {
     public final static String DATA = "data";
     /** 常量result */
     public final static String RESULT = "result";
+
+    public static final String CLIENT = "client";
+
+    public static final String SERVER = "server";
     /**
      * 自定义协议头
      */

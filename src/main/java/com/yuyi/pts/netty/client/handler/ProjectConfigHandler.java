@@ -1,7 +1,9 @@
-package com.yuyi.pts.netty.server.handler;
+package com.yuyi.pts.netty.client.handler;
 
+import com.yuyi.pts.common.constant.Constant;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
+import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.TInterfaceConfig;
@@ -19,33 +21,38 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 服务器处理程序
+ * 根据配置生成信息的处理器
  *
  * @author greyson
  * @since 2021/4/27
  */
 @Slf4j
-public class NettyServerHandler extends ChannelInboundHandlerAdapter {
+public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
 
     static SmartCarProtocol protocol;
+    public static ResponseService responseService;
+
 
     static {
         protocol = SpringUtils.getBean(SmartCarProtocol.class);
-    }
-    public static ResponseService responseService;
-
-    static {
         responseService = SpringUtils.getBean(ResponseServiceImpl.class);
+
     }
 
-    public static Map<String, Object> RETURN_MAP = new HashMap<>();
 
     TInterfaceConfig serviceInterface = null;
 
-    public NettyServerHandler(TInterfaceConfig serviceInterface) {
+    /**
+     * 模式 client或者 Server
+     */
+    String mode;
+
+    public ProjectConfigHandler(TInterfaceConfig serviceInterface, String mode) {
         this.serviceInterface = serviceInterface;
+        this.mode = mode;
     }
 
     @Override
@@ -53,6 +60,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         //添加连接
         log.debug("客户端加入连接：" + ctx.channel());
         ChannelSupervise.addChannel(ctx.channel());
+        if (Constant.CLIENT.equals(mode)) {
+            byte[] sourceByteArr = buildMsg();
+            ScheduledThreadPoolUtil.scheduleAtFixedRateByTime(()-> {
+                ctx.channel().writeAndFlush(sourceByteArr);
+            },0, 1, 10, TimeUnit.SECONDS);
+        }
     }
 
     @Override
@@ -60,6 +73,18 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         Map<String, Object> messageMap = new HashMap<String, Object>();
         messageMap.put("input", msg);
         super.channelRead(ctx, msg);
+        byte[] sourceByteArr = buildMsg();
+        messageMap.put("output", sourceByteArr);
+        responseService.broadcast("/topic/response", messageMap);
+        ctx.channel().writeAndFlush(sourceByteArr);
+    }
+
+    /**
+     * 根据配置生成要发送的消息
+     *
+     * @return 字节数据
+     */
+    private byte[] buildMsg() {
         List<Param> outputList = serviceInterface.getOutput();
         byte[] sourceByteArr = buildMessageType();
 
@@ -84,7 +109,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
             } else if (type == FieldType.Time) {
                 ByteBuf byteBuf = Unpooled.buffer();
-                // Todo 年份的解析存在问题，不确定要解析成何种数据，由于pis暂未使用这个字段，故不处理
                 byte[] timeByteArr = new byte[7];
                 String[] timeStr = value.split("-");
                 for (String str : timeStr) {
@@ -93,9 +117,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         bytes = ByteUtils.storeInBytes(bytes, 1);
                     }
                     byteBuf.writeBytes(bytes);
-//                    String hex = Integer.toHexString(Integer.parseInt(str));
-//                    byte[] hexByte = ByteUtils.convertHEXString2ByteArray(hex);
-//                    timeByteArr = bytes;
                 }
                 byteBuf.readBytes(timeByteArr);
                 tempBytes = timeByteArr;
@@ -117,9 +138,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
-        messageMap.put("output", sourceByteArr);
-        responseService.broadcast("/topic/response", messageMap);
-        ctx.channel().writeAndFlush(sourceByteArr);
+        return sourceByteArr;
     }
 
     /**
