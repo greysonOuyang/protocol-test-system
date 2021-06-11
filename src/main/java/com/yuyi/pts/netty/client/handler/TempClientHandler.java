@@ -2,6 +2,7 @@ package com.yuyi.pts.netty.client.handler;
 
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
+import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.TInterfaceConfig;
@@ -19,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 服务器处理程序
@@ -53,7 +55,17 @@ public class TempClientHandler extends ChannelInboundHandlerAdapter {
         //添加连接
         log.debug("客户端加入连接：" + ctx.channel());
         ChannelSupervise.addChannel(ctx.channel());
+        ScheduledThreadPoolUtil.scheduleAtFixedRateByTime(()-> {
+            this.sendMsg(ctx);
+        },0, 1, 10, TimeUnit.SECONDS);
+    }
 
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
+    }
+
+    public void sendMsg(ChannelHandlerContext ctx) {
         Map<String, Object> messageMap = new HashMap<String, Object>();
 //        messageMap.put("input", msg);
 //        super.channelRead(ctx, msg);
@@ -117,11 +129,6 @@ public class TempClientHandler extends ChannelInboundHandlerAdapter {
         messageMap.put("output", sourceByteArr);
         responseService.broadcast("/topic/response", messageMap);
         ctx.channel().writeAndFlush(sourceByteArr);
-    }
-
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
     }
 
     /**

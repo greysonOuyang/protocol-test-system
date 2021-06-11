@@ -5,6 +5,7 @@ import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.netty.client.handler.TempClientHandler;
 import com.yuyi.pts.netty.codec.ModBusDecoder;
 import com.yuyi.pts.netty.codec.SmartCarEncoder;
+import com.yuyi.pts.netty.codec.SmartCarEncoder14;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;

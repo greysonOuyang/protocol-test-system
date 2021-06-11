@@ -1,6 +1,7 @@
 package com.yuyi.pts.netty.client.initializer;
 
 import com.yuyi.pts.netty.client.handler.TcpRequestHandler;
+import com.yuyi.pts.netty.codec.SmartCarEncoder;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
@@ -24,7 +25,7 @@ public class TcpRequestInitializer extends NettyClientInitializer<SocketChannel>
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
                 .addLast(new IdleStateHandler(3, 0, 0))
-                .addLast("decoder", new StringDecoder(CharsetUtil.UTF_8))
+                .addLast(new SmartCarEncoder())
                 .addLast("encoder", new StringEncoder(CharsetUtil.UTF_8))
 //                .addLast(new JsonObjectDecoder())
 //                .addLast(new StringDecoder(Charset.forName("utf-8")))
