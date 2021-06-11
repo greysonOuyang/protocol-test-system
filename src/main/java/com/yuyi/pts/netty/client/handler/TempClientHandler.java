@@ -1,4 +1,4 @@
-package com.yuyi.pts.netty.server.handler;
+package com.yuyi.pts.netty.client.handler;
 
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @since 2021/4/27
  */
 @Slf4j
-public class NettyServerHandler extends ChannelInboundHandlerAdapter {
+public class TempClientHandler extends ChannelInboundHandlerAdapter {
 
     static SmartCarProtocol protocol;
 
@@ -44,7 +44,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     TInterfaceConfig serviceInterface = null;
 
-    public NettyServerHandler(TInterfaceConfig serviceInterface) {
+    public TempClientHandler(TInterfaceConfig serviceInterface) {
         this.serviceInterface = serviceInterface;
     }
 
@@ -53,13 +53,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         //添加连接
         log.debug("客户端加入连接：" + ctx.channel());
         ChannelSupervise.addChannel(ctx.channel());
-    }
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Map<String, Object> messageMap = new HashMap<String, Object>();
-        messageMap.put("input", msg);
-        super.channelRead(ctx, msg);
+//        messageMap.put("input", msg);
+//        super.channelRead(ctx, msg);
         List<Param> outputList = serviceInterface.getOutput();
         byte[] sourceByteArr = buildMessageType();
 
@@ -120,6 +117,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         messageMap.put("output", sourceByteArr);
         responseService.broadcast("/topic/response", messageMap);
         ctx.channel().writeAndFlush(sourceByteArr);
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
     }
 
     /**

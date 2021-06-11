@@ -2,6 +2,7 @@ package com.yuyi.pts.netty.client;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.client.handler.*;
 import com.yuyi.pts.netty.client.initializer.*;
@@ -64,6 +65,9 @@ public class NettyClient {
 
     private ChannelFuture channelFuture;
 
+    TInterfaceConfig serviceInterface;
+
+
     /**
      * 客户端通道
      */
@@ -106,7 +110,7 @@ public class NettyClient {
             if(RequestType.UDP.equals(type)){
                 doPostAndReceive(session, dataContent);
             } else {
-                doConnect(session, dataContent);
+                doConnect();
                 chooseChannelHandlerContext(nettyClientInitializer);
                 doProcess(type,session, dataContent);
                 // TODO 何时调用关闭待确定
@@ -115,6 +119,15 @@ public class NettyClient {
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
             log.error("Something occurs error in Netty Client: {}", e.getMessage());
+        }
+    }
+
+    public void start() {
+        bootstrap.handler(nettyClientInitializer);
+        try {
+            doConnect();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -200,11 +213,9 @@ public class NettyClient {
     /**
      * 处理连接事件，及连接后的业务处理
      *
-     * @param session 会话
-     * @param dataContent 数据
      * @throws InterruptedException 异常
      */
-    private void doConnect(WebSocketSession session, RequestDataDto dataContent) throws InterruptedException, IOException {
+    private void doConnect() throws InterruptedException, IOException {
 
        channelFuture = bootstrap.connect(getHost(), getPort()).sync();
         log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
