@@ -1,2 +1,12 @@
 server:
   port: 7090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.160:3306/pis?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+mybatis:
+  type-aliases-package: com.yuyi.pts.model.entity
+  mapper-locations: classpath:mybatis/mapper/*.xml

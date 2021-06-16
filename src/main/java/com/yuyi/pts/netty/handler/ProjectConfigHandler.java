@@ -157,6 +157,12 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //断开连接
-        log.debug("客户端断开连接：" + ctx.channel());
+        log.debug("与[{}]的连接断开", ctx.channel().remoteAddress());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.info("处理消息出现了异常：[{}]", cause.getMessage());
+        super.exceptionCaught(ctx, cause);
     }
 }
