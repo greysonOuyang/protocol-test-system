@@ -1,12 +1,34 @@
 server:
   port: 7090
-
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.0.160:3306/pis?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
+# MYSQL 数据库
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.0.160:3306/pis?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    username: root
+#    password: 123456
 mybatis:
   type-aliases-package: com.yuyi.pts.model.entity
   mapper-locations: classpath:mybatis/mapper/*.xml
+# 内嵌H2数据库
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  datasource:
+    url: jdbc:h2:file:./protocol_test_system
+    username: yuyi
+    password: Admin@yuyi
+    driverClassName: org.h2.Driver
+    platform: h2
+#    schema: classpath:db/schema.sql # 初始化SQL表结构
+#    data: classpath:db/data.sql # 初始化SQL数据
+    sql-script-encoding: utf-8     # SQL执行的编码
+  h2:
+    console:
+      settings:
+        web-allow-others: true
+      path: /h2
+      enabled: true
