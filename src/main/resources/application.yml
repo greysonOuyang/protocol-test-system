@@ -18,7 +18,7 @@ spring:
       ddl-auto: update
     open-in-view: false
   datasource:
-    url: jdbc:h2:file:./protocol_test_system
+    url: jdbc:h2:file:./protocol_test_system;MODE=MYSQL
     username: yuyi
     password: Admin@yuyi
     driverClassName: org.h2.Driver

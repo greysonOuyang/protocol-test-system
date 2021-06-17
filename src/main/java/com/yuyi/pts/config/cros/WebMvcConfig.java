@@ -1,4 +1,4 @@
-package com.yuyi.pts.common.cros;
+package com.yuyi.pts.config.cros;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 // 可限制固定methods可以通过跨域
                 .allowedMethods("*")
                 // 可限制访问ip可以通过跨域
-                .allowedOrigins("http://localhost:8080")
+                .allowedOrigins("*")
                 // 是否允许发送cookie
                 .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.SET_COOKIE);
