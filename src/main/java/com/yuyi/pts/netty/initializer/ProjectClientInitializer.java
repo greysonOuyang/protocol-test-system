@@ -1,6 +1,6 @@
 package com.yuyi.pts.netty.initializer;
 
-import com.yuyi.pts.common.constant.Constant;
+import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.netty.handler.ProjectConfigHandler;
 import com.yuyi.pts.netty.codec.ModBusDecoder;
@@ -28,12 +28,12 @@ public class ProjectClientInitializer extends AbstractNettyInitializer<SocketCha
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
         pipeline.addLast(new IdleStateHandler(
-                Constant.SERVER_READ_IDLE_TIME_OUT,
-                Constant.SERVER_WRITE_IDLE_TIME_OUT,
-                Constant.SERVER_ALL_IDLE_TIME_OUT,
+                ConstantValue.SERVER_READ_IDLE_TIME_OUT,
+                ConstantValue.SERVER_WRITE_IDLE_TIME_OUT,
+                ConstantValue.SERVER_ALL_IDLE_TIME_OUT,
                 TimeUnit.SECONDS));
         pipeline.addLast(new SmartCarEncoder());
         pipeline.addLast(new ModBusDecoder());
-        pipeline.addLast(new ProjectConfigHandler(serviceInterface, Constant.CLIENT));
+        pipeline.addLast(new ProjectConfigHandler(serviceInterface, ConstantValue.CLIENT));
     }
 }

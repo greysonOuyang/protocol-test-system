@@ -60,7 +60,7 @@ public class NettyClient {
 
     private Bootstrap bootstrap;
 
-    private ChannelFuture channelFuture;
+    public static ChannelFuture channelFuture;
 
     TInterfaceConfig serviceInterface;
 
@@ -71,28 +71,29 @@ public class NettyClient {
     private Channel clientChannel;
 
     public NettyClient() {
-        new NettyClient(NioSocketChannel.class);
-    }
-
-    public NettyClient(Class clazz) {
         group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
-        bootstrap.channel(clazz);
+        bootstrap.channel(NioSocketChannel.class);
         bootstrap.group(group);
-        if (clazz == NioDatagramChannel.class) {
-            bootstrap.option(ChannelOption.SO_BROADCAST,true);
-            // 设置UDP读缓冲区为2M
-            bootstrap.option(ChannelOption.SO_RCVBUF, 2048 * 1024);
-            // 设置UDP写缓冲区为1M
-            bootstrap.option(ChannelOption.SO_SNDBUF, 1024 * 1024);
-        }
+    }
+
+    public NettyClient(NioDatagramChannel nioDatagramChannel) {
+        group = new NioEventLoopGroup();
+        bootstrap = new Bootstrap();
+        bootstrap.channel(NioDatagramChannel.class);
+        bootstrap.group(group);
+        bootstrap.option(ChannelOption.SO_BROADCAST, true);
+        // 设置UDP读缓冲区为2M
+        bootstrap.option(ChannelOption.SO_RCVBUF, 2048 * 1024);
+        // 设置UDP写缓冲区为1M
+        bootstrap.option(ChannelOption.SO_SNDBUF, 1024 * 1024);
     }
 
 
     /**
      * 启动前需要初始化nettyClientInitializer、host、port
      *
-     * @param session 会话
+     * @param session     会话
      * @param dataContent 数据
      */
     public void start(WebSocketSession session, RequestDataDto dataContent) {
@@ -105,12 +106,12 @@ public class NettyClient {
             }
             bootstrap.handler(abstractNettyInitializer);
             // udp不需要建立连接,其他类型需要建立连接 TODO UDP分成客户端和服务端，支持广播和单播
-            if(RequestType.UDP.equals(type)){
+            if (RequestType.UDP.equals(type)) {
                 doPostAndReceive(session, dataContent);
             } else {
                 doConnect();
                 chooseChannelHandlerContext(abstractNettyInitializer);
-                doProcess(type,session, dataContent);
+                doProcess(type, session, dataContent);
                 // TODO 何时调用关闭待确定
                 doClose();
             }
@@ -130,7 +131,7 @@ public class NettyClient {
     }
 
     /**
-     *  处理udp发送接收数据
+     * 处理udp发送接收数据
      */
     private void doPostAndReceive(WebSocketSession session, RequestDataDto dataContent) throws IOException, InterruptedException {
 
@@ -144,17 +145,16 @@ public class NettyClient {
                     Unpooled.copiedBuffer(dataContent.getBody().toString(), CharsetUtil.UTF_8),
                     //地址
                     new InetSocketAddress(
-                            dataContent.getHost(),port
+                            dataContent.getHost(), port
                     ))).sync();
             chooseChannelHandlerContext(abstractNettyInitializer);
             CtxWithWebSocketSessionCache.put(currentCtx, session);
             //如果超过长时间则表示超时
-            if(!ch.closeFuture().await(100)){
+            if (!ch.closeFuture().await(100)) {
                 session.close();
                 System.out.println("查询超时！！！");
             }
-        }
-        finally {
+        } finally {
             //优雅的关闭释放内存
             group.shutdownGracefully();
         }
@@ -176,7 +176,7 @@ public class NettyClient {
                 HttpHeaders httpHeaders = new DefaultHttpHeaders();
                 //进行握手
                 WebSocketClientHandshaker handShaker = WebSocketClientHandshakerFactory.newHandshaker(
-                        websocketURI, WebSocketVersion.V13, (String)null, true, httpHeaders);
+                        websocketURI, WebSocketVersion.V13, (String) null, true, httpHeaders);
                 Channel channel = channelFuture.channel();
                 WebSocketRequestHandler handler = (WebSocketRequestHandler) channel.pipeline().get("hookedHandler");
                 handler.setHandShaker(handShaker);
@@ -197,7 +197,7 @@ public class NettyClient {
      */
     private void doClose() {
         channelFuture.channel().closeFuture().addListener(cfl -> {
-            if(clientChannel!=null){
+            if (clientChannel != null) {
                 clientChannel.close();
             }
 //            if (group != null) {
@@ -215,7 +215,7 @@ public class NettyClient {
      */
     private void doConnect() throws InterruptedException, IOException {
 
-       channelFuture = bootstrap.connect(getHost(), getPort()).sync();
+        channelFuture = bootstrap.connect(getHost(), getPort()).sync();
         log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
 
         //注册连接事件
@@ -231,7 +231,7 @@ public class NettyClient {
                 clientChannel = channelFuture.channel();
             }
             //如果连接失败，尝试重新连接
-            else{
+            else {
                 log.info("服务端[" + channelFuture.channel().localAddress().toString() + "]连接失败，重新连接中...");
                 future.channel().close();
                 bootstrap.connect(getHost(), getPort());
@@ -251,10 +251,10 @@ public class NettyClient {
         } else if (abstractNettyInitializer instanceof WebSocketInitializer) {
             currentCtx = WebSocketRequestHandler.myCtx;
         } else if (abstractNettyInitializer instanceof HttpRequestInitializer) {
-          currentCtx = HttpRequestHandler.myCtx;
+            currentCtx = HttpRequestHandler.myCtx;
         } else if (abstractNettyInitializer instanceof ModBusRequestInitializer) {
             currentCtx = ModbusRequestHandler.myCtx;
-        }else if (abstractNettyInitializer instanceof UdpRequestInitializer) {
+        } else if (abstractNettyInitializer instanceof UdpRequestInitializer) {
             currentCtx = UdpRequestHandler.myCtx;
         }
     }

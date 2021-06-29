@@ -147,7 +147,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         } else if (requestType == RequestType.UDP) {
             host = dataContent.getHost();
             port = dataContent.getPort();
-            NettyClient client = new NettyClient(NioDatagramChannel.class);
+            NettyClient client = new NettyClient(new NioDatagramChannel());
             this.nettyClient = client;
         } else if (requestType == RequestType.TCP) {
             host = dataContent.getHost();

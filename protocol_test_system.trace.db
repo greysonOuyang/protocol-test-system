@@ -1,0 +1,84 @@
+2021-06-28 17:00:58 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where currentMode = ? [42102-200]
+2021-06-28 17:00:58 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where currentMode = ? [42102-200]
+2021-06-28 17:00:58 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where request_type = ? [42102-200]
+2021-06-28 17:00:58 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where request_type = ? [42102-200]
+2021-06-28 17:01:04 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where currentMode = ? [42102-200]
+2021-06-28 17:01:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where request_type = ? [42102-200]
+2021-06-28 17:01:10 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where currentMode = ? [42102-200]
+2021-06-28 17:01:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where request_type = ? [42102-200]
+2021-06-28 17:01:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "T_INTERFACE_CONFIG" not found; SQL statement:
+select
+     
+    key_id, interface_config_id, request_name , request_type , url, request_method, content,
+    port, description, currentMode
+   
+    from t_interface_config
+    where currentMode = ? [42102-200]
+2021-06-28 17:07:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PARAM" already exists; SQL statement:
+create table param ( param_id int auto_increment comment '主键' primary key, param_interface_id varchar(32) null comment '关联id,与interfaceConfig表id对应', param_key_id varchar(32) null comment '标识id', param_index int null comment '写入下标', param_length varchar(10) null comment '参数长度', param_field varchar(50) null comment '参数名称', param_value varchar(500) null comment '参数值', param_type varchar(10) null comment '参数类型', param_io varchar(10) null comment '输入输出', extend3 int null, extend4 int null, extend5 int null, extend6 int null, extend7 int null ) comment '参数表' [42101-200]

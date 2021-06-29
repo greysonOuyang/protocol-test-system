@@ -1,6 +1,6 @@
 package com.yuyi.pts.model.server;
 
-import com.yuyi.pts.common.constant.Constant;
+import com.yuyi.pts.common.constant.ConstantValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class SmartCarProtocol {
     /**
      * 消息头
      */
-    private short frameHead = Constant.HEED_DATA;
+    private short frameHead = ConstantValue.HEED_DATA;
     /**
      * 总帧数
      */
@@ -78,7 +78,7 @@ public class SmartCarProtocol {
     /**
      * 消息尾
      */
-    private short frameTail = Constant.TAIL_DATA;
+    private short frameTail = ConstantValue.TAIL_DATA;
 
     public SmartCarProtocol(int frameCount, int frameIndex, int dataLen, int messageLen,
                             String messageTime,int lineId,byte[] spare,byte messageId,byte[] content) {

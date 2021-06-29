@@ -6,7 +6,7 @@ package com.yuyi.pts.common.constant;
  * @author greyson
  * @since 2021/4/11
  */
-public class Constant {
+public class ConstantValue {
     /** 常量code */
     public final static String CODE = "code";
     /** 常量msg */
@@ -36,4 +36,16 @@ public class Constant {
     public static final int SERVER_WRITE_IDLE_TIME_OUT = 0;
 
     public static final int SERVER_ALL_IDLE_TIME_OUT = 0;
+
+    /**
+     * modbus功能码 读数据 十六进制
+     */
+    public static final String MODBUS_READ = "04";
+
+    /**
+     * modbus功能码 写数据 十六进制
+     */
+    public static final String MODBUS_WRITE = "10";
+
+
 }

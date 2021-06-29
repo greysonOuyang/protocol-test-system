@@ -1,6 +1,6 @@
 package com.yuyi.pts.netty.handler;
 
-import com.yuyi.pts.common.constant.Constant;
+import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
@@ -8,10 +8,12 @@ import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.server.SmartCarProtocol;
+import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -55,14 +57,21 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        NettyClient.channelFuture.addListener((ChannelFutureListener) future -> {
+            //如果连接成功
+            if (future.isSuccess()) {
+                if (ConstantValue.CLIENT.equals(mode)) {
+                    byte[] sourceByteArr = buildMsg();
+                    ScheduledThreadPoolUtil.scheduleAtFixedRateByTime(()-> {
+                        log.info("接口配置处理器发送消息");
+                        ctx.channel().writeAndFlush(sourceByteArr);
+                    },0, 10, 10, TimeUnit.SECONDS);
+                }
+            }
+        });
         //添加连接
-        log.debug("客户端加入连接：" + ctx.channel());
-        if (Constant.CLIENT.equals(mode)) {
-            byte[] sourceByteArr = buildMsg();
-            ScheduledThreadPoolUtil.scheduleAtFixedRateByTime(()-> {
-                ctx.channel().writeAndFlush(sourceByteArr);
-            },0, 1, 10, TimeUnit.SECONDS);
-        }
+        log.info("接口配置处理器已经激活：" + ctx.channel());
+
     }
 
     @Override
@@ -145,11 +154,11 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
         byte[] sourceByteArr = null;
         if (serviceInterface.getRequestType() != null) {
             String interfaceType = serviceInterface.getRequestType();
-              if(protocol.getLineId()==14){
-                  sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 1);
-              }else {
-                  sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 2);
-              }
+            if (protocol.getLineId() == 14) {
+                sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 1);
+            } else {
+                sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 2);
+            }
         }
         return sourceByteArr;
     }

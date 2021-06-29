@@ -3,7 +3,7 @@ package com.yuyi.pts.netty;
 import com.yuyi.pts.common.util.ResultEntity;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
-import com.yuyi.pts.netty.initializer.NettyServerInitializer;
+import com.yuyi.pts.netty.initializer.AbstractNettyInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -33,9 +33,9 @@ public class NettyServer {
     public ChannelFuture future = null;
 
     int port;
-    NettyServerInitializer nettyServerInitializer;
+    AbstractNettyInitializer nettyServerInitializer;
 
-    public NettyServer(NettyServerInitializer nettyServerInitializer, int port){
+    public NettyServer(AbstractNettyInitializer nettyServerInitializer, int port){
         this.nettyServerInitializer = nettyServerInitializer;
         this.port = port;
     }

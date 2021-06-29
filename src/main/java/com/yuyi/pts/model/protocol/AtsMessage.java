@@ -1,6 +1,6 @@
 package com.yuyi.pts.model.protocol;
 
-import com.yuyi.pts.common.constant.Constant;
+import com.yuyi.pts.common.constant.ConstantValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,7 @@ public class AtsMessage {
     /**
      * 消息头
      */
-    private short dataHead = Constant.HEED_DATA;
+    private short dataHead = ConstantValue.HEED_DATA;
     /**
      * 总帧数
      */
@@ -60,7 +60,7 @@ public class AtsMessage {
     /**
      * 消息尾
      */
-    private short headTail = Constant.TAIL_DATA;
+    private short headTail = ConstantValue.TAIL_DATA;
 
 }
 

@@ -1,7 +1,7 @@
 package com.yuyi.pts.common.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yuyi.pts.common.constant.Constant;
+import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.common.enums.OperationCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,18 +46,18 @@ public class ResultEntity {
 
     public static JSONObject setResultEntity(OperationCommand cmd, String result, String message, Object data) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constant.CODE, cmd.value());
-        jsonObject.put(Constant.MSG, message);
-        jsonObject.put(Constant.RESULT, result);
-        jsonObject.put(Constant.DATA, data);
+        jsonObject.put(ConstantValue.CODE, cmd.value());
+        jsonObject.put(ConstantValue.MSG, message);
+        jsonObject.put(ConstantValue.RESULT, result);
+        jsonObject.put(ConstantValue.DATA, data);
         return jsonObject;
     }
 
     public static JSONObject setResultEntityWithOperation(String result, String message, Object data) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constant.MSG, message);
-        jsonObject.put(Constant.RESULT, result);
-        jsonObject.put(Constant.DATA, data);
+        jsonObject.put(ConstantValue.MSG, message);
+        jsonObject.put(ConstantValue.RESULT, result);
+        jsonObject.put(ConstantValue.DATA, data);
         return jsonObject;
     }
 
