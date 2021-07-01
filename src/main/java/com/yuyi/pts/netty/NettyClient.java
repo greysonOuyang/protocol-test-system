@@ -30,6 +30,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 /**
  * NettyClient 通过指定IP、PORT连接接口系统进行数据请求
@@ -74,7 +75,7 @@ public class NettyClient {
         group = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.channel(NioSocketChannel.class);
-        bootstrap.group(group);
+        bootstrap.group(group).option(ChannelOption.TCP_NODELAY, true);
     }
 
     public NettyClient(NioDatagramChannel nioDatagramChannel) {
@@ -213,28 +214,20 @@ public class NettyClient {
      *
      * @throws InterruptedException 异常
      */
-    private void doConnect() throws InterruptedException, IOException {
-
-        channelFuture = bootstrap.connect(getHost(), getPort()).sync();
-        log.info("服务端[" + channelFuture.channel().localAddress().toString() + "连接后");
-
+    public void doConnect() {
+        channelFuture = bootstrap.connect(host, port);
         //注册连接事件
         channelFuture.addListener((ChannelFutureListener) future -> {
             //如果连接成功
             if (future.isSuccess()) {
-                if (currentCtx != null) {
-                    log.info("拿到ctx了");
-                } else {
-                    log.info("拿不到ctx");
-                }
-                log.info("服务端[" + channelFuture.channel().localAddress().toString() + "]已连接...");
+                log.info("成功连接[{}:{}]", host, port);
                 clientChannel = channelFuture.channel();
             }
             //如果连接失败，尝试重新连接
             else {
-                log.info("服务端[" + channelFuture.channel().localAddress().toString() + "]连接失败，重新连接中...");
+                log.info("连接[{}:{}]失败,尝试重连...", host, port);
                 future.channel().close();
-                bootstrap.connect(getHost(), getPort());
+                channelFuture.channel().eventLoop().schedule(this::doConnect, 10, TimeUnit.SECONDS);
             }
         });
 

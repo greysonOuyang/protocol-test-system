@@ -28,24 +28,28 @@ public class SmartCarEncoder extends MessageToByteEncoder<Object> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Object obj, ByteBuf byteBuf) throws Exception {
-        log.info("进入了Ats编码");
+        log.info("ATS编码--Begin");
         byte[] sourceByteArr = (byte[]) obj;
         byte[] dataHead = ByteUtils.shortToByte2(atsMessage.getDataHead());
         byteBuf.writeBytes(dataHead);
         byteBuf.writeByte(atsMessage.getTotal());
         byteBuf.writeByte(atsMessage.getIndex());
-        int size = sourceByteArr.length + 2;
+        // sourceByteArr.length包含了消息类型即type一个字节，但type传输过去需要两个字节，所以此处加一
+        int size = sourceByteArr.length + 1;
         byte[] dataLen = ByteUtils.storeInBytes(ByteUtils.intToBytesLow(size), 2);
         byteBuf.writeBytes(dataLen);
         byte[] deviceStatus = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(atsMessage.getDeviceStatus()), 1);
         byteBuf.writeBytes(deviceStatus);
-        byte [] type = ByteUtils.hexString2Bytes(atsMessage.getType());
+        byte[] type = new byte[2];
+        type[0] = sourceByteArr[0];
         byteBuf.writeBytes(type);
-        byteBuf.writeBytes(sourceByteArr);
+        byte[] content = new byte[sourceByteArr.length-1];
+        System.arraycopy(sourceByteArr, 1, content, 0, sourceByteArr.length-1);
+        byteBuf.writeBytes(content);
         byte[] dataTail = ByteUtils.shortToByte2(
                 atsMessage.getHeadTail());
         byteBuf.writeBytes(dataTail);
-
+        log.info("ATS编码--End");
     }
 
 }

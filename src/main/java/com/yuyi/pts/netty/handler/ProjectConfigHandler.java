@@ -65,7 +65,7 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
                     ScheduledThreadPoolUtil.scheduleAtFixedRateByTime(()-> {
                         log.info("接口配置处理器发送消息");
                         ctx.channel().writeAndFlush(sourceByteArr);
-                    },0, 10, 10, TimeUnit.SECONDS);
+                    },0, 10, 1, TimeUnit.MINUTES);
                 }
             }
         });

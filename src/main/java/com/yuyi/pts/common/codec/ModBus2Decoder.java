@@ -27,41 +27,36 @@ public class ModBus2Decoder extends ByteToMessageDecoder {
         log.info("ModBus协议解码--begin");
         ModBus2Message modBusMessage = new ModBus2Message();
         ModBusHeader modBusHeader = new ModBusHeader();
-//        try {
-            // 协议头
-            byte[] headerData = ByteBufUtils.parseByteCount(byteBuf, 7);
-            modBusMessage.setHeaderBytes(headerData);
-            ByteBuf headerBuffer = Unpooled.buffer();
-            headerBuffer.writeBytes(headerData);
+        // 协议头
+        byte[] headerData = ByteBufUtils.parseByteCount(byteBuf, 7);
+        modBusMessage.setHeaderBytes(headerData);
+        ByteBuf headerBuffer = Unpooled.buffer();
+        headerBuffer.writeBytes(headerData);
 
-            // 业务标识符
-            byte[] affairIdentification = ByteBufUtils.parseByteCount(headerBuffer, 2);
-            modBusHeader.setAffairIdentification(ByteUtils.byteArrayToHexStr(affairIdentification));
+        // 业务标识符
+        byte[] affairIdentification = ByteBufUtils.parseByteCount(headerBuffer, 2);
+        modBusHeader.setAffairIdentification(ByteUtils.byteArrayToHexStr(affairIdentification));
 
-            // 协议标识符
-            byte[] protocolIdentification = ByteBufUtils.parseByteCount(headerBuffer, 2);
-            modBusHeader.setProtocolIdentification(ByteUtils.byteArrayToHexStr(protocolIdentification));
+        // 协议标识符
+        byte[] protocolIdentification = ByteBufUtils.parseByteCount(headerBuffer, 2);
+        modBusHeader.setProtocolIdentification(ByteUtils.byteArrayToHexStr(protocolIdentification));
 
-            // 长度标识符
-            byte[] lengthArr = ByteBufUtils.parseByteCount(headerBuffer, 2);
-            modBusHeader.setLength(ByteUtils.byte2ToShort(lengthArr));
+        // 长度标识符
+        byte[] lengthArr = ByteBufUtils.parseByteCount(headerBuffer, 2);
+        modBusHeader.setLength(ByteUtils.byte2ToShortBigEndian(lengthArr));
 
-            //单元标识码
-            byte[] unit = ByteBufUtils.parseByteCount(headerBuffer, 1);
-            modBusHeader.setUnitIdentification(ByteUtils.byteArrayToHexStr(unit));
+        //单元标识码
+        byte[] unit = ByteBufUtils.parseByteCount(headerBuffer, 1);
+        modBusHeader.setUnitIdentification(ByteUtils.byteArrayToHexStr(unit));
 
-            modBusMessage.setHeader(modBusHeader);
+        modBusMessage.setHeader(modBusHeader);
 
-            // 解析消息体
-            int dadaLength = ByteUtils.byte2ToShort(lengthArr) - 1;
-            byte[] data = ByteBufUtils.parseByteCount(byteBuf, dadaLength);
-            modBusMessage.setBodyData(data);
+        // 解析消息体
+        int dadaLength = ByteUtils.byte2ToShortBigEndian(lengthArr) - 1;
+        byte[] data = ByteBufUtils.parseByteCount(byteBuf, dadaLength);
+        modBusMessage.setBodyData(data);
 
-            out.add(modBusMessage);
-            log.info("ModBus协议解码--end");
-//        } finally {
-//            // 若没有正常解析或者解析抛了异常,抛弃现在这个byteBuf的字节
-////            byteBuf.release();
-//        }
+        out.add(modBusMessage);
+        log.info("ModBus协议解码--end");
     }
 }

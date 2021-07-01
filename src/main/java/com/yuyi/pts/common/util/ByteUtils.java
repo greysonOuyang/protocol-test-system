@@ -312,6 +312,17 @@ public class ByteUtils {
         return b & 0xFF;
     }
 
+    public static short byte2ToShortBigEndian(byte[] arr) {
+        if (arr != null && arr.length != 2) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+        }
+        int i = 0;
+        i |= arr[0] & 0xFF;
+        i <<= 8;
+        i |= arr[1] & 0xFF;
+        return (short) i;
+    }
+
     /**
      * <pre>
      * 长度为2的8位byte数组转换为一个16位short数字.

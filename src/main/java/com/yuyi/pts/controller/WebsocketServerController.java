@@ -40,7 +40,7 @@ public class WebsocketServerController {
             nettyClient.setHost(host);
             nettyClient.setPort(port);
             nettyClient.setServiceInterface(tInterfaceConfig);
-            nettyClient.setAbstractNettyInitializer(new ProjectClientInitializer(tInterfaceConfig));
+            nettyClient.setAbstractNettyInitializer(new ProjectClientInitializer(tInterfaceConfig, nettyClient));
             nettyClient.start();
         } else if (ConstantValue.SERVER.equals(mode)) {
             NettyServerInitializer nettyServerInitializer = new NettyServerInitializer(tInterfaceConfig);

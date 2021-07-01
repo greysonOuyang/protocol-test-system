@@ -1,5 +1,7 @@
 package com.yuyi.pts;
 
+import com.yuyi.pts.netty.NettyServer;
+import com.yuyi.pts.netty.initializer.TcpServerInitializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
@@ -15,9 +17,9 @@ import org.springframework.stereotype.Component;
 public class ApplicationRunner implements org.springframework.boot.ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        TcpServerInitializer tcpServerInitializer = new TcpServerInitializer("ats_receive");
-//        NettyServer nettyServer = new NettyServer(tcpServerInitializer, 1998);
-//        nettyServer.start();
-//        log.info("闸机状态的Netty Server启动了");
+        TcpServerInitializer tcpServerInitializer = new TcpServerInitializer();
+        NettyServer nettyServer = new NettyServer(tcpServerInitializer, 1998);
+        nettyServer.start();
+        log.info("闸机状态的Netty Server启动了");
     }
 }

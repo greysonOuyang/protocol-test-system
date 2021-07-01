@@ -2,6 +2,8 @@ package com.yuyi.pts.netty.initializer;
 
 import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.netty.NettyClient;
+import com.yuyi.pts.netty.handler.ChannelInactiveHandler;
 import com.yuyi.pts.netty.handler.ProjectConfigHandler;
 import com.yuyi.pts.netty.codec.ModBusDecoder;
 import com.yuyi.pts.netty.codec.SmartCarEncoder;
@@ -18,10 +20,13 @@ import java.util.concurrent.TimeUnit;
  * @since 2021/6/11
  */
 public class ProjectClientInitializer extends AbstractNettyInitializer<SocketChannel> {
-    TInterfaceConfig serviceInterface = null;
+   private TInterfaceConfig serviceInterface;
 
-    public ProjectClientInitializer(TInterfaceConfig serviceInterface){
+   private NettyClient nettyClient;
+
+    public ProjectClientInitializer(TInterfaceConfig serviceInterface, NettyClient nettyClient){
         this.serviceInterface = serviceInterface;
+        this.nettyClient = nettyClient;
     }
 
     @Override
@@ -34,6 +39,7 @@ public class ProjectClientInitializer extends AbstractNettyInitializer<SocketCha
                 TimeUnit.SECONDS));
         pipeline.addLast(new SmartCarEncoder());
         pipeline.addLast(new ModBusDecoder());
+        pipeline.addLast(new ChannelInactiveHandler(nettyClient));
         pipeline.addLast(new ProjectConfigHandler(serviceInterface, ConstantValue.CLIENT));
     }
 }

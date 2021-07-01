@@ -91,7 +91,6 @@ public class ModBus2Encoder extends MessageToByteEncoder<ModBus2Message> {
                 length += 1 + byteCount;
                 data = body.getData();
             }
-
             out.writeBytes(ByteUtils.shortToByte2((short) length));
             out.writeBytes(unitIdentification);
             out.writeBytes(code);

@@ -23,7 +23,7 @@ public class ModBusDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf,
                           List<Object> out) throws Exception {
-        log.info("ModBus协议接收到服务端数据--解码前：{}", byteBuf);
+        log.info("ModBus协议解码--Begin");
         ModBusMessage modBusMessage = new ModBusMessage();
         int headlength = 7;
         int bodylength = byteBuf.readableBytes()-7;
@@ -80,5 +80,7 @@ public class ModBusDecoder extends ByteToMessageDecoder {
         modBusMessage.setBody(ByteUtils.byteArrayToHexStr(data));
 
         out.add(modBusMessage);
+        log.info("ModBus协议解码--End");
+
     }
 }
