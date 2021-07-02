@@ -67,9 +67,9 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         byte[] registerCountBytes = ByteUtils.storeInBytes(registerCountStr,2);
 
         //  长度两个字节 == 单元标识符一个字节 + 数据长度
-        int length = code.length + strAddressBytes.length + registerCountBytes.length + 1;
-        byte[] lengthBytes = ByteUtils.storeInBytes(
-                ByteUtils.intToBytesLow(length), 2);
+        short length = (short) (code.length + strAddressBytes.length + registerCountBytes.length + 1);
+        ByteUtils.shortToByte2(length);
+        byte[] lengthBytes = ByteUtils.shortToByte2(length);
         // 注意！写入顺序不可调整
         out.writeBytes(affairIdentification);
         out.writeBytes(protocolIdentification);
@@ -83,8 +83,6 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             //  byte[] chars = new byte[16];
             // 第0位 综合监控控制取消播控区域文本内容   1 启动
             String  isOpen = jsonObject.get("isOpen").toString();
-//            byte[] strAddressBytes = ByteUtils.shortToByte2(Short.valueOf(startAddress));
-//            byte[] strAddressByte = ByteUtils.storeInBytes(strAddressBytes,2);
             //第1位 1 全屏播放文本  0 滚动播放文本
             String  showType = jsonObject.get("showType").toString();
             // 8-14  表示  1-127分钟
@@ -111,15 +109,17 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytes1,2));
             // todo 暂时写死  后面在改
             byte[] num = new byte[2];
+            // 播放区域
             ByteBuf byteBuf = Unpooled.buffer();
             // 文本消息内容
             byte[] bytesStr = ByteUtils.strToBytes(textCont);
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytesStr,250));
 
-            for (int i = 0; i < 247; i++) {
-                ByteUtils.hexString2Bytes("00"+i*10);
-                byteBuf.writeBytes(num);
+            for (int i = 0; i < 247*2; i++) {
+                byte[] bytes = ByteUtils.strToBytes("1");
+                byteBuf.writeBytes(bytes);
             }
+            //字节个数
             byte[] rnum = ByteUtils.hexString2Bytes("01");
             out.writeBytes(rnum);
             out.writeBytes(byteBuf1);
