@@ -215,7 +215,11 @@ public class NettyClient {
      * @throws InterruptedException 异常
      */
     public void doConnect() {
-        channelFuture = bootstrap.connect(host, port);
+        try {
+            channelFuture = bootstrap.connect(host, port).sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //注册连接事件
         channelFuture.addListener((ChannelFutureListener) future -> {
             //如果连接成功
