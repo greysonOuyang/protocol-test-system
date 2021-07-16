@@ -11,6 +11,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 /**
  * description
  *
@@ -24,7 +26,7 @@ public class ModBus2Encoder extends MessageToByteEncoder<ModBus2Message> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ModBus2Message modBusMessage, ByteBuf out) throws Exception {
-        log.info("modBus编码--begin");
+        log.info("ModBus协议编码--begin");
 
         ModBusHeader header = modBusMessage.getHeader();
         // 业务标识符 两个字节
@@ -49,8 +51,9 @@ public class ModBus2Encoder extends MessageToByteEncoder<ModBus2Message> {
         Boolean isWriteBody = true;
         if (modBusMessage.getBodyData() != null) {
             //  长度两个字节 == 单元标识符一个字节 + 数据长度
-            byte[] length = ByteUtils.shortToByte2(header.getLength());
-            out.writeBytes(length);
+            int length = modBusMessage.getBodyData().length + 1;
+            byte[] lengthByte = ByteUtils.shortToByte2((short) length);
+            out.writeBytes(lengthByte);
             out.writeBytes(unitIdentification);
             out.writeBytes(modBusMessage.getBodyData());
             isWriteBody = false;
@@ -88,9 +91,11 @@ public class ModBus2Encoder extends MessageToByteEncoder<ModBus2Message> {
                 }
                 // 04 响应和 10 请求 公共部分
                 byteCount = body.getByteCount();
-                length += 1 + byteCount;
+                length += 1;
                 data = body.getData();
+                length += body.getData().length;
             }
+
             out.writeBytes(ByteUtils.shortToByte2((short) length));
             out.writeBytes(unitIdentification);
             out.writeBytes(code);
@@ -104,13 +109,15 @@ public class ModBus2Encoder extends MessageToByteEncoder<ModBus2Message> {
                 out.writeByte(byteCount);
                 out.writeBytes(data);
             }
-            log.info("modBus编码--end");
-            boolean DEBUG = false;
-            if (DEBUG) {
-                byte[] bytes = new byte[out.readableBytes()];
-                out.readBytes(bytes);
-                System.out.println(bytes);
-            }
+
+        }
+        log.info("ModBus协议编码--end");
+        boolean DEBUG = false;
+        if (DEBUG) {
+            ByteBuf copy = out.copy();
+            byte[] bytes = new byte[copy.readableBytes()];
+            copy.readBytes(bytes);
+            log.info("编码完成的数据：[{}]", Arrays.toString(bytes));
         }
     }
 }

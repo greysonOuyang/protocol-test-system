@@ -16,7 +16,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 /**
@@ -55,7 +54,6 @@ public class NettyServer {
     }
 
 
-    @PostConstruct()
     public void start() {
         //需要开启一个新的线程来执行netty server 服务器
         ScheduledThreadPoolUtil.getInstance().execute(this::init);

@@ -19,6 +19,38 @@ import java.util.Stack;
  */
 public class ByteUtils {
 
+
+    /**
+     * 将ByteArray对象转化为BitSet
+     * @param bytes
+     * @return
+     */
+    public static BitSet byteArray2BitSet(byte[] bytes) {
+        BitSet bitSet = new BitSet(bytes.length * 8);
+        int index = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            for (int j = 7; j >= 0; j--) {
+                bitSet.set(index++, (bytes[i] & (1 << j)) >> j == 1);
+            }
+        }
+        return bitSet;
+    }
+
+    /**
+     * bitSet转为byte数组 不要使用官方的tobyteArray 有bug
+     * @param bits
+     * @return
+     */
+    public static byte[] toByteArray(BitSet bits) {
+        byte[] bytes = new byte[bits.length()/8+1];
+        for (int i=0; i<bits.length(); i++) {
+            if (bits.get(i)) {
+                bytes[i/8] |= 1<<(7-i%8);
+            }
+        }
+        return bytes;
+    }
+
     /**
      * 十进制转十六进制
      *
@@ -101,6 +133,12 @@ public class ByteUtils {
         System.arraycopy(array1, 0, concatenatedArray, 0, array1.length);
         System.arraycopy(array2, 0, concatenatedArray, array1.length, array2.length);
         return concatenatedArray;
+    }
+
+    public static byte[] spillByteArrays(byte[] array, int start, int offset) {
+        byte[] bytes = new byte[offset - start + 1];
+        System.arraycopy(array, start, bytes, 0, offset - start + 1);
+        return bytes;
     }
 
     public static byte[] strToBytes(String str) {

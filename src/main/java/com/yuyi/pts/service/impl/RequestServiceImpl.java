@@ -74,6 +74,7 @@ public class RequestServiceImpl implements RequestService {
             request.headers().add(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
             toBeSendContent = request;
         }  else if (type == RequestType.TCP || type == RequestType.UDP) {
+            // TODO 组织ModBus数据
             toBeSendContent = dataContent;
         } else if (type == RequestType.WebSocket) {
 // TODO           待支持更多类型的消息 ping pong bin

@@ -234,7 +234,6 @@ public class NettyClient {
                 channelFuture.channel().eventLoop().schedule(this::doConnect, 10, TimeUnit.SECONDS);
             }
         });
-
     }
 
     /**
