@@ -2,7 +2,7 @@ package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
 import com.yuyi.pts.service.ResponseService;
@@ -57,7 +57,7 @@ public class TcpRequestHandler extends ChannelInboundHandlerAdapter {
         ResponseInfo responseInfo = new ResponseInfo();
         responseInfo.setState(1);
         responseInfo.setBody((String) msg);
-        String result = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
+        String result = ResultUtil.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
         responseService.sendTextMsg(ctx, result);
 
     }

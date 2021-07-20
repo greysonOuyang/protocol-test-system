@@ -14,7 +14,7 @@ mybatis:
 # 内嵌H2数据库
 spring:
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
     open-in-view: false

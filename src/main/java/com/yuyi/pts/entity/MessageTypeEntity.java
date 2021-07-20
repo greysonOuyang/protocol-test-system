@@ -10,24 +10,24 @@ import javax.persistence.Table;
  * description
  *
  * @author greyson
- * @since 2021/7/19
+ * @since 2021/7/20
  */
 @Entity
-@Table(name = "t_project")
+@Table(name = "t_message_type")
 @Data
-public class ProjectEntity {
+public class MessageTypeEntity {
+
     @Id
+    private String messageId;
+
     private String projectId;
+
     /**
-     * 项目名称
+     * 消息类型
      */
-    private String projectName;
+    private String messageType;
     /**
-     * 编码器
+     * 消息类型描述
      */
-    private String encoderId;
-    /**
-     * 解码器
-     */
-    private String decoderId;
+    private String messageDescription;
 }

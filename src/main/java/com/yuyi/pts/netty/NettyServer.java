@@ -1,6 +1,6 @@
 package com.yuyi.pts.netty;
 
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
 import com.yuyi.pts.netty.initializer.AbstractNettyInitializer;
@@ -78,10 +78,10 @@ public class NettyServer {
         try{
             future = serverBootstrap.bind(this.port).sync();
             if(future.isSuccess()){
-                String result = ResultEntity.successWithNothing();
+                String result = ResultUtil.successWithNothing();
                 MainController.STATUS_MAP.put(port, result);
             } else {
-                String result = ResultEntity.failedWithMsg("启动失败");
+                String result = ResultUtil.failedWithMsg("启动失败");
                 if (MainController.STATUS_MAP.get(port) != null) {
                     MainController.STATUS_MAP.put(port, result);
                 }
@@ -89,7 +89,7 @@ public class NettyServer {
             // 等待服务端监听端口关闭
             future.channel().closeFuture().sync();
         }catch (Exception e){
-            String result = ResultEntity.failedWithMsg(e.getMessage());
+            String result = ResultUtil.failedWithMsg(e.getMessage());
             MainController.STATUS_MAP.put(port, result);
             log.info("nettyServer 启动时发生异常---------------{}", e.getMessage());
             log.info(e.getMessage());

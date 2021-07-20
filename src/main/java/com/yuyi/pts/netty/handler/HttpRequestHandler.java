@@ -3,7 +3,7 @@ package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
@@ -64,11 +64,11 @@ public class HttpRequestHandler extends ChannelInboundHandlerAdapter {
             responseInfo.setState(response.status().code());
             // 成功执行 successWithData()
             if(200==response.status().code()){
-                String responseData = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
+                String responseData = ResultUtil.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
                 WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
                 session.sendMessage(new TextMessage(responseData));
             }else {
-                String responseData = ResultEntity.failedWithMsg(OperationCommand.TEST_LOG_RESPONSE, "请求失败，请稍后重试");
+                String responseData = ResultUtil.failedWithMsg(OperationCommand.TEST_LOG_RESPONSE, "请求失败，请稍后重试");
                 WebSocketSession session = CtxWithWebSocketSessionCache.get(ctx);
                 session.sendMessage(new TextMessage(responseData));
             }

@@ -7,7 +7,7 @@ import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.dao.ParamDao;
 import com.yuyi.pts.dao.TInterfaceConfigDao;
 import com.yuyi.pts.model.client.Param;
@@ -75,7 +75,7 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
             MultipartFile file = mRequest.getFile(key);
             if (file == null) {
                 log.error("无法获取到文件");
-                return ResultEntity.failedWithMsg("无法获取到文件");
+                return ResultUtil.failedWithMsg("无法获取到文件");
             }
             try (InputStream inputStream = file.getInputStream()) {
               String tInterfaceConfigId = UUID.randomUUID().toString().replace("-", "");
@@ -125,10 +125,10 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                 tInterfaceConfigDao.insert(tInterfaceConfig);
             } catch (IOException e) {
                 log.error("读取Excel文件出错：{}", e.getMessage());
-                return ResultEntity.failedWithMsg("解析文件出错");
+                return ResultUtil.failedWithMsg("解析文件出错");
             }
         }
-        return ResultEntity.successWithNothing();
+        return ResultUtil.successWithNothing();
     }
 
     private Param getParam(Map res) {

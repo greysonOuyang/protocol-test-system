@@ -2,7 +2,7 @@ package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.common.util.UDPUtil;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
@@ -51,7 +51,7 @@ public class UdpRequestHandler extends SimpleChannelInboundHandler<DatagramPacke
         String  body =  msg.content().toString(CharsetUtil.UTF_8);
         responseInfo.setState(1);
         responseInfo.setBody(body);
-        String result = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
+        String result = ResultUtil.successWithData(OperationCommand.TEST_LOG_RESPONSE, responseInfo);
         responseService.sendTextMsg(ctx, result);
         System.out.println(body+"这是服务端发送的内容");
 

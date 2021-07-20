@@ -5,17 +5,16 @@ package com.yuyi.pts.controller;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.enums.InterfaceMessageType;
 import com.yuyi.pts.common.util.CommonUtil;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
+import com.yuyi.pts.entity.ParamEntity;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.repository.ParamRepository;
 import com.yuyi.pts.service.impl.ParamServiceImpl;
 import com.yuyi.pts.service.impl.TInterfaceConfigServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,17 +29,26 @@ import java.util.stream.Collectors;
  * @since 2021/5/12
  */
 @RestController
-@RequestMapping("paramCtrl")
+@RequestMapping("param")
 public class ParamController {
     @Autowired
    private ParamServiceImpl paramService;
     @Autowired
     private TInterfaceConfigServiceImpl interfaceConfigService;
 
-    @PostMapping("/param/save")
-    public void saveParamData(@RequestBody ServiceInterfaceJDBC serviceInterfaceJDBC) {
-        paramService.insert(serviceInterfaceJDBC);
+    @Autowired
+    ParamRepository paramRepository;
+
+    @PostMapping("/save")
+    public void saveParamData(@RequestBody List<ParamEntity> paramEntities) {
+        paramRepository.saveAll(paramEntities);
     }
+
+    @GetMapping("get/all/by/paramIo")
+    public void getParamList(String interfaceId, String paramIo) {
+
+    }
+
     /**
      * 根据传入的消息类型,基本接口 从缓存中取出默认的参数列表，根据用户传过来的列车趟数，自动生成参数信息，对原有接口进行更新保存
      * @param map
@@ -151,7 +159,7 @@ public class ParamController {
             tInterfaceConfig.setRequestName(interfaceName);
             interfaceConfigService.insert(tInterfaceConfig);
         }
-        return ResultEntity.successWithNothing();
+        return ResultUtil.successWithNothing();
     }
     public Param setValue(Param param, Map<String, String> map) {
         Param newParam = null;

@@ -2,7 +2,7 @@ package com.yuyi.pts.netty.handler;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.vo.response.ResponseInfo;
@@ -94,7 +94,7 @@ public class ModbusRequestHandler extends ChannelInboundHandlerAdapter {
         responseInfo.setMsg(returnMsg);
         responseInfo.setBody(body);
         responseInfo.setState(ResponseInfo.SUCCESS);
-        String response = ResultEntity.successWithData(OperationCommand.TEST_LOG_RESPONSE,  responseInfo);
+        String response = ResultUtil.successWithData(OperationCommand.TEST_LOG_RESPONSE,  responseInfo);
         responseService.sendTextMsg(ctx, response);
     }
 }

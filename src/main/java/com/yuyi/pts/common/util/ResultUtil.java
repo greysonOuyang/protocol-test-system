@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultEntity {
+public class ResultUtil {
 
     public static final String SUCCESS = "SUCCESS";
 

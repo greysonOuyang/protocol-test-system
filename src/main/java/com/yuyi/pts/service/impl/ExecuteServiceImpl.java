@@ -7,7 +7,7 @@ import com.yuyi.pts.common.enums.ProtocolType;
 import com.yuyi.pts.common.enums.RequestType;
 import com.yuyi.pts.common.enums.SslCertType;
 import com.yuyi.pts.common.util.JvmMetricsUtil;
-import com.yuyi.pts.common.util.ResultEntity;
+import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.NettyClient;
@@ -26,7 +26,7 @@ import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.yuyi.pts.common.util.ResultEntity.successWithData;
+import static com.yuyi.pts.common.util.ResultUtil.successWithData;
 
 /**
  * 执行测试的主类，对请求进行验证、识别，根据请求类型调用不同的协议处理service，并启动NettyClient
@@ -78,7 +78,7 @@ public class ExecuteServiceImpl implements ExecuteService {
             // TODO 设置Socket关闭事件
         } else {
             log.info("请求参数校验失败");
-            String response = ResultEntity.failedWithoutNothing(OperationCommand.MISSING_PARAMETER);
+            String response = ResultUtil.failedWithoutNothing(OperationCommand.MISSING_PARAMETER);
             responseService.sendTextMsg(session, response);
         }
     }
@@ -117,7 +117,7 @@ public class ExecuteServiceImpl implements ExecuteService {
         } else if ("https://".equals(targets)) {
             flag = true;
         } else {
-            String responseData = ResultEntity.failedWithMsg(OperationCommand.MISSING_PARAMETER, "请输入正确的Ip地址");
+            String responseData = ResultUtil.failedWithMsg(OperationCommand.MISSING_PARAMETER, "请输入正确的Ip地址");
             try {
                 session.sendMessage(new TextMessage(responseData));
             } catch (IOException e) {
