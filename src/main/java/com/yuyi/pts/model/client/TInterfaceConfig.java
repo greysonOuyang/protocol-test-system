@@ -26,6 +26,11 @@ public class TInterfaceConfig implements Serializable {
     private Integer decoderType;
 
     /**
+     * 子协议类型
+     */
+    private String protocolType;
+
+    /**
      * 编码类型
      */
     private Integer encoderType;

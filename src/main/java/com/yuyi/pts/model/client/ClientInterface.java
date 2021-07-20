@@ -20,6 +20,7 @@ public class ClientInterface {
     private String requestName;
     private String currentMode;
     private String requestType;
+    private String protocolType;
     private String url;
     private String requestMethod;
     private String content;

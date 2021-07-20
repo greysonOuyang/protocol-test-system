@@ -12,10 +12,11 @@
     <result column="port" jdbcType="INTEGER" property="port" />
     <result column="description" jdbcType="INTEGER" property="description" />
     <result column="currentMode" jdbcType="VARCHAR" property="currentmode" />
+    <result column="protocol_type" jdbcType="VARCHAR" property="protocolType" />
   </resultMap>
   <sql id="Base_Column_List">
     key_id, interface_config_id, request_name , request_type , url, request_method, content,
-    port, description, currentMode
+    port, description, currentMode,protocol_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -30,11 +31,11 @@
   <insert id="insert" keyColumn="key_id" keyProperty="keyId" parameterType="com.yuyi.pts.model.client.TInterfaceConfig" useGeneratedKeys="true">
     insert into t_interface_config (interface_config_id, request_name, request_type,
                                     url, request_method, content,
-                                    port, description, currentMode
+                                    port, description, currentMode,protocol_type
     )
     values (#{interfaceConfigId,jdbcType=VARCHAR}, #{requestName,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR},
             #{url,jdbcType=VARCHAR}, #{requestMethod,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
-            #{port,jdbcType=INTEGER}, #{description,jdbcType=INTEGER}, #{currentmode,jdbcType=VARCHAR}
+            #{port,jdbcType=INTEGER}, #{description,jdbcType=INTEGER}, #{currentmode,jdbcType=VARCHAR},#{protocolType,jdbcType=VARCHAR}
            )
   </insert>
   <insert id="insertSelective" keyColumn="key_id" keyProperty="keyId" parameterType="com.yuyi.pts.model.client.TInterfaceConfig" useGeneratedKeys="true">

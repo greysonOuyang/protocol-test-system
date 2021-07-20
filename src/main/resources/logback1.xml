@@ -50,7 +50,7 @@
           将root的打印级别设置为“INFO”
           日志输出级别
      -->
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="Stdout" />
         <appender-ref ref="RollingFile" />
     </root>

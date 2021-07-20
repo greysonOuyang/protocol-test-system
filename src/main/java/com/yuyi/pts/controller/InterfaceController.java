@@ -45,6 +45,11 @@ public class InterfaceController {
     @Autowired
     TInterfaceConfigDao tInterfaceConfigDao;
 
+    /**
+     * 新增接口 服务端
+     * @param serviceInterface
+     * @return
+     */
     @PostMapping("/interface/add")
     public String addInterface(@RequestBody ServiceInterface serviceInterface) {
         String uuid = UUID.randomUUID().toString();
@@ -89,6 +94,11 @@ public class InterfaceController {
         }
     }
 
+    /**
+     * 新增或修改配置
+     * @param map
+     * @return
+     */
     @PostMapping("/request/config/save")
     public String saveRequestConfig(@RequestBody Map<String, Object> map) {
         boolean flag = configService.insert(map);
@@ -108,18 +118,6 @@ public class InterfaceController {
         return InterfaceCache.INTERFACE_MAP.size();
     }
 
-    public Param setValue(Param param, Map<String, String> map) {
-        Param newParam = null;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (param.getField().equals(entry.getKey())) {
-                param.setValue(entry.getValue());
-                // paramFactory获取多例对象 单例存在以下bug：字段名相同，多轮循环返回的是同一个对象
-                newParam = Param.paramFactory.get(param);;
-                break;
-            }
-        }
-        return newParam;
-    }
 
     /**
      * 新增or更新接口-客户端

@@ -82,6 +82,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
             clientInterface.setPort(item.getPort());
             clientInterface.setUrl(item.getUrl());
             clientInterface.setId(item.getInterfaceConfigId());
+            clientInterface.setProtocolType(item.getProtocolType());
             clientInterfaceList.add(clientInterface);
         });
         return clientInterfaceList;
@@ -173,6 +174,7 @@ public class TInterfaceConfigServiceImpl implements TInterfaceConfigService {
     TInterfaceConfig getTInterfaceConfig(ClientInterfaceVO clientInterfaceVO){
         ClientInterface clientInterface = clientInterfaceVO.getClientInterface();
         TInterfaceConfig interfaceConfig = new TInterfaceConfig();
+        interfaceConfig.setProtocolType(clientInterface.getProtocolType());
         interfaceConfig.setContent(clientInterface.getContent());;
         interfaceConfig.setRequestType(clientInterface.getRequestType());;
         interfaceConfig.setPort(clientInterface.getPort());;

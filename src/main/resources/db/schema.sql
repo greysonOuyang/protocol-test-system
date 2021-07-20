@@ -36,6 +36,7 @@ create table t_interface_config
     interface_config_id varchar(32)  null comment '唯一标识符',
     request_name        varchar(32)  null comment '请求名称',
     request_type        varchar(32)  null comment '请求类型',
+    protocol_type       varchar(32)  null comment '子协议',
     url                 varchar(32)  null comment '请求地址',
     request_method      varchar(32)  null comment '请求方式',
     content             varchar(500) null comment '请求内容',

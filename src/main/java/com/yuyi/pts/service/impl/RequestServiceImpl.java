@@ -2,6 +2,7 @@ package com.yuyi.pts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.common.protocol.ModBus2Message;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.service.RequestService;
@@ -40,6 +41,7 @@ public class RequestServiceImpl implements RequestService {
         Object finalToBeSendContent = getToBeSendContent(type, dataContent);
 //        TODO 在执行完所有的发送后对session以及服务进行关闭
         ScheduledThreadPoolUtil.scheduleDelayByNumber(() -> {
+            log.info("发送了数据");
             currentCtx.writeAndFlush(finalToBeSendContent);
         }, 0, value, count, TimeUnit.MILLISECONDS);
 
@@ -76,6 +78,8 @@ public class RequestServiceImpl implements RequestService {
         }  else if (type == RequestType.TCP || type == RequestType.UDP) {
             // TODO 组织ModBus数据
             toBeSendContent = dataContent;
+            ModBus2Message modbusMessage = new ModBus2Message();
+
         } else if (type == RequestType.WebSocket) {
 // TODO           待支持更多类型的消息 ping pong bin
             TextWebSocketFrame text = new TextWebSocketFrame((String) dataContent.getBody());
