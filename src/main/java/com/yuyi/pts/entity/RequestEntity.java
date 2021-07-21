@@ -3,6 +3,7 @@ package com.yuyi.pts.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
@@ -21,7 +22,8 @@ public class RequestEntity {
      * 唯一标识符
      */
     @Id
-    private String requestId;
+    @GeneratedValue
+    private Integer requestId;
 
     /**
      * 编码器

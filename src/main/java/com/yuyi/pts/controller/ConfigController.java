@@ -34,7 +34,7 @@ public class ConfigController {
      */
     @PostMapping("/save")
     public String saveRequestConfig(@RequestBody Map<String, Object> map) {
-        String id = (String) map.get("id");
+        Integer id = (Integer) map.get("id");
         List<ConfigEntity> configList = (ArrayList) map.get("configList");
         configList.forEach(
                 item-> {

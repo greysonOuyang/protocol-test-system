@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @author greyson
  * @since 2021/7/20
  */
-public interface ProjectRepository extends JpaRepository<ProjectEntity, String>, JpaSpecificationExecutor<ProjectEntity> {
+public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>, JpaSpecificationExecutor<ProjectEntity> {
 }

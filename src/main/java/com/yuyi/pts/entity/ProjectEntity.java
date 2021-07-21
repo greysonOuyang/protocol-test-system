@@ -3,6 +3,7 @@ package com.yuyi.pts.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,7 +18,8 @@ import javax.persistence.Table;
 @Data
 public class ProjectEntity {
     @Id
-    private String projectId;
+    @GeneratedValue
+    private Integer projectId;
     /**
      * 项目名称
      */

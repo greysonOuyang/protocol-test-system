@@ -3,6 +3,7 @@ package com.yuyi.pts.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,7 +12,8 @@ import javax.persistence.Table;
 @Data
 public class SelectionEntity {
     @Id
-    private String selectionId;
+    @GeneratedValue
+    private Integer selectionId;
 
     private String selectionValue;
 }

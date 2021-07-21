@@ -3,6 +3,7 @@ package com.yuyi.pts.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,8 +18,9 @@ import javax.persistence.Table;
 @Data
 public class InterfaceEntity {
     @Id
-    private String interfaceId;
-    private String projectId;
+    @GeneratedValue
+    private Integer interfaceId;
+    private Integer projectId;
     private String interfaceName;
     private String messageTypeId;
 }

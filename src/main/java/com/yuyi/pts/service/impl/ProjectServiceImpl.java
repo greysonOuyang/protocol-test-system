@@ -43,7 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
         Optional<InterfaceEntity> byId = interfaceRepository.findById(interfaceId);
         if (byId.isPresent()) {
             InterfaceEntity interfaceEntity = byId.get();
-            String projectId = interfaceEntity.getProjectId();
+            Integer projectId = interfaceEntity.getProjectId();
             ProjectEntity projectEntity = projectRepository.getOne(projectId);
             projectDto.setProjectEntity(projectEntity);
             String messageTypeId = interfaceEntity.getMessageTypeId();

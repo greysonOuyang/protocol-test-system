@@ -6,6 +6,7 @@ import com.yuyi.pts.model.client.Param;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -26,12 +27,13 @@ public class ParamEntity {
      * 主键
      */
     @Id
+    @GeneratedValue
     private Integer paramId;
 
     /**
      * 关联id,与interfaceConfig表id对应
      */
-    private String interfaceId;
+    private Integer interfaceId;
 
     /**
      * 写入下标

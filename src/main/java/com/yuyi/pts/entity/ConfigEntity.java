@@ -3,6 +3,7 @@ package com.yuyi.pts.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
@@ -19,9 +20,10 @@ import java.util.List;
 public class ConfigEntity {
 
     @Id
-    private String configId;
+    @GeneratedValue
+    private Integer configId;
 
-    private String requestId;
+    private Integer requestId;
 
     /**
      * 配置Key

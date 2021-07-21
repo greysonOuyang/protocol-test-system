@@ -6,6 +6,7 @@ import com.yuyi.pts.repository.CodecRepository;
 import com.yuyi.pts.service.CodecService;
 import io.netty.channel.ChannelHandlerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * description
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author greyson
  * @since 2021/7/21
  */
+@Component
 public class CodecServiceImpl implements CodecService {
 
     @Autowired

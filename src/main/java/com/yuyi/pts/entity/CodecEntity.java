@@ -3,6 +3,7 @@ package com.yuyi.pts.entity;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -14,7 +15,8 @@ import javax.persistence.Table;
 @Data
 public class CodecEntity {
     @Id
-    private String codecId;
+    @GeneratedValue
+    private Integer codecId;
     private String codecName;
     /**
      * 1 编码 0 解码
