@@ -1,6 +1,8 @@
 package com.yuyi.pts.entity;
 
 import com.yuyi.pts.common.enums.FieldType;
+import com.yuyi.pts.common.util.InstanceFactory;
+import com.yuyi.pts.model.client.Param;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -17,6 +19,9 @@ import javax.persistence.Table;
 @Table(name = "t_param")
 @Data
 public class ParamEntity {
+
+    public static final InstanceFactory<ParamEntity> paramFactory = InstanceFactory.init(ParamEntity.class);
+
     /**
      * 主键
      */

@@ -1,6 +1,5 @@
 package com.yuyi.pts.controller;
 
-import com.yuyi.pts.common.cache.InterfaceCache;
 import com.yuyi.pts.model.server.ServiceInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -45,21 +44,5 @@ public class MainController {
         STATUS_MAP.put(Integer.parseInt(port), "initializing");
         return WebsocketServerController.nettyServer.stop();
     }
-
-
-
-    @PostMapping("/param/save")
-    public void saveParamData(@RequestBody ServiceInterface serviceInterface) {
-        String interfaceId = serviceInterface.getInterfaceId();
-        ServiceInterface service = InterfaceCache.get(interfaceId);
-        if (serviceInterface.getInput() != null) {
-            service.setInput(serviceInterface.getInput());
-        }
-        if (serviceInterface.getOutput() != null) {
-            service.setOutput(serviceInterface.getOutput());
-        }
-        InterfaceCache.put(interfaceId, service);
-    }
-
 
 }

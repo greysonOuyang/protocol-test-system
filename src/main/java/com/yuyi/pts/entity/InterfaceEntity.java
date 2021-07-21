@@ -20,4 +20,5 @@ public class InterfaceEntity {
     private String interfaceId;
     private String projectId;
     private String interfaceName;
+    private String messageTypeId;
 }

@@ -4,6 +4,7 @@ import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.controller.MainController;
 import com.yuyi.pts.netty.initializer.AbstractNettyInitializer;
+import com.yuyi.pts.netty.initializer.ProjectInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -32,10 +33,10 @@ public class NettyServer {
     public ChannelFuture future = null;
 
     int port;
-    AbstractNettyInitializer nettyServerInitializer;
+    AbstractNettyInitializer initializer;
 
     public NettyServer(AbstractNettyInitializer nettyServerInitializer, int port){
-        this.nettyServerInitializer = nettyServerInitializer;
+        this.initializer = nettyServerInitializer;
         this.port = port;
     }
 
@@ -73,7 +74,7 @@ public class NettyServer {
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .option(ChannelOption.TCP_NODELAY,true)
                 .childOption(ChannelOption.SO_KEEPALIVE,true)
-                .childHandler(nettyServerInitializer);
+                .childHandler(initializer);
 
         try{
             future = serverBootstrap.bind(this.port).sync();

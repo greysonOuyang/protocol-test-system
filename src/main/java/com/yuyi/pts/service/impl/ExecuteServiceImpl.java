@@ -46,7 +46,6 @@ public class ExecuteServiceImpl implements ExecuteService {
     @Autowired
     private NettyClient nettyClient;
 
-    @Autowired
     private AbstractNettyInitializer abstractNettyInitializer;
 
     /**

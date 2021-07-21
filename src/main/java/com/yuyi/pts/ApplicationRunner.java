@@ -1,5 +1,6 @@
 package com.yuyi.pts;
 
+import com.yuyi.pts.common.util.ReflectionUtil;
 import com.yuyi.pts.entity.CodecEntity;
 import com.yuyi.pts.netty.NettyServer;
 import com.yuyi.pts.netty.initializer.TcpServerInitializer;
@@ -41,7 +42,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
 
     private void initCodec() {
         List<CodecEntity> codecEntityList = new ArrayList<>();
-        Set<Class> classSet = findAllClassesUsingClassLoader("com.yuyi.pts.netty.codec");
+        Set<Class> classSet = ReflectionUtil.findAllClassesUsingClassLoader("com.yuyi.pts.netty.codec");
         classSet.forEach((item -> {
             CodecEntity codecEntity = new CodecEntity();
             codecEntity.setCodecName(item.getName());
@@ -54,25 +55,5 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
             codecEntityList.add(codecEntity);
         }));
         codecRepository.saveAll(codecEntityList);
-    }
-
-    public Set<Class> findAllClassesUsingClassLoader(String packageName) {
-        InputStream stream = ClassLoader.getSystemClassLoader()
-                .getResourceAsStream(packageName.replaceAll("[.]", "/"));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        return reader.lines()
-                .filter(line -> line.endsWith(".class"))
-                .map(line -> getClass(line, packageName))
-                .collect(Collectors.toSet());
-    }
-
-    private Class getClass(String className, String packageName) {
-        try {
-            return Class.forName(packageName + "."
-                    + className.substring(0, className.lastIndexOf('.')));
-        } catch (ClassNotFoundException e) {
-            // handle the exception
-        }
-        return null;
     }
 }

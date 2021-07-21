@@ -2,6 +2,7 @@ package com.yuyi.pts.netty;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.RequestType;
+import com.yuyi.pts.entity.InterfaceEntity;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.handler.*;
@@ -49,7 +50,6 @@ public class NettyClient {
     @Value("${user.protocol.port}")
     private int port;
 
-    @Autowired
     private AbstractNettyInitializer abstractNettyInitializer;
 
     @Autowired
@@ -62,8 +62,6 @@ public class NettyClient {
     private Bootstrap bootstrap;
 
     public static ChannelFuture channelFuture;
-
-    TInterfaceConfig serviceInterface;
 
 
     /**

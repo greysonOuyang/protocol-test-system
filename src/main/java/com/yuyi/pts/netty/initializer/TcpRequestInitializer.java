@@ -24,7 +24,7 @@ public class TcpRequestInitializer extends AbstractNettyInitializer<SocketChanne
         ch.pipeline()
                 .addLast(new IdleStateHandler(3, 0, 0))
                 .addLast(new StringDecoder(CharsetUtil.UTF_8))
-                .addLast("encoder", new StringEncoder(CharsetUtil.UTF_8))
+                .addLast(new StringEncoder(CharsetUtil.UTF_8))
                 .addLast(TCP_HANDLER);
     }
 }

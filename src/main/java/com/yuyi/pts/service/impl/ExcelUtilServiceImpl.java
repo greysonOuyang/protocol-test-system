@@ -8,8 +8,6 @@ import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.DateTimeUtil;
 import com.yuyi.pts.common.util.ExcelUtils;
 import com.yuyi.pts.common.util.ResultUtil;
-import com.yuyi.pts.dao.ParamDao;
-import com.yuyi.pts.dao.TInterfaceConfigDao;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.ServiceInterfaceJDBC;
 import com.yuyi.pts.model.client.TInterfaceConfig;
@@ -18,7 +16,6 @@ import com.yuyi.pts.model.excel.ExcelUtil;
 import com.yuyi.pts.model.server.ServiceInterface;
 import com.yuyi.pts.service.ExcelUtilService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,10 +33,6 @@ import java.util.*;
 @Service
 @Slf4j
 public class ExcelUtilServiceImpl implements ExcelUtilService {
-    @Autowired
-    private TInterfaceConfigDao tInterfaceConfigDao;
-    @Autowired
-    private ParamDao paramDao;
 
     @Override
     public void downLoadExcel(HttpServletResponse response, JSONObject object) throws IOException {

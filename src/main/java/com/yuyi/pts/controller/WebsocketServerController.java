@@ -4,16 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.model.client.TInterfaceConfig;
+import com.yuyi.pts.model.vo.ProjectDto;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.model.vo.request.RequestMainDTO;
-import com.yuyi.pts.model.vo.request.ServerRequestDto;
+import com.yuyi.pts.model.vo.request.RequestVo;
 import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.netty.NettyServer;
-import com.yuyi.pts.netty.initializer.NettyServerInitializer;
-import com.yuyi.pts.netty.initializer.ProjectClientInitializer;
+import com.yuyi.pts.netty.initializer.ProjectInitializer;
 import com.yuyi.pts.service.ExecuteService;
-import com.yuyi.pts.service.impl.InterfaceService;
+import com.yuyi.pts.service.ProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -34,11 +33,8 @@ public class WebsocketServerController {
 
     public static NettyServer nettyServer;
 
-    /**
-     * 接口管理服务
-     */
     @Autowired
-    InterfaceService interfaceService;
+    ProjectService projectService;
 
     /**
      * 请求执行服务
@@ -48,9 +44,10 @@ public class WebsocketServerController {
 
     @MessageMapping("/start/server")
     @SendTo("/topic/response")
-    public void execute(ServerRequestDto request) {
-        String serviceInterfaceId = request.getInterfaceId();
-        TInterfaceConfig tInterfaceConfig = interfaceService.selectInterfaceById(serviceInterfaceId);
+    public void execute(RequestVo request) {
+        String interfaceId = request.getMessageTypeId();
+        ProjectDto projectDto = projectService.findBy(interfaceId);
+        projectDto.setMode(request.getMode());
         String host = request.getHost();
         int port = request.getPort();
         String mode = request.getMode();
@@ -58,12 +55,11 @@ public class WebsocketServerController {
             NettyClient nettyClient = new NettyClient();
             nettyClient.setHost(host);
             nettyClient.setPort(port);
-            nettyClient.setServiceInterface(tInterfaceConfig);
-            nettyClient.setAbstractNettyInitializer(new ProjectClientInitializer(tInterfaceConfig, nettyClient));
+            nettyClient.setAbstractNettyInitializer(new ProjectInitializer(projectDto, nettyClient));
             nettyClient.start();
         } else if (ConstantValue.SERVER.equals(mode)) {
-            NettyServerInitializer nettyServerInitializer = new NettyServerInitializer(tInterfaceConfig);
-            nettyServer = new NettyServer(nettyServerInitializer, port);
+            ProjectInitializer projectInitializer = new ProjectInitializer(projectDto);
+            nettyServer = new NettyServer(projectInitializer, port);
             nettyServer.start();
         }
 
@@ -86,7 +82,7 @@ public class WebsocketServerController {
         if (code == OperationCommand.CANCEL.value()) {
             // 关闭连接
             session.close();
-        } else if(code == OperationCommand.SUBMIT_TEST.value()) {
+        } else if (code == OperationCommand.SUBMIT_TEST.value()) {
             executeService.execute(session, data);
         }
     }

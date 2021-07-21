@@ -5,9 +5,13 @@ import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.common.util.SpringUtils;
+import com.yuyi.pts.entity.InterfaceEntity;
+import com.yuyi.pts.entity.ParamEntity;
 import com.yuyi.pts.model.client.Param;
 import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.server.SmartCarProtocol;
+import com.yuyi.pts.model.vo.InterfaceVo;
+import com.yuyi.pts.model.vo.ProjectDto;
 import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.service.ResponseService;
 import com.yuyi.pts.service.impl.ResponseServiceImpl;
@@ -16,7 +20,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -31,27 +39,26 @@ import java.util.concurrent.TimeUnit;
  * @since 2021/4/27
  */
 @Slf4j
+@Component
+@Scope("prototype")
+@NoArgsConstructor
 public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
 
-    static SmartCarProtocol protocol;
-    public static ResponseService responseService;
+    @Autowired
+    SmartCarProtocol protocol;
 
+    @Autowired
+    ResponseService responseService;
 
-    static {
-        protocol = SpringUtils.getBean(SmartCarProtocol.class);
-        responseService = SpringUtils.getBean(ResponseServiceImpl.class);
-    }
-
-
-    TInterfaceConfig serviceInterface = null;
+    ProjectDto projectDto;
 
     /**
      * 模式 client或者 Server
      */
     String mode;
 
-    public ProjectConfigHandler(TInterfaceConfig serviceInterface, String mode) {
-        this.serviceInterface = serviceInterface;
+    public ProjectConfigHandler(ProjectDto projectDto, String mode) {
+        this.projectDto = projectDto;
         this.mode = mode;
     }
 
@@ -91,11 +98,11 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
      * @return 字节数据
      */
     private byte[] buildMsg() {
-        List<Param> outputList = serviceInterface.getOutput();
+        List<ParamEntity> outputList = projectDto.getOutput();
         byte[] sourceByteArr = buildMessageType();
 
         // 写入数据，组织成对方想要的数据
-        for (Param param : outputList) {
+        for (ParamEntity param : outputList) {
             // 当前字段长度
             int currentFieldLength = param.getLength();
             String value = param.getValue().trim();
@@ -152,8 +159,8 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
      */
     private byte[] buildMessageType() {
         byte[] sourceByteArr = null;
-        if (serviceInterface.getRequestType() != null) {
-            String interfaceType = serviceInterface.getRequestType();
+        if (projectDto.getMessageTypeEntity() != null && projectDto.getMessageTypeEntity().getMessageType() != null) {
+            String interfaceType = projectDto.getMessageTypeEntity().getMessageType();
             if (protocol.getLineId() == 14) {
                 sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 1);
             } else {
