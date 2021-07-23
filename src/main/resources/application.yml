@@ -4,12 +4,13 @@ mybatis:
   type-aliases-package: com.yuyi.pts.model.entity
   mapper-locations: classpath:mybatis/mapper/*.xml
 
+
 # 内嵌H2数据库
 spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     open-in-view: false
   # MYSQL 数据库
   datasource:
@@ -33,4 +34,4 @@ spring:
 #      path: /h2
 #      enabled: true
 logging:
-  config: classpath:logback1.xml
+  config: classpath:logback-config.xml

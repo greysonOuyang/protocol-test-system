@@ -1,5 +1,6 @@
 package com.yuyi.pts;
 
+import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.ReflectionUtil;
 import com.yuyi.pts.entity.CodecEntity;
 import com.yuyi.pts.netty.NettyServer;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
@@ -45,11 +47,15 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
         Set<Class> classSet = ReflectionUtil.findAllClassesUsingClassLoader("com.yuyi.pts.netty.codec");
         classSet.forEach((item -> {
             CodecEntity codecEntity = new CodecEntity();
-            codecEntity.setCodecName(item.getName());
-            if (item.getName().contains("encode")) {
+            codecEntity.setCodecName(item.getName().substring(25, item.getName().length()));
+            if (item.getName().contains("Encoder")) {
                 codecEntity.setCodecType("1");
-            } else if (item.getName().contains("decode")) {
+            } else if (item.getName().contains("Decoder")) {
                 codecEntity.setCodecType("0");
+            }
+            if (item.isAnnotationPresent(Desc.class)) {
+                Desc desc = (Desc) item.getDeclaredAnnotation(Desc.class);
+                codecEntity.setCodecDesc(desc.value());
             }
             codecEntity.setCodecName(item.getName());
             codecEntityList.add(codecEntity);

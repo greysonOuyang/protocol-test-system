@@ -2,10 +2,7 @@ package com.yuyi.pts.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author greyson
@@ -15,11 +12,14 @@ import javax.persistence.Table;
 @Data
 public class CodecEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer codecId;
+
     private String codecName;
     /**
      * 1 编码 0 解码
      */
     private String codecType;
+
+    private String codecDesc;
 }

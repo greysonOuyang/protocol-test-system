@@ -11,8 +11,10 @@ import lombok.Getter;
  * @author greyson
  * @since 2021/7/20
  */
-@Getter
+@Data
 public class ProjectVo {
-    private ProjectEntity projectEntity;
-    private MessageTypeEntity messageTypeEntity;
+    private String projectId;
+    private String projectName;
+    private String encoderDesc;
+    private String decoderDesc;
 }

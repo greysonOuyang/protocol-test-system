@@ -16,8 +16,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Param implements Serializable {
-    public static final InstanceFactory<Param> paramFactory = InstanceFactory.init(Param.class);
+public class ParamEntity implements Serializable {
+    public static final InstanceFactory<ParamEntity> paramFactory = InstanceFactory.init(ParamEntity.class);
     /**
      * 主键
      */
@@ -62,36 +62,5 @@ public class Param implements Serializable {
      * 输入输出
      */
     private String paramIo;
-
-    private Integer extend3;
-
-    private Integer extend4;
-
-    private Integer extend5;
-
-    private Integer extend6;
-
-    private Integer extend7;
-
-    private static final long serialVersionUID = 1L;
-
-    public Param(Param param) {
-        this.paramId = param.paramId;
-        this.paramInterfaceId = param.paramInterfaceId;
-        this.paramKeyId = param.paramKeyId;
-        this.index = param.index;
-        this.length = param.length;
-
-        this.field = param.field;
-        this.value = param.value;
-        this.type = param.type;
-        this.paramIo = param.paramIo;
-        this.extend3 = param.extend3;
-
-        this.extend4 = param.extend4;
-        this.extend5 = param.extend5;
-        this.extend6 = param.extend6;
-        this.extend7 = param.extend7;
-    }
 
 }

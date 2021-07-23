@@ -29,4 +29,9 @@ public class CodecController {
     public List<CodecEntity> findCodecByType(String type) {
        return codecRepository.findListByType(type);
     }
+
+    @GetMapping("/find/all")
+    public List<CodecEntity> findAll() {
+        return codecRepository.findAll();
+    }
 }

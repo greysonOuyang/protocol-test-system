@@ -2,6 +2,7 @@ package com.yuyi.pts.netty.codec;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.util.ByteUtils;
+import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
@@ -25,6 +26,7 @@ import java.util.BitSet;
  */
 @Slf4j
 @Component
+@Desc("ModBus协议编码器")
 public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
 
 

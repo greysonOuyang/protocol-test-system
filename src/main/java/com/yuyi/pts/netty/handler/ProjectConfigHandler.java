@@ -4,17 +4,11 @@ import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
-import com.yuyi.pts.common.util.SpringUtils;
-import com.yuyi.pts.entity.InterfaceEntity;
 import com.yuyi.pts.entity.ParamEntity;
-import com.yuyi.pts.model.client.Param;
-import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.server.SmartCarProtocol;
-import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.model.vo.ProjectDto;
 import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.service.ResponseService;
-import com.yuyi.pts.service.impl.ResponseServiceImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -27,9 +21,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -106,7 +98,14 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
             // 当前字段长度
             int currentFieldLength = param.getLength();
             String value = param.getValue().trim();
-            FieldType type = param.getType();
+            String type1 = param.getType();
+            Optional<FieldType> first = Arrays.stream(FieldType.values()).filter((item) -> {
+                return item.equals(param.getType());
+            }).findFirst();
+            FieldType type = null;
+            if (first.isPresent()) {
+                type =first.get();
+            }
             // 发给对方时的字节数, 默认是当前参数自带的length字段
             int storeLength = currentFieldLength;
             byte[] tempBytes = null;

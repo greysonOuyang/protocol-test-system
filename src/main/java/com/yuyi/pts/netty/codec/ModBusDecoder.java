@@ -1,6 +1,7 @@
 package com.yuyi.pts.netty.codec;
 
 import com.yuyi.pts.common.util.ByteUtils;
+import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.model.protocol.ModBusMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since 2021/4/30
  */
 @Slf4j
+@Desc("ModBus协议解码器")
 public class ModBusDecoder extends ByteToMessageDecoder {
 
     @Override

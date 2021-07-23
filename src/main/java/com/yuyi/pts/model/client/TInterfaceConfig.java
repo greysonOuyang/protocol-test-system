@@ -80,11 +80,11 @@ public class TInterfaceConfig implements Serializable {
     /**
      * 输入参数列表
      */
-    private List<Param> input;
+    private List<ParamEntity> input;
 
     /**
      * 输出参数列表
      */
-    private List<Param> output;
+    private List<ParamEntity> output;
 
 }

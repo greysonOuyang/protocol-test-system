@@ -1,5 +1,7 @@
-package com.yuyi.pts.common.enums;
+package com.yuyi.pts.common.enums.message.type;
 
+
+import com.yuyi.pts.common.util.Desc;
 
 import java.util.stream.Stream;
 
@@ -9,7 +11,8 @@ import java.util.stream.Stream;
  * @author greyson
  * @since 2021/5/13
  */
-public enum InterfaceMessageType {
+@Desc("18号线ATS信息")
+public enum AtsMessageType {
     /**
      * 心跳信息
      */
@@ -32,7 +35,7 @@ public enum InterfaceMessageType {
     private final String description;
 
 
-    InterfaceMessageType(String type, String description) {
+    AtsMessageType(String type, String description) {
         this.description = description;
         this.type = type;
     }
@@ -44,8 +47,8 @@ public enum InterfaceMessageType {
         return description;
     }
 
-    public static Stream<InterfaceMessageType> stream() {
-        return Stream.of(InterfaceMessageType.values());
+    public static Stream<AtsMessageType> stream() {
+        return Stream.of(AtsMessageType.values());
     }
 
 }

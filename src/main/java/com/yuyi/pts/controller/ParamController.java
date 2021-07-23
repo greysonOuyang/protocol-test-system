@@ -3,7 +3,7 @@ package com.yuyi.pts.controller;
 
 
 import com.yuyi.pts.common.enums.FieldType;
-import com.yuyi.pts.common.enums.InterfaceMessageType;
+import com.yuyi.pts.common.enums.message.type.AtsMessageType;
 import com.yuyi.pts.common.util.CommonUtil;
 import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.entity.InterfaceEntity;
@@ -77,13 +77,13 @@ public class ParamController {
 
         // 站台列车趟数
         String trainCount = requestVo.getTrainCount();
-        if (message.getMessageType().equals(InterfaceMessageType.PLAN_INFO.getDescription())) {
+        if (message.getMessageType().equals(AtsMessageType.PLAN_INFO.getDescription())) {
             List<ParamEntity> paramList = projectDto.getInput();
             List<ParamEntity> terminalList = new ArrayList<>();
             ParamEntity param1 = new ParamEntity();
             param1.setField("站台数");
             param1.setValue(stationCount);
-            param1.setType(FieldType.Int);
+            param1.setType(FieldType.Int.name());
             param1.setLength(2);
             terminalList.add(param1);
             for (int i = 0; i < Integer.parseInt(stationCount); i++) {
@@ -91,7 +91,7 @@ public class ParamController {
                 param2.setField("车站编号");
                 int stationCode = Integer.parseInt(CommonUtil.random1To18IntStr());
                 param2.setValue(String.valueOf(stationCode));
-                param2.setType(FieldType.Int);
+                param2.setType(FieldType.Int.name());
                 param2.setLength(2);
                 terminalList.add(param2);
                 ParamEntity param3 = new ParamEntity();
@@ -99,13 +99,13 @@ public class ParamController {
                 String stationNumber = CommonUtil.random1To10IntStr();
                 int index = Integer.parseInt(stationNumber);
                 param3.setValue(stationNumber);
-                param3.setType(FieldType.Int);
+                param3.setType(FieldType.Int.name());
                 param3.setLength(1);
                 terminalList.add(param3);
                 ParamEntity param4 = new ParamEntity();
                 param4.setField("站台列车趟数");
                 param4.setValue(trainCount);
-                param4.setType(FieldType.Int);
+                param4.setType(FieldType.Int.name());
                 param4.setLength(2);
                 terminalList.add(param4);
                 // 获取模板配置
@@ -174,7 +174,9 @@ public class ParamController {
             if (param.getField().equals(entry.getKey())) {
                 param.setValue(entry.getValue());
                 // paramFactory获取多例对象 单例存在以下bug：字段名相同，多轮循环返回的是同一个对象
-                newParam = ParamEntity.paramFactory.get(param);;
+//                newParam = ParamEntity.paramFactory.get(param);;
+                // TODO
+                newParam = new ParamEntity();
                 break;
             }
         }

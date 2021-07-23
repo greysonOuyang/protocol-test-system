@@ -20,4 +20,6 @@ public class ProjectDto {
     private List<ParamEntity> output;
     MessageTypeEntity messageTypeEntity;
     private String mode;
+    private String encoderType;
+    private String decoderType;
 }
