@@ -11,5 +11,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface CodecService {
-    ChannelHandlerAdapter getOne(String codecId);
+    ChannelHandlerAdapter getOne(Integer codecId);
 }

@@ -21,7 +21,7 @@ public class CodecServiceImpl implements CodecService {
     CodecRepository codecRepository;
 
     @Override
-    public ChannelHandlerAdapter getOne(String codecId) {
+    public ChannelHandlerAdapter getOne(Integer codecId) {
         CodecEntity encoder = codecRepository.getOne(codecId);
         Class<ChannelHandlerAdapter> codec = ReflectionUtil.getCodec(encoder.getCodecName());
         try {

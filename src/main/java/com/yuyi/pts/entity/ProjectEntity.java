@@ -24,13 +24,14 @@ public class ProjectEntity {
      * 项目名称
      */
     private String projectName;
+
     /**
      * 编码器
      */
-    private String encoderId;
+    private Integer encoderId;
     /**
      * 解码器
      */
-    private String decoderId;
+    private Integer decoderId;
 
 }

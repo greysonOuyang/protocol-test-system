@@ -1,10 +1,10 @@
 package com.yuyi.pts.netty.codec;
 
 import com.yuyi.pts.common.util.ByteUtils;
+import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.SpringUtils;
-import com.yuyi.pts.model.server.SmartCarProtocol;
+import com.yuyi.pts.model.protocol.SmartCarProtocol;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,7 @@ import java.util.Arrays;
  */
 @Slf4j
 @Component
+@Desc("14号线ATS编码器")
 public class SmartCarEncoder14 extends MessageToByteEncoder<Object> {
 
     static SmartCarProtocol protocol;

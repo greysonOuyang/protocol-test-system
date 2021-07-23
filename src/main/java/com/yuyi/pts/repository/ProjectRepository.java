@@ -17,6 +17,6 @@ import java.util.List;
  */
 public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>, JpaSpecificationExecutor<ProjectEntity> {
 
-    @Query(value = "select p.project_id,p.project_name,c.encoder_id,c.encoder_desc,decoder_id,decoder_desc from t_project p left join t_codec c", nativeQuery = true)
+    @Query(value = "select new com.yuyi.pts.model.vo.ProjectVo(p.*,c.*) from t_project p left join t_project_codec pc on p.project_id = pc.project_id left join t_codec c on c.codec_id = pc.codec_id;", nativeQuery = true)
     List<ProjectVo> findProjectList();
 }

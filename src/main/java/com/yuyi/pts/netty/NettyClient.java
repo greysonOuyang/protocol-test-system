@@ -2,8 +2,6 @@ package com.yuyi.pts.netty;
 
 import com.yuyi.pts.common.cache.CtxWithWebSocketSessionCache;
 import com.yuyi.pts.common.enums.RequestType;
-import com.yuyi.pts.entity.InterfaceEntity;
-import com.yuyi.pts.model.client.TInterfaceConfig;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.netty.handler.*;
 import com.yuyi.pts.netty.initializer.*;

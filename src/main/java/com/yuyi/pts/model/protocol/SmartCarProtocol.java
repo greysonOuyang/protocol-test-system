@@ -1,4 +1,4 @@
-package com.yuyi.pts.model.server;
+package com.yuyi.pts.model.protocol;
 
 import com.yuyi.pts.common.constant.ConstantValue;
 import lombok.AllArgsConstructor;

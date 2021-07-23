@@ -5,7 +5,7 @@ import com.yuyi.pts.common.enums.FieldType;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.entity.ParamEntity;
-import com.yuyi.pts.model.server.SmartCarProtocol;
+import com.yuyi.pts.model.protocol.SmartCarProtocol;
 import com.yuyi.pts.model.vo.ProjectDto;
 import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.service.ResponseService;

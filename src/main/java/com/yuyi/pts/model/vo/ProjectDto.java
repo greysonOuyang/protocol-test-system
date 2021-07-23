@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * description
+ * Netty传参VO
  *
  * @author greyson
  * @since 2021/7/21
@@ -20,6 +20,14 @@ public class ProjectDto {
     private List<ParamEntity> output;
     MessageTypeEntity messageTypeEntity;
     private String mode;
+    /**
+     * 编码器
+     */
+    private Integer encoderId;
+    /**
+     * 解码器
+     */
+    private Integer decoderId;
     private String encoderType;
     private String decoderType;
 }

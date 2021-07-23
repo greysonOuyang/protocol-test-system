@@ -2,7 +2,8 @@ package com.yuyi.pts.netty.codec;
 
 import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.common.util.DateUtils;
-import com.yuyi.pts.model.server.SmartCarProtocol;
+import com.yuyi.pts.common.util.Desc;
+import com.yuyi.pts.model.protocol.SmartCarProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@Desc("14号线ATS解码器")
 public class SmartCarDecoder14 extends ByteToMessageDecoder {
 
     /**

@@ -2,9 +2,14 @@ package com.yuyi.pts.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-/**
+/**@Entity
+ @Table(name = "t_project")
+ @Data
  * description
  *
  * @author greyson
@@ -14,11 +19,12 @@ import javax.persistence.*;
 @Table(name = "t_project_codec")
 @Data
 public class ProjectWithCodecEntity {
+    /**
+     * t_project和t_codec关联表
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer Id;
-
+    @GeneratedValue
+    private Integer pcId;
     private Integer projectId;
-
-    private Integer CodecId;
+    private Integer codecId;
 }
