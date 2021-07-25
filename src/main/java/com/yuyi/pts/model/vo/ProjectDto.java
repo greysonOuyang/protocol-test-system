@@ -16,6 +16,7 @@ import java.util.List;
 @Data
 public class ProjectDto {
     private ProjectEntity projectEntity;
+    private String messageTypeId;
     private List<ParamEntity> input;
     private List<ParamEntity> output;
     MessageTypeEntity messageTypeEntity;

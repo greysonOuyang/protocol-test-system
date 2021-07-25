@@ -14,6 +14,9 @@ import java.util.List;
  */
 @Repository
 public interface MessageTypeRepository extends JpaRepository<MessageTypeEntity, String>, JpaSpecificationExecutor<MessageTypeEntity> {
-    @Query(value = "select * from t_message_type t where t.project_id = projectId", nativeQuery = true)
+    @Query(value = "select * from t_message_type t where t.project_id = :projectId", nativeQuery = true)
     List<MessageTypeEntity> findListByProjectId(String projectId);
+
+    @Query(value = "select DISTINCT t.project_id, t.message_id, t.project_name,t.message_type,t.message_description from t_message_type t group by t.project_id", nativeQuery = true)
+    List<MessageTypeEntity> findProjectList();
 }

@@ -1,6 +1,9 @@
 package com.yuyi.pts.controller;
 
+import com.yuyi.pts.common.util.Desc;
+import com.yuyi.pts.common.util.ReflectionUtil;
 import com.yuyi.pts.entity.CodecEntity;
+import com.yuyi.pts.entity.MessageTypeEntity;
 import com.yuyi.pts.entity.ProjectEntity;
 import com.yuyi.pts.entity.ProjectWithCodecEntity;
 import com.yuyi.pts.model.vo.ProjectDto;
@@ -12,9 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * description
@@ -37,8 +43,11 @@ public class ProjectController {
     ProjectCodecRepository projectCodecRepository;
 
     @PostMapping("/save")
-    public void saveProject(@RequestBody ProjectEntity projectEntity) {
-       projectRepository.save(projectEntity);
+    public void saveProject(@RequestBody ProjectDto projectDto) {
+        String messageTypeId = projectDto.getMessageTypeId();
+        ProjectEntity projectEntity = projectDto.getProjectEntity();
+
+        projectRepository.save(projectEntity);
 
 //        ProjectEntity projectEntity = new ProjectEntity();
 //        projectEntity.setProjectName(projectVo.getProjectName());

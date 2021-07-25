@@ -24,6 +24,8 @@ public class MessageTypeEntity {
 
     private Integer projectId;
 
+    private String projectName;
+
     /**
      * 消息类型
      */

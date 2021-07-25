@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * @author greyson
  * @since 2021/5/13
  */
-@Desc("14号线ATS信息")
+@Desc(value = "14号线ATS信息",id = "14")
 public enum Ats14MessageType {
     /**
      * 心跳信息

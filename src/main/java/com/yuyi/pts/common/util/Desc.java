@@ -21,4 +21,6 @@ public @interface Desc {
      */
     String value() default "";
 
+    String id() default "";
+
 }

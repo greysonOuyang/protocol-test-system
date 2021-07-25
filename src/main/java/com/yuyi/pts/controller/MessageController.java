@@ -22,6 +22,11 @@ public class MessageController {
     @Autowired
     MessageTypeRepository messageTypeRepository;
 
+    @GetMapping("/find/project/list")
+    public List<MessageTypeEntity> findProjectList() {
+        return messageTypeRepository.findProjectList();
+    }
+
     @GetMapping("/find/list")
     public List<MessageTypeEntity> findMessageTypeList(String projectId) {
         return messageTypeRepository.findListByProjectId(projectId);
