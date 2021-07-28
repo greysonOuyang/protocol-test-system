@@ -27,3 +27,4 @@ src/main/resources/static/
 
 protocol-test-system-1.0-SNAPSHOT.jar
 protocol_test_system.mv.db
+protocol_test_system.trace.db
