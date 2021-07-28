@@ -1,11 +1,15 @@
 package com.yuyi.pts.controller;
 
 import com.yuyi.pts.entity.MessageTypeEntity;
+import com.yuyi.pts.entity.ProjectWithMessageTypeEntity;
 import com.yuyi.pts.repository.MessageTypeRepository;
+import com.yuyi.pts.repository.ProjectWithMessageTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.query.JpaQueryMethodFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -22,14 +26,22 @@ public class MessageController {
     @Autowired
     MessageTypeRepository messageTypeRepository;
 
-    @GetMapping("/find/project/list")
-    public List<MessageTypeEntity> findProjectList() {
-        return messageTypeRepository.findProjectList();
+    @Autowired
+    ProjectWithMessageTypeRepository projectWithMessageTypeRepository;
+
+    @GetMapping("/find/message/list")
+    public List<ProjectWithMessageTypeEntity> findProjectList() {
+        return projectWithMessageTypeRepository.findListGroupByMessageBelongId();
     }
 
-    @GetMapping("/find/list")
-    public List<MessageTypeEntity> findMessageTypeList(String projectId) {
-        return messageTypeRepository.findListByProjectId(projectId);
+    /**
+     * 查询消息类型下拉选项
+     * @param messageBelongId
+     * @return
+     */
+    @GetMapping("/find/opt/list")
+    public List<MessageTypeEntity> findMessageTypeList(String messageBelongId) {
+        return messageTypeRepository.findListByMessageTypeId(messageBelongId);
     }
 
     @PostMapping("/save")

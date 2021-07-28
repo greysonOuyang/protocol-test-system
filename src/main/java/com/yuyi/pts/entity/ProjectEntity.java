@@ -34,4 +34,6 @@ public class ProjectEntity {
      */
     private Integer decoderId;
 
+    private Integer messageBelongId;
+
 }

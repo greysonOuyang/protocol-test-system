@@ -17,9 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ProjectVo {
-    @JsonProperty("project_id")
-    private String projectId;
-    @JsonProperty("project_name")
+    private Integer projectId;
+
     private String projectName;
     /**
      * 编码器
@@ -32,21 +31,11 @@ public class ProjectVo {
     private String encoderDesc;
     private String decoderDesc;
 
-    @JsonProperty("codec_id")
     private Integer codecId;
-    @JsonProperty("codec_type")
     private String codecType;
-    @JsonProperty("codec_desc")
     private String codecDesc;
-    @JsonProperty("codec_name")
     private String codecName;
 
-    public ProjectVo(String projectId, String projectName, Integer codecId, String codecType, String codecDesc, String codecName) {
-        this.projectId = projectId;
-        this.projectName = projectName;
-        this.codecId = codecId;
-        this.codecType = codecType;
-        this.codecDesc = codecDesc;
-        this.codecName = codecName;
-    }
+    private Integer messageBelongId;
+
 }

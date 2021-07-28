@@ -20,18 +20,17 @@ public class MessageTypeEntity {
 
     @Id
     @GeneratedValue
-    private Integer messageId;
-
-    private Integer projectId;
-
-    private String projectName;
+    private Integer messageTypeId;
 
     /**
      * 消息类型
      */
     private String messageType;
+
     /**
      * 消息类型描述
      */
     private String messageDescription;
+
+    private Integer messageBelongId;
 }

@@ -4,25 +4,20 @@ import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.ReflectionUtil;
 import com.yuyi.pts.entity.CodecEntity;
 import com.yuyi.pts.entity.MessageTypeEntity;
+import com.yuyi.pts.entity.ProjectWithMessageTypeEntity;
 import com.yuyi.pts.netty.NettyServer;
 import com.yuyi.pts.netty.initializer.TcpServerInitializer;
 import com.yuyi.pts.repository.CodecRepository;
 import com.yuyi.pts.repository.MessageTypeRepository;
+import com.yuyi.pts.repository.ProjectWithMessageTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * description
@@ -39,6 +34,9 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
 
     @Autowired
     MessageTypeRepository messageTypeRepository;
+
+    @Autowired
+    ProjectWithMessageTypeRepository projectWithMessageTypeRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -85,16 +83,26 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
                 Method getType = item.getMethod("getType");
                 Method getDescription = item.getMethod("getDescription");
                 for (Object obj: enums) {
+
+
+
                     MessageTypeEntity messageType = new MessageTypeEntity();
-                    if (item.isAnnotationPresent(Desc.class)) {
-                        Desc desc = (Desc) item.getDeclaredAnnotation(Desc.class);
-                        messageType.setProjectName(desc.value());
-                        messageType.setProjectId(Integer.valueOf(desc.id()) );
-                    }
+
                     messageType.setMessageType((String) getType.invoke(obj));
                     messageType.setMessageDescription((String) getDescription.invoke(obj));
-                    messageTypeRepository.save(messageType);
+
+                    if (item.isAnnotationPresent(Desc.class)) {
+                        Desc desc = (Desc) item.getDeclaredAnnotation(Desc.class);
+                        messageType.setMessageBelongId(Integer.valueOf(desc.id()));
+                        MessageTypeEntity save = messageTypeRepository.save(messageType);
+                        ProjectWithMessageTypeEntity pmEntity = new ProjectWithMessageTypeEntity();
+                        pmEntity.setMessageDesc(desc.value());
+                        pmEntity.setMessageBelongId(Integer.valueOf(desc.id()));
+                        projectWithMessageTypeRepository.save(pmEntity);
+                    }
+
                 }
+
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

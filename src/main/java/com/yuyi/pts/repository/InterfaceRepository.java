@@ -17,6 +17,6 @@ import java.util.List;
  */
 @Repository
 public interface InterfaceRepository extends JpaRepository<InterfaceEntity, String>, JpaSpecificationExecutor<InterfaceEntity> {
-    @Query(value = "select * from t_interface t where t.project_id = projectId", nativeQuery = true)
+    @Query(value = "select * from t_interface t where t.project_id = :projectId", nativeQuery = true)
     List<InterfaceEntity> findByprojectId(String projectId);
 }

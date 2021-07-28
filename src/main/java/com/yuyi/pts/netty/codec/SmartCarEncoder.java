@@ -1,6 +1,7 @@
 package com.yuyi.pts.netty.codec;
 
 import com.yuyi.pts.common.util.ByteUtils;
+import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.SpringUtils;
 import com.yuyi.pts.model.protocol.AtsMessage;
 import io.netty.buffer.ByteBuf;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@Desc(value = "Ats信号编码")
 public class SmartCarEncoder extends MessageToByteEncoder<Object> {
 
     static AtsMessage atsMessage;

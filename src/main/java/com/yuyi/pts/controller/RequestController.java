@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("request")
+@RequestMapping("/request")
 public class RequestController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class RequestController {
      * @param requestType
      * @return
      */
-    @GetMapping("/get/list/by/type")
+    @GetMapping("/find/list/by/type")
     public List<RequestEntity> getAllInterfaceInfo(String requestType) {
         RequestEntity requestEntity = new RequestEntity();
         requestEntity.setRequestType(requestType);

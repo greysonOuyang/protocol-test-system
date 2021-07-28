@@ -26,6 +26,16 @@ public class RequestEntity {
     private Integer requestId;
 
     /**
+     * 请求名称
+     */
+    private String requestName;
+
+    /**
+     * 请求类型 HTTP、TCP
+     */
+    private String requestType;
+
+    /**
      * 编码器
      */
     private String encoderId;
@@ -40,22 +50,17 @@ public class RequestEntity {
     private String protocolType;
 
     /**
-     * 请求名称
-     */
-    private String requestName;
-
-    /**
-     * 请求类型
-     */
-    private String requestType;
-
-    /**
      * 请求地址url或host
      */
     private String address;
 
     /**
-     * 请求方式
+     * 端口号
+     */
+    private Integer port;
+
+    /**
+     * HTTP请求方式
      */
     private String requestMethod;
 
@@ -64,9 +69,5 @@ public class RequestEntity {
      */
     private String content;
 
-    /**
-     * 端口号
-     */
-    private Integer port;
 
 }

@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("interface")
+@RequestMapping("/interface")
 public class InterfaceController {
 
     @Autowired
