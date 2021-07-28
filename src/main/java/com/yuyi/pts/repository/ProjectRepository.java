@@ -11,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @since 2021/7/20
  */
 public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>, JpaSpecificationExecutor<ProjectEntity> {
+    ProjectEntity findProjectEntitiesByProjectName(String projectName);
 }

@@ -24,5 +24,5 @@ public interface ProjectWithMessageTypeRepository extends JpaRepository<ProjectW
     @Query(value = "select * from t_project_message_type group by message_belong_id", nativeQuery = true)
     List<ProjectWithMessageTypeEntity> findListGroupByMessageBelongId();
 
-
+    ProjectWithMessageTypeEntity findProjectWithMessageTypeEntityByProjectId(Integer projectId);
 }

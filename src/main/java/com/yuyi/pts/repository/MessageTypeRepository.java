@@ -26,4 +26,6 @@ public interface MessageTypeRepository extends JpaRepository<MessageTypeEntity, 
 
     MessageTypeEntity findMessageTypeEntityByMessageTypeId(Integer messageTypeId);
 
+    MessageTypeEntity findMessageTypeEntityByMessageDescription(Integer messageTypeId);
+
 }
