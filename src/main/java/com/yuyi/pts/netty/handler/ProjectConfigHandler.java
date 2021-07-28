@@ -6,7 +6,7 @@ import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.ScheduledThreadPoolUtil;
 import com.yuyi.pts.entity.ParamEntity;
 import com.yuyi.pts.model.protocol.SmartCarProtocol;
-import com.yuyi.pts.model.vo.ProjectDto;
+import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.service.ResponseService;
 import io.netty.buffer.ByteBuf;
@@ -42,15 +42,15 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
     @Autowired
     ResponseService responseService;
 
-    ProjectDto projectDto;
+    InterfaceVo interfaceVo;
 
     /**
      * 模式 client或者 Server
      */
     String mode;
 
-    public ProjectConfigHandler(ProjectDto projectDto, String mode) {
-        this.projectDto = projectDto;
+    public ProjectConfigHandler(InterfaceVo interfaceVo, String mode) {
+        this.interfaceVo = interfaceVo;
         this.mode = mode;
     }
 
@@ -90,7 +90,7 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
      * @return 字节数据
      */
     private byte[] buildMsg() {
-        List<ParamEntity> outputList = projectDto.getOutput();
+        List<ParamEntity> outputList = interfaceVo.getOutput();
         byte[] sourceByteArr = buildMessageType();
 
         // 写入数据，组织成对方想要的数据
@@ -158,8 +158,8 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
      */
     private byte[] buildMessageType() {
         byte[] sourceByteArr = null;
-        if (projectDto.getMessageTypeEntity() != null && projectDto.getMessageTypeEntity().getMessageType() != null) {
-            String interfaceType = projectDto.getMessageTypeEntity().getMessageType();
+        if (interfaceVo.getMessageType() != null) {
+            String interfaceType = interfaceVo.getMessageType();
             if (protocol.getLineId() == 14) {
                 sourceByteArr = ByteUtils.storeInBytesLow(ByteUtils.hexString2Bytes(interfaceType), 1);
             } else {

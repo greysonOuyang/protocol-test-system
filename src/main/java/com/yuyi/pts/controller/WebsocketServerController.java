@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.constant.ConstantValue;
 import com.yuyi.pts.common.enums.OperationCommand;
-import com.yuyi.pts.model.vo.ProjectDto;
+import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.model.vo.request.RequestDataDto;
 import com.yuyi.pts.model.vo.request.RequestMainDTO;
 import com.yuyi.pts.model.vo.request.RequestVo;
@@ -45,9 +45,9 @@ public class WebsocketServerController {
     @MessageMapping("/start/server")
     @SendTo("/topic/response")
     public void execute(RequestVo request) {
-        String interfaceId = request.getMessageTypeId();
-        ProjectDto projectDto = projectService.findBy(interfaceId);
-        projectDto.setMode(request.getMode());
+        Integer interfaceId = request.getMessageTypeId();
+        InterfaceVo interfaceVo = projectService.findBy(interfaceId);
+        interfaceVo.setMode(request.getMode());
         String host = request.getHost();
         int port = request.getPort();
         String mode = request.getMode();
@@ -55,10 +55,10 @@ public class WebsocketServerController {
             NettyClient nettyClient = new NettyClient();
             nettyClient.setHost(host);
             nettyClient.setPort(port);
-            nettyClient.setAbstractNettyInitializer(new ProjectInitializer(projectDto, nettyClient));
+            nettyClient.setAbstractNettyInitializer(new ProjectInitializer(interfaceVo, nettyClient));
             nettyClient.start();
         } else if (ConstantValue.SERVER.equals(mode)) {
-            ProjectInitializer projectInitializer = new ProjectInitializer(projectDto);
+            ProjectInitializer projectInitializer = new ProjectInitializer(interfaceVo);
             nettyServer = new NettyServer(projectInitializer, port);
             nettyServer.start();
         }

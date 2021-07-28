@@ -4,7 +4,7 @@ import com.yuyi.pts.entity.InterfaceEntity;
 import com.yuyi.pts.entity.MessageTypeEntity;
 import com.yuyi.pts.entity.ParamEntity;
 import com.yuyi.pts.entity.ProjectEntity;
-import com.yuyi.pts.model.vo.ProjectDto;
+import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.repository.InterfaceRepository;
 import com.yuyi.pts.repository.MessageTypeRepository;
 import com.yuyi.pts.repository.ParamRepository;
@@ -38,22 +38,23 @@ public class ProjectServiceImpl implements ProjectService {
     ParamRepository paramRepository;
 
     @Override
-    public ProjectDto findBy(String interfaceId) {
-        ProjectDto projectDto = new ProjectDto();
+    public InterfaceVo findBy(Integer interfaceId) {
+        InterfaceVo interfaceVo = new InterfaceVo();
         Optional<InterfaceEntity> byId = interfaceRepository.findById(interfaceId);
         if (byId.isPresent()) {
             InterfaceEntity interfaceEntity = byId.get();
             Integer projectId = interfaceEntity.getProjectId();
             ProjectEntity projectEntity = projectRepository.getOne(projectId);
-            projectDto.setProjectEntity(projectEntity);
-            String messageTypeId = interfaceEntity.getMessageTypeId();
+//            interfaceVo.setProjectEntity(projectEntity);
+            Integer messageTypeId = interfaceEntity.getMessageTypeId();
             MessageTypeEntity messageTypeEntity = messageTypeRepository.getOne(messageTypeId);
-            projectDto.setMessageTypeEntity(messageTypeEntity);
+//            interfaceVo.setMessageTypeEntity(messageTypeEntity);
             List<ParamEntity> input = paramRepository.findBy(interfaceId, "input");
-            projectDto.setInput(input);
+            interfaceVo.setInput(input);
             List<ParamEntity> output = paramRepository.findBy(interfaceId, "output");
-            projectDto.setOutput(output);
+            interfaceVo.setOutput(output);
         }
-        return projectDto;
+        return interfaceVo;
     }
+
 }

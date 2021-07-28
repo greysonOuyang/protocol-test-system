@@ -28,6 +28,7 @@ public class ProjectVo {
      * 解码器
      */
     private Integer decoderId;
+
     private String encoderDesc;
     private String decoderDesc;
 

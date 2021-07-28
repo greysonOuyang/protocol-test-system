@@ -4,11 +4,18 @@ package com.yuyi.pts.controller;
 import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.entity.InterfaceEntity;
 import com.yuyi.pts.model.server.ServiceInterface;
+import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.repository.InterfaceRepository;
+import com.yuyi.pts.service.InterfaceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +33,9 @@ public class InterfaceController {
     @Autowired
     InterfaceRepository interfaceRepository;
 
+    @Autowired
+    InterfaceService interfaceService;
+
     @PostMapping("/del/list")
     public String deleteInterface(@RequestBody List<InterfaceEntity> interfaceEntityList) {
         interfaceRepository.deleteInBatch(interfaceEntityList);
@@ -38,8 +48,8 @@ public class InterfaceController {
     }
 
     @GetMapping("/find/list/by/projectId")
-    public List<InterfaceEntity> getInterfaceList(String projectId) {
-        return interfaceRepository.findByprojectId(projectId);
+    public List<InterfaceVo> getInterfaceList(Integer projectId) {
+         return interfaceService.findList(projectId);
     }
 
     /**

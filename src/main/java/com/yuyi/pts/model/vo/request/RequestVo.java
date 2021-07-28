@@ -1,8 +1,5 @@
 package com.yuyi.pts.model.vo.request;
 
-import com.yuyi.pts.entity.InterfaceEntity;
-import com.yuyi.pts.entity.ParamEntity;
-import com.yuyi.pts.model.vo.InterfaceVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +32,7 @@ public class RequestVo {
     /**
      * 接口Id
      */
-    private String interfaceId;
+    private Integer interfaceId;
 
     /**
      * 列车趟数 计划信息
@@ -49,6 +46,6 @@ public class RequestVo {
 
     private String interfaceName;
 
-    private String messageTypeId;
+    private Integer messageTypeId;
 
 }

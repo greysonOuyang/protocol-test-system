@@ -9,7 +9,7 @@ import com.yuyi.pts.common.util.ResultUtil;
 import com.yuyi.pts.entity.InterfaceEntity;
 import com.yuyi.pts.entity.MessageTypeEntity;
 import com.yuyi.pts.entity.ParamEntity;
-import com.yuyi.pts.model.vo.ProjectDto;
+import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.model.vo.request.RequestVo;
 import com.yuyi.pts.repository.InterfaceRepository;
 import com.yuyi.pts.repository.MessageTypeRepository;
@@ -57,7 +57,7 @@ public class ParamController {
     }
 
     @GetMapping("get/all/by/paramIo")
-    public List<ParamEntity> getParamList(String interfaceId, String paramIo) {
+    public List<ParamEntity> getParamList(Integer interfaceId, String paramIo) {
        return paramRepository.findBy(interfaceId, paramIo);
     }
 
@@ -67,9 +67,9 @@ public class ParamController {
      */
     @PostMapping("/planInfo/create")
     public String createParamInfo(@RequestBody RequestVo requestVo) {
-        ProjectDto projectDto = projectService.findBy(requestVo.getMessageTypeId());
+        InterfaceVo interfaceVo = projectService.findBy(requestVo.getMessageTypeId());
         // 消息类型
-        String messageTypeId = requestVo.getMessageTypeId();
+        Integer messageTypeId = requestVo.getMessageTypeId();
         MessageTypeEntity message = messageTypeRepository.getOne(messageTypeId);
 
         // 站台数
@@ -78,7 +78,7 @@ public class ParamController {
         // 站台列车趟数
         String trainCount = requestVo.getTrainCount();
         if (message.getMessageType().equals(AtsMessageType.PLAN_INFO.getDescription())) {
-            List<ParamEntity> paramList = projectDto.getInput();
+            List<ParamEntity> paramList = interfaceVo.getInput();
             List<ParamEntity> terminalList = new ArrayList<>();
             ParamEntity param1 = new ParamEntity();
             param1.setField("站台数");
@@ -157,7 +157,7 @@ public class ParamController {
             String interfaceName = requestVo.getInterfaceName();
             interfaceEntity.setInterfaceName(interfaceName);
             interfaceEntity.setMessageTypeId(messageTypeId);
-            interfaceEntity.setProjectId(projectDto.getProjectEntity().getProjectId());
+            interfaceEntity.setProjectId(interfaceVo.getProjectId());
             InterfaceEntity saveInterface = interfaceRepository.save(interfaceEntity);
 
             terminalList.forEach(item->{

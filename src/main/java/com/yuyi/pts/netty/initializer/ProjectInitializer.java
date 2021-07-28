@@ -1,10 +1,13 @@
 package com.yuyi.pts.netty.initializer;
 
 import com.yuyi.pts.common.constant.ConstantValue;
-import com.yuyi.pts.model.vo.ProjectDto;
+import com.yuyi.pts.controller.ProjectController;
+import com.yuyi.pts.entity.ProjectEntity;
+import com.yuyi.pts.model.vo.InterfaceVo;
 import com.yuyi.pts.netty.NettyClient;
 import com.yuyi.pts.netty.handler.ChannelInactiveHandler;
 import com.yuyi.pts.netty.handler.ProjectConfigHandler;
+import com.yuyi.pts.repository.ProjectRepository;
 import com.yuyi.pts.service.CodecService;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -13,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,20 +28,23 @@ import java.util.concurrent.TimeUnit;
 @Component
 @NoArgsConstructor
 public class ProjectInitializer extends AbstractNettyInitializer<SocketChannel> {
-    private ProjectDto projectDto;
+    private InterfaceVo interfaceVo;
 
     private NettyClient nettyClient;
 
     @Autowired
     CodecService codecService;
 
-    public ProjectInitializer(ProjectDto projectDto, NettyClient nettyClient) {
-        this.projectDto = projectDto;
+    @Autowired
+    ProjectRepository projectRepository;
+
+    public ProjectInitializer(InterfaceVo interfaceVo, NettyClient nettyClient) {
+        this.interfaceVo = interfaceVo;
         this.nettyClient = nettyClient;
     }
 
-    public ProjectInitializer(ProjectDto projectDto) {
-        this.projectDto = projectDto;
+    public ProjectInitializer(InterfaceVo interfaceVo) {
+        this.interfaceVo = interfaceVo;
     }
 
     @Override
@@ -48,14 +55,15 @@ public class ProjectInitializer extends AbstractNettyInitializer<SocketChannel> 
                 ConstantValue.SERVER_WRITE_IDLE_TIME_OUT,
                 ConstantValue.SERVER_ALL_IDLE_TIME_OUT,
                 TimeUnit.SECONDS));
-        Integer encoderId = projectDto.getEncoderId();
-        Integer decoderId = projectDto.getDecoderId();
+        ProjectEntity projectEntity = projectRepository.getOne(interfaceVo.getProjectId());
+        Integer encoderId = projectEntity.getEncoderId();
+        Integer decoderId = projectEntity.getDecoderId();
         pipeline.addLast(codecService.getOne(encoderId));
         pipeline.addLast(codecService.getOne(decoderId));
-        if (ConstantValue.CLIENT.equals(projectDto.getMode())) {
+        if (ConstantValue.CLIENT.equals(interfaceVo.getMode())) {
             pipeline.addLast(new ChannelInactiveHandler(nettyClient));
         }
-        pipeline.addLast(new ProjectConfigHandler(projectDto, projectDto.getMode()));
+        pipeline.addLast(new ProjectConfigHandler(interfaceVo, interfaceVo.getMode()));
     }
 
 

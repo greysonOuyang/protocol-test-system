@@ -13,7 +13,7 @@ import java.util.List;
  * @author greyson
  * @since 2021/7/20
  */
-public interface ParamRepository extends JpaRepository<ParamEntity, String>, JpaSpecificationExecutor<ParamEntity> {
+public interface ParamRepository extends JpaRepository<ParamEntity, Integer>, JpaSpecificationExecutor<ParamEntity> {
     @Query(value = "select * from t_param t where t.interface_id = interfaceId and param_io = paramIo", nativeQuery = true)
-    List<ParamEntity> findBy(String interfaceId, String paramIo);
+    List<ParamEntity> findBy(Integer interfaceId, String paramIo);
 }

@@ -1,6 +1,6 @@
 package com.yuyi.pts.service;
 
-import com.yuyi.pts.model.vo.ProjectDto;
+import com.yuyi.pts.model.vo.InterfaceVo;
 
 /**
  * description
@@ -9,5 +9,5 @@ import com.yuyi.pts.model.vo.ProjectDto;
  * @since 2021/7/21
  */
 public interface ProjectService {
-    ProjectDto findBy(String interfaceId);
+    InterfaceVo findBy(Integer interfaceId);
 }
