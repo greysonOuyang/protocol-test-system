@@ -105,6 +105,9 @@ public class ExcelUtilServiceImpl implements ExcelUtilService {
                     String type = (String) res.get("消息类型");
                     String projectName = (String) res.get("项目名称");
                     ProjectEntity project = projectRepository.findProjectEntitiesByProjectName(projectName);
+                    if (project == null) {
+                        return ResultUtil.failedWithMsg("解析文件出错，找不到项目");
+                    }
                     interfaceEntity.setProjectId(project.getProjectId());
                     ProjectWithMessageTypeEntity pm = pmRepository.findProjectWithMessageTypeEntityByProjectId(project.getProjectId());
                     MessageTypeEntity messageTypeEntity = new MessageTypeEntity();

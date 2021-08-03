@@ -61,13 +61,17 @@ public class ProjectController {
             projectDto.setProjectId(item.getProjectId());
             projectDto.setProjectName(item.getProjectName());
             projectDto.setMessageBelongId(item.getMessageBelongId());
-            Optional<CodecEntity> encoder = codecRepository.findById(item.getEncoderId());
-            if (encoder.isPresent()) {
-                projectDto.setEncoderDesc(encoder.get().getCodecDesc());
+            if (item.getEncoderId() != null) {
+                Optional<CodecEntity> encoder = codecRepository.findById(item.getEncoderId());
+                if (encoder.isPresent()) {
+                    projectDto.setEncoderDesc(encoder.get().getCodecDesc());
+                }
             }
-            Optional<CodecEntity> decoder= codecRepository.findById(item.getDecoderId());
-            if (decoder.isPresent()) {
-                projectDto.setDecoderDesc(decoder.get().getCodecDesc());
+            if (item.getDecoderId() != null) {
+                Optional<CodecEntity> decoder= codecRepository.findById(item.getDecoderId());
+                if (decoder.isPresent()) {
+                    projectDto.setDecoderDesc(decoder.get().getCodecDesc());
+                }
             }
             projectVoList.add(projectDto);
         });
