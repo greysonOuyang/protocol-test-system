@@ -9,6 +9,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * description
@@ -46,6 +47,15 @@ public class RequestController {
         requestEntity.setRequestType(requestType);
         Example<RequestEntity> example = Example.of(requestEntity);
         return requestRepository.findAll(example);
+    }
+
+    @GetMapping("find/by/id")
+    public RequestEntity findById(Integer requestId) {
+        Optional<RequestEntity> byId = requestRepository.findById(requestId);
+        if (byId.isPresent()) {
+            return byId.get();
+        }
+        return null;
     }
 
     /**

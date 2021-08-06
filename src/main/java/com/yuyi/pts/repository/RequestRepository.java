@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
  * @author greyson
  * @since 2021/7/20
  */
-public interface RequestRepository extends JpaRepository<RequestEntity, String>, JpaSpecificationExecutor<RequestEntity> {
+public interface RequestRepository extends JpaRepository<RequestEntity, Integer>, JpaSpecificationExecutor<RequestEntity> {
     @Query(value = "delete from t_request t where t.request_type = requestType", nativeQuery = true)
     void deleteByRequestType(@Param("requestType") String requestType);
 }
