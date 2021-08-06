@@ -39,6 +39,6 @@ public class InterfaceVo {
     /**
      * 作为服务端还是客户端 前端传值
      */
-    private String mode;
+    private String startMode;
 
 }

@@ -61,12 +61,9 @@ public class NettyServer {
     }
 
     public void init(){
-        log.info(" nettyServer 正在启动");
+        log.info(" nettyServer 正在启动...");
         boss = new NioEventLoopGroup();
         worker = new NioEventLoopGroup();
-
-        log.info("netty服务器在{}端口启动监听", this.port);
-
         serverBootstrap.group(boss,worker)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG,1024)
@@ -79,6 +76,7 @@ public class NettyServer {
         try{
             future = serverBootstrap.bind(this.port).sync();
             if(future.isSuccess()){
+                log.info("NettyServer在{}端口成功启动监听", this.port);
                 String result = ResultUtil.successWithNothing();
                 MainController.STATUS_MAP.put(port, result);
             } else {
@@ -92,8 +90,7 @@ public class NettyServer {
         }catch (Exception e){
             String result = ResultUtil.failedWithMsg(e.getMessage());
             MainController.STATUS_MAP.put(port, result);
-            log.info("nettyServer 启动时发生异常---------------{}", e.getMessage());
-            log.info(e.getMessage());
+            log.error("nettyServer 启动时发生异常---------------{}", e.getMessage());
         }finally {
             boss.shutdownGracefully();
             worker.shutdownGracefully();

@@ -27,7 +27,20 @@ public class RequestVo {
      */
     private String host;
 
-    private String mode;
+    /**
+     * 启动模式
+     */
+    private String startMode;
+
+    /**
+     * 数据模式
+     */
+    private String dataMode;
+
+    /**
+     * 数据进制
+     */
+    private String baseType;
 
     /**
      * 接口Id
@@ -47,5 +60,10 @@ public class RequestVo {
     private String interfaceName;
 
     private Integer messageTypeId;
+
+    /**
+     * 报文
+     */
+    private String context;
 
 }

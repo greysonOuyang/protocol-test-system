@@ -33,9 +33,6 @@ public class WebsocketServerController {
 
     public static NettyServer nettyServer;
 
-    @Autowired
-    ProjectService projectService;
-
     /**
      * 请求执行服务
      */
@@ -45,24 +42,20 @@ public class WebsocketServerController {
     @MessageMapping("/start/server")
     @SendTo("/topic/response")
     public void execute(RequestVo request) {
-        Integer interfaceId = request.getMessageTypeId();
-        InterfaceVo interfaceVo = projectService.findBy(interfaceId);
-        interfaceVo.setMode(request.getMode());
         String host = request.getHost();
         int port = request.getPort();
-        String mode = request.getMode();
-        if (ConstantValue.CLIENT.equals(mode)) {
+        String startMode = request.getStartMode();
+        if (ConstantValue.CLIENT.equals(startMode)) {
             NettyClient nettyClient = new NettyClient();
             nettyClient.setHost(host);
             nettyClient.setPort(port);
-            nettyClient.setAbstractNettyInitializer(new ProjectInitializer(interfaceVo, nettyClient));
+            nettyClient.setAbstractNettyInitializer(new ProjectInitializer(request, nettyClient));
             nettyClient.start();
-        } else if (ConstantValue.SERVER.equals(mode)) {
-            ProjectInitializer projectInitializer = new ProjectInitializer(interfaceVo);
+        } else if (ConstantValue.SERVER.equals(startMode)) {
+            ProjectInitializer projectInitializer = new ProjectInitializer(request);
             nettyServer = new NettyServer(projectInitializer, port);
             nettyServer.start();
         }
-
     }
 
     @MessageMapping("/ws/ost")

@@ -48,4 +48,6 @@ public class ConstantValue {
     public static final String MODBUS_WRITE = "10";
 
 
+    public static final String INTERFACE = "interface";
+    public static final String CONTEXT = "context";
 }
