@@ -83,9 +83,6 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
                 Method getType = item.getMethod("getType");
                 Method getDescription = item.getMethod("getDescription");
                 for (Object obj: enums) {
-
-
-
                     MessageTypeEntity messageType = new MessageTypeEntity();
 
                     messageType.setMessageType((String) getType.invoke(obj));

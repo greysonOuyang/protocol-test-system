@@ -56,6 +56,7 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        log.info("连接建立成功");
         NettyClient.channelFuture.addListener((ChannelFutureListener) future -> {
             //如果连接成功
             if (future.isSuccess()) {
@@ -75,6 +76,7 @@ public class ProjectConfigHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        log.info("收到请求了");
         Map<String, Object> messageMap = new HashMap<String, Object>();
         messageMap.put("input", msg);
         super.channelRead(ctx, msg);

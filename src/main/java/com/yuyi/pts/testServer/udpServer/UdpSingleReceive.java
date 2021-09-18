@@ -13,7 +13,7 @@ import java.net.DatagramSocket;
 public class UdpSingleReceive {
     public static void main(String[] args)throws IOException{
         //新建一个socket绑定8888端口
-        DatagramSocket  server = new DatagramSocket(10010);
+        DatagramSocket  server = new DatagramSocket(4321);
         System.out.println("启动在10010端口，等待接收数据。。。");
         //接收消息
         byte[] recvBuf = new byte[100];

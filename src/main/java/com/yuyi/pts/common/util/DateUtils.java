@@ -32,7 +32,7 @@ public class DateUtils {
 		byte[] bytes1 = new byte[2];
 		bytes1[0] = bytes[0];
 		bytes1[1] = bytes[1];
-		String year = String.valueOf(ByteUtils.byte2ToShort(bytes1));
+		String year = String.valueOf(ByteUtils.byte2ToShortBigEndian(bytes1));
 		//月
 		byte[] bytes2 = new byte[1];
 		bytes2[0] = bytes[2];

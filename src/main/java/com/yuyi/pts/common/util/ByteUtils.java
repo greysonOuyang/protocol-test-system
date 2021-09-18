@@ -10,15 +10,131 @@ import java.util.BitSet;
 import java.util.Stack;
 
 /**
- * <pre>
- * 基本数据类型转换(主要是byte和其它类型之间的互转).
- * </pre>
+ * byte或者byte数组与其他数据类型之间的转换 Util
  *
- * @author F.Fang
- * @version $Id: ByteUtils.java, v 0.1 2014年11月9日 下午11:23:21 F.Fang Exp $
+ * @author JoyWu
  */
 public class ByteUtils {
 
+
+    public static byte[] bitSetToByteArray(BitSet bitSet) {
+        int cacheSize = bitSet.length()/8;
+        return bitSetToByteArray(bitSet, cacheSize);
+    }
+
+    public static byte[] bitSetToByteArray(BitSet bitSet, int cacheSize) {
+        byte[] cacheByte = new byte[cacheSize];
+
+        for (int i = 0; i < cacheSize * 8; i++) {
+            if (bitSet.get(i)) {
+                int b = i % 8;
+                int index =  i / 8;
+                byte[] bytes = new byte[1];
+                // 取出当前索引的字节
+                bytes[0] = cacheByte[index];
+                char[] chars = ByteUtils.bytesToChars(bytes);
+                // 将此位置1
+                chars[b] = '1';
+                int value = ByteUtils.charsToDecimal(chars);
+                // 重新赋值
+                cacheByte[index] = (byte) value;
+            }
+        }
+        return cacheByte;
+    }
+
+    /**
+     *
+     * @param chars
+     * @return
+     */
+    public static int charsToDecimal(char[] chars) {
+        int result = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '1') {
+                result += (int) Math.pow(2, chars.length - i - 1);
+            }
+        }
+        return result;
+    }
+
+    public static String charsToString(char[] chars) {
+        StringBuilder sb = new StringBuilder(chars.length);
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(chars[i]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 二进制字符串转换成数字
+     * @param sr
+     * @return
+     */
+    public static int binaryStringToInt(String sr){
+        StringBuffer stringBuffer = new StringBuffer(sr);
+        String s = stringBuffer.reverse().toString();
+        char[] chars = s.toCharArray();
+        int alarmnum = 0;
+        for (int i = 0;i<chars.length;i++){
+            char aChar = chars[i];
+            if(aChar=='1'){
+                int j = i;
+                int plus = 1;
+                while(j-->0){
+                    plus *=2;
+                }
+                alarmnum += plus;
+            }
+        }
+        return alarmnum;
+    }
+
+    // 16进制打印
+    public static String binaryFormat(byte[] bytes){
+        char[] chars = "0123456789ABCDEF".toCharArray();
+        int bit;
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0;i<bytes.length;i++){
+            byte aByte = bytes[i];
+            bit = (bytes[i] & 0x0f0) >> 4;
+            sb.append(chars[bit]);
+            bit = bytes[i] & 0x0f;
+            sb.append(chars[bit]);
+            sb.append(" ");
+        }
+        return sb.toString();// 这里的1代表正数
+    }
+
+
+    /**
+     * byte数组转字符数组
+     *
+     * @param bytes byte数组
+     * @return 字符数组
+     */
+    public static char[] bytesToChars(byte[] bytes) {
+        char[] binChars = new char[bytes.length * 8];
+        int idx = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            for (int bit = 7; bit >= 0; bit--, idx++) {
+                binChars[idx] = (((bytes[i] & 0xff) >> bit) & 0x01) != 0 ? '1'
+                        : '0';
+            }
+        }
+        return binChars;
+    }
+
+    /**
+     * byte数组转成字符串
+     *
+     * @param bytes
+     * @return
+     */
+    public static String bytesToString(byte[] bytes) {
+        char[] binChars = bytesToChars(bytes);
+        return new String(binChars);
+    }
 
     /**
      * 将ByteArray对象转化为BitSet
@@ -36,30 +152,129 @@ public class ByteUtils {
         return bitSet;
     }
 
+    public static String byteToString(byte b) {
+        String hexadecimal = "00";
+        if (b < 0) {
+            hexadecimal = Integer.toHexString(b).substring(6);
+        } else {
+            hexadecimal = Integer.toHexString(b);
+        }
+        if (hexadecimal.length() < 2) {
+            hexadecimal = "0" + hexadecimal;
+        }
+        return hexadecimal;
+    }
+
     /**
-     * bitSet转为byte数组 不要使用官方的tobyteArray 有bug
-     * @param bits
+     * byte 转成十六进制字符串
+     *
+     * @param input
      * @return
      */
-    public static byte[] toByteArray(BitSet bits) {
-        byte[] bytes = new byte[bits.length()/8+1];
-        for (int i=0; i<bits.length(); i++) {
-            if (bits.get(i)) {
-                bytes[i/8] |= 1<<(7-i%8);
+    private static String byteToStr(byte input) {
+        String res = Integer.toHexString(input & 0xff);
+        if (res.length() < 2) {
+            res = "0" + res;
+        }
+        return res;
+    }
+
+    public static String byteArrToBinStr(byte[] b) {
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < b.length; i++) {
+            byte b1 = b[i];
+            for(int j = 7;j>=0;j--){
+                int a = (b1>>j)&0x01;
+                result.append(a);
             }
+        }
+        return result.toString();
+    }
+    /**
+     * <pre>
+     * 长度为1的8位byte数组转换为一个16位short数字.
+     * </pre>
+     *
+     * @param arr
+     * @return
+     */
+    public static short byteToShort(byte[] arr) {
+        if (arr != null && arr.length == 2) {
+            return (short) ((short) arr[0] & 0xff);
+        }
+        throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+    }
+
+    /**
+     * 字符串ASCII（十进制）转换为16进制字节流素组
+     * @param str
+     * @return
+     */
+    public static byte [] convertStringTo16HexBytes(String str){
+        char[] chars = str.toCharArray();
+        StringBuffer hex = new StringBuffer();
+        byte [] bytes=new byte [chars.length];
+        for(int i = 0; i < chars.length; i++){
+            bytes[i]= Byte.parseByte(Integer.toHexString(chars[i]),16);
+            hex.append(Integer.toHexString(chars[i]));
         }
         return bytes;
     }
 
     /**
-     * 十进制转十六进制
-     *
-     * @param decimal_str
+     * 截取原数组中的某一段数组
+     * @param startLength  需要截取源字节数组的起始位置
+     * @param copyLength   需要截取字节数组的长度
+     * @param srcData  需要截取的源字节数组
      * @return
      */
-    public static String decimalToHex(String decimal_str) {
-        return Integer.toHexString(Integer.parseInt(decimal_str));
+    public static byte [] copySrcByteData(int startLength,int copyLength,byte [] srcData){
+        byte [] copyByte=new  byte [copyLength];
+        System.arraycopy(srcData, startLength, copyByte, 0, copyLength);
+        return copyByte;
     }
+
+    public static short byte2ToShortBigEndian(byte[] arr) {
+        if (arr != null && arr.length != 2) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+        }
+        int i = 0;
+        i |= arr[0] & 0xFF;
+        i <<= 8;
+        i |= arr[1] & 0xFF;
+        return (short) i;
+    }
+
+    /**
+     * <pre>
+     * 长度为2的8位byte数组转换为一个16位short数字(低位在前，高位在后).
+     * </pre>
+     * 大端模式
+     * @param arr
+     * @return
+     */
+    public static short byte2ToShort(byte[] arr) {
+        if (arr != null && arr.length != 2) {
+            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
+        }
+        return (short) (((short) arr[1] << 8) | ((short) arr[0] & 0xff));
+    }
+    /** Convert byte to hex string.这里我们可以将byte转换成int，然后利用Integer.toHexString(int)来转换成16进制字符串。
+     * @param src byte[] data
+     * @return hex string
+     */
+    public static String bytesToHexString(byte src){
+        StringBuilder stringBuilder = new StringBuilder();
+            int v = src & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        return stringBuilder.toString();
+    }
+
+
 
     public static byte[] asciiToHex(String asciiStr) {
         char[] chars = asciiStr.toCharArray();
@@ -67,7 +282,7 @@ public class ByteUtils {
         StringBuilder hex_str = new StringBuilder();
 
         for (int i = 0; i < chars.length; i++) {
-            target[i] = ByteUtils.intToByte((int) chars[i]);
+            target[i] = ByteUtils.intToByte(chars[i]);
         }
         return target;
     }
@@ -135,11 +350,6 @@ public class ByteUtils {
         return concatenatedArray;
     }
 
-    public static byte[] spillByteArrays(byte[] array, int start, int offset) {
-        byte[] bytes = new byte[offset - start + 1];
-        System.arraycopy(array, start, bytes, 0, offset - start + 1);
-        return bytes;
-    }
 
     public static byte[] strToBytes(String str) {
         return str.getBytes(StandardCharsets.UTF_8);
@@ -166,7 +376,7 @@ public class ByteUtils {
      * @return
      */
     public static byte[] decimalStrToHex(String str) {
-        return ByteUtils.convertHEXString2ByteArray(ByteUtils.decimalToHex(str));
+        return ByteUtils.convertHEXString2ByteArray(BaseConversionUtil.decimalToHex(str));
     }
 
     public static byte[] convertHEXString2ByteArray(String value) {
@@ -225,33 +435,6 @@ public class ByteUtils {
 
 
     /**
-     * 二进制字符串转换成数字
-     *
-     * @param sr
-     * @return
-     */
-    public static int binaryStringToInt(String sr) {
-        StringBuffer stringBuffer = new StringBuffer(sr);
-        String s = stringBuffer.reverse().toString();
-        char[] chars = s.toCharArray();
-        int alarmnum = 0;
-        for (int i = 0; i < chars.length; i++) {
-            char aChar = chars[i];
-            if (aChar == '1') {
-                int j = i;
-                int plus = 1;
-                while (j-- > 0) {
-                    plus *= 2;
-                }
-                alarmnum += plus;
-            }
-        }
-        return alarmnum;
-    }
-
-
-
-    /**
      * <pre>
      * 将一个16位的short转换为长度为2的8位byte数组.
      * </pre>
@@ -279,27 +462,6 @@ public class ByteUtils {
         return arr;
     }
 
-    /**
-     * 16进制打印
-     *
-     * @param bytes
-     * @return
-     */
-    public static String binaryFormat(byte[] bytes) {
-        char[] chars = "0123456789ABCDEF".toCharArray();
-        int bit;
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < bytes.length; i++) {
-            byte aByte = bytes[i];
-            bit = (bytes[i] & 0x0f0) >> 4;
-            sb.append(chars[bit]);
-            bit = bytes[i] & 0x0f;
-            sb.append(chars[bit]);
-            sb.append(" ");
-        }
-        // 这里的1代表正数
-        return sb.toString();
-    }
 
     /**
      * byte 与 int 的相互转换
@@ -350,31 +512,6 @@ public class ByteUtils {
         return b & 0xFF;
     }
 
-    public static short byte2ToShortBigEndian(byte[] arr) {
-        if (arr != null && arr.length != 2) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
-        }
-        int i = 0;
-        i |= arr[0] & 0xFF;
-        i <<= 8;
-        i |= arr[1] & 0xFF;
-        return (short) i;
-    }
-
-    /**
-     * <pre>
-     * 长度为2的8位byte数组转换为一个16位short数字.
-     * </pre>
-     *
-     * @param arr
-     * @return
-     */
-    public static short byte2ToShort(byte[] arr) {
-        if (arr != null && arr.length != 2) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
-        }
-        return (short) (((short) arr[0] << 8) | ((short) arr[1] & 0xff));
-    }
 
     /**
      * <pre>
@@ -395,6 +532,19 @@ public class ByteUtils {
     }
 
     /**
+     * int 转 short
+     *
+     * @param i int
+     * @return short
+     */
+    public static Short intToShort(int i) {
+        if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
+            return (short) i;
+        }
+        return null;
+    }
+
+    /**
      * <pre>
      * 将长度为4的8位byte数组转换为32位int.
      * </pre>
@@ -406,7 +556,7 @@ public class ByteUtils {
         if (arr == null || arr.length != 4) {
             throw new IllegalArgumentException("byte数组必须不为空,并且是4位!");
         }
-        return (int) (((arr[0] & 0xff) << 24) | ((arr[1] & 0xff) << 16) | ((arr[2] & 0xff) << 8) | ((arr[3] & 0xff)));
+        return ((arr[0] & 0xff) << 24) | ((arr[1] & 0xff) << 16) | ((arr[2] & 0xff) << 8) | ((arr[3] & 0xff));
     }
 
 
@@ -484,20 +634,10 @@ public class ByteUtils {
     }
 
     public static String binary(byte[] bytes, int radix) {
-        return new BigInteger(1, bytes).toString(radix);// 这里的1代表正数  
+        // 这里的1代表正数
+        return new BigInteger(1, bytes).toString(radix);
     }
 
-    public static String byteArrToBinStr(byte[] b) {
-        StringBuffer result = new StringBuffer();
-        for (int i = 0; i < b.length; i++) {
-            byte b1 = b[i];
-            for (int j = 7; j >= 0; j--) {
-                int a = (b1 >> j) & 0x01;
-                result.append(a);
-            }
-        }
-        return result.toString();
-    }
 
     public static Object bytesToObject(byte[] bytes) {
         if (bytes.length == 2) {
@@ -513,22 +653,6 @@ public class ByteUtils {
         return bytes;
     }
 
-    /**
-     * 数字字符串转ASCII码字符串
-     *
-     * @param content 字符串
-     * @return ASCII字符串
-     */
-    public static String StringToAsciiString(String content) {
-        String result = "";
-        int max = content.length();
-        for (int i = 0; i < max; i++) {
-            char c = content.charAt(i);
-            String b = Integer.toHexString(c);
-            result = result + b;
-        }
-        return result;
-    }
 
 
     /**
@@ -574,9 +698,6 @@ public class ByteUtils {
      * @return 新数组
      */
     public static byte[] storeInBytes(byte[] source, int size) {
-        if (source == null) {
-            return null;
-        }
         byte[] target = new byte[size];
         return storeInBytes(source, target);
     }
@@ -590,6 +711,7 @@ public class ByteUtils {
      */
     public static byte[] storeInBytes(byte[] source, byte[] target) {
         return storeInBytes(source, target, true);
+
     }
 
     /**
@@ -645,33 +767,6 @@ public class ByteUtils {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
-    /**
-     * <pre>
-     * 长度为1的8位byte数组转换为一个16位short数字.
-     * </pre>
-     *
-     * @param arr
-     * @return
-     */
-    public static short byteToShort(byte[] arr) {
-        if (arr != null && arr.length != 1) {
-            throw new IllegalArgumentException("byte数组必须不为空,并且是2位!");
-        }
-        return (short) ((short) arr[0] & 0xff);
-    }
-
-    /**
-     * int 转 short
-     *
-     * @param i int
-     * @return short
-     */
-    public static Short intToShort(int i) {
-        if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
-            return (short) i;
-        }
-        return null;
-    }
 
     /**
      * 二进制字符串转int
@@ -697,24 +792,105 @@ public class ByteUtils {
         return res;
     }
     public static byte[] charsToBytes(char[] chars){
-        Charset charset = Charset.forName("UTF-8");
+        Charset charset = StandardCharsets.UTF_8;
         ByteBuffer byteBuffer = charset.encode(CharBuffer.wrap(chars));
         return Arrays.copyOf(byteBuffer.array(), byteBuffer.limit());
     }
+
     /**
-     * 字符串转换unicode
-     * @param string
+     * 二进制字符串转换成int类型
+     * @param binary
      * @return
      */
-    public static String string2Unicode(String string) {
-        StringBuffer unicode = new StringBuffer();
-        for (int i = 0; i < string.length(); i++) {
-            // 取出每一个字符
-            char c = string.charAt(i);
-            // 转换为unicode
-            unicode.append("\\u" + Integer.toHexString(c));
+    public  static  int  binaryToInt(String binary) {
+        if  (binary ==  null ) {
+            System.  out .println( "can't input null ！"  );
         }
+        if  (binary.isEmpty()) {
+            System.  out .println( "you input is Empty !"  );
+        }
+        int  max = binary.length();
+        String new_binary =  "" ;
+        if  (max >= 2 && binary.startsWith( "0" )) {
+            int  position = 0;
+            for  ( int  i = 0; i < binary.length(); i++) {
+                char  a = binary.charAt(i);
+                if  (a !=  '0'  ) {
+                    position = i;
+                    break ;
+                }
+            }
+            if  (position == 0) {
+                new_binary = binary.substring(max - 1, max);
+            }  else  {
+                new_binary = binary.substring(position, max);
+            }
+        }  else  {
+            new_binary = binary;
+        }
+        int  new_width = new_binary.length();
 
-        return unicode.toString();
+        long  result = 0;
+        if  (new_width < 32) {
+            for  ( int  i = new_width; i > 0; i--) {
+                char  c = new_binary.charAt(i - 1);
+                int  algorism = c -  '0'  ;
+                result += Math. pow(2, new_width - i) * algorism;
+            }
+        }  else  if  (new_width == 32) {
+            for  ( int  i = new_width; i > 1; i--) {
+                char  c = new_binary.charAt(i - 1);
+                int  algorism = c -  '0'  ;
+                result += Math. pow(2, new_width - i) * algorism;
+            }
+            result += -2147483648;
+        }
+        int  a =  new  Long(result).intValue();
+        return  a;
     }
+
+    /**
+     * 翻转寄存器内部数据 即两个byte 1-15变成15-1
+     *
+     * @param cacheByte
+     */
+    public static void reverseTwoByte(byte[] cacheByte) {
+        for (int i = 0; i < cacheByte.length; i += 2) {
+            // 取一个寄存器的数据
+            byte[] temp = new byte[2];
+            temp[0] = cacheByte[i];
+            temp[1] = cacheByte[i + 1];
+
+            // 翻转寄存器内部数据位
+            char[] chars = ByteUtils.bytesToChars(temp);
+            ArrayUtils.reverse(chars);
+        }
+    }
+    /**
+     * 翻转寄存器内部数据 即两个byte 1-15变成15-1
+     *
+     * @param cacheByte
+     */
+    public static byte[] returnReverseTwoByte(byte[] cacheByte) {
+        byte[] bytes = new byte[cacheByte.length];
+        for (int i = 0; i < cacheByte.length; i += 2) {
+            // 取一个寄存器的数据
+            byte[] temp = new byte[2];
+            temp[0] = cacheByte[i];
+            temp[1] = cacheByte[i + 1];
+
+            // 翻转寄存器内部数据位
+            char[] chars = ByteUtils.bytesToChars(temp);
+            ArrayUtils.reverse(chars);
+            char[] char1 = ArrayUtils.spilt(chars, 0,8);
+            char[] char2 = ArrayUtils.spilt(chars, 8,16);
+            int i1 = ByteUtils.charsToDecimal(char1);
+            int i2 = ByteUtils.charsToDecimal(char2);
+
+            bytes[i] = (byte) i1;
+            bytes[i + 1] = (byte) i2;
+        }
+        return bytes;
+    }
+
 }

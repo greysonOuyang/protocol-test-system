@@ -1,6 +1,7 @@
 package com.yuyi.pts.netty.codec;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yuyi.pts.common.util.ArrayUtils;
 import com.yuyi.pts.common.util.ByteUtils;
 import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.SpringUtils;
@@ -112,30 +113,30 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             //第15位播放文本是否启用时限控制，0：不控制，1：启用时限控制  1000 0000 1000 0001 32897  0100000000000000 16384  1100 0000 1000 0001    49281
             String limitStyle = jsonObject.get("limitStyle").toString();
             // 优先级
-            String priority = Integer.toBinaryString(Integer.parseInt(jsonObject.get("priority").toString()));
-            if (priority.length() < 4) {
-                for (int i = 0; i < 4 - priority.length(); i++) {
-                    priority = "0" + priority;
-                }
-            }
-            String request =  isOpen + showType + priority + "000" + showTime + limitStyle;
+//            String priority = Integer.toBinaryString(Integer.parseInt(jsonObject.get("priority").toString()));
+//            if (priority.length() < 4) {
+//                for (int i = 0; i < 4 - priority.length(); i++) {
+//                    priority = "0" + priority;
+//                }
+//            }
+//            String request = limitStyle  + showTime + "000" + priority + showType + isOpen;
+            String request = limitStyle  + showTime + "000" + "001" + showType + isOpen;
             short requestData = (short) ByteUtils.binaryStringToInt(request);
             String textCont = jsonObject.get("textCont").toString();
             ByteBuf byteBuf1 = Unpooled.buffer();
             byte[] bytes1 = ByteUtils.shortToByte2(requestData);
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytes1, 2));
-            // todo 暂时写死  后面在改
-            byte[] num = new byte[2];
-            // 播放区域
-            ByteBuf byteBuf = Unpooled.buffer();
             // 文本消息内容
             byte[] bytesStr = textCont.getBytes("unicode");
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytesStr, 250));
-            byte[] bytes = new byte[247 * 2];
-            bytes[56] = (byte) 128;
-            BitSet bitSet = ByteUtils.byteArray2BitSet(bytes);
-            System.out.println(bitSet);
-            byteBuf.writeBytes(bytes);
+
+            // 播放区域
+            ByteBuf byteBuf = Unpooled.buffer();
+            BitSet bitSet1 = new BitSet(247 * 2 * 8);
+//            bitSet1.set(0, 247*2*8, true);
+            bitSet1.set(464, true);
+            byte[] bytes2 = ByteUtils.bitSetToByteArray(bitSet1, 247 * 2);
+            byteBuf.writeBytes(bytes2);
 //            BitSet bitSet = new BitSet(247 * 16);
 //            bitSet.set(448, true);
 //            byte[] bytes2 = ByteUtils.toByteArray(bitSet);
