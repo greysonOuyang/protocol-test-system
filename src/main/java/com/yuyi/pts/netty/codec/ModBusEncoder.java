@@ -113,14 +113,21 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             //第15位播放文本是否启用时限控制，0：不控制，1：启用时限控制  1000 0000 1000 0001 32897  0100000000000000 16384  1100 0000 1000 0001    49281
             String limitStyle = jsonObject.get("limitStyle").toString();
             // 优先级
-//            String priority = Integer.toBinaryString(Integer.parseInt(jsonObject.get("priority").toString()));
-//            if (priority.length() < 4) {
-//                for (int i = 0; i < 4 - priority.length(); i++) {
-//                    priority = "0" + priority;
-//                }
-//            }
+            String priority = Integer.toBinaryString(Integer.parseInt(jsonObject.get("priority").toString()));
+            if (priority.length() < 4) {
+                for (int i = 0; i < 4 - priority.length(); i++) {
+                    priority = "0" + priority;
+                }
+            }
 //            String request = limitStyle  + showTime + "000" + priority + showType + isOpen;
+//            String request = "1110000001010001";
             String request = limitStyle  + showTime + "000" + "001" + showType + isOpen;
+            boolean hengli = true;
+            if(hengli) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(request);
+                request = sb.reverse().toString();
+            }
             short requestData = (short) ByteUtils.binaryStringToInt(request);
             String textCont = jsonObject.get("textCont").toString();
             ByteBuf byteBuf1 = Unpooled.buffer();
@@ -133,10 +140,11 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             // 播放区域
             ByteBuf byteBuf = Unpooled.buffer();
             BitSet bitSet1 = new BitSet(247 * 2 * 8);
-//            bitSet1.set(0, 247*2*8, true);
-            bitSet1.set(464, true);
+            bitSet1.set(0, 247*2*8, true);
+//            bitSet1.set(485, true);
             byte[] bytes2 = ByteUtils.bitSetToByteArray(bitSet1, 247 * 2);
-            byteBuf.writeBytes(bytes2);
+            byte[] bytes = ByteUtils.returnReverseTwoByte(bytes2);
+            byteBuf.writeBytes(bytes);
 //            BitSet bitSet = new BitSet(247 * 16);
 //            bitSet.set(448, true);
 //            byte[] bytes2 = ByteUtils.toByteArray(bitSet);
