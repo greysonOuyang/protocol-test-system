@@ -85,18 +85,9 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
         out.writeBytes(code);
         out.writeBytes(strAddressByte);
         out.writeBytes(registerCountBytes);
-//        if ("0x10".equals(functionCode)) {
-//            out.writeByte(0);
-//            byte[] bytes = new byte[373 * 16];
-//            // 第308个字节的第一位是1 是2457位 byte[308]属于第29个寄存器的前八位 所以第29个寄存器是byte[308]和byte[309];
-//            // 转成bitset后，第2465个位是寄存器的29.0，但是bitset从零开始读，所以bitset的索引位2464必须为1
-//            bytes[308]= (byte) -128;
-//            out.writeBytes(bytes);
-//            BitSet bitSet = ByteUtils.byteArray2BitSet(bytes);
-//            System.out.println("写入的data：" + bitSet);
-//        }
 
         if ("0x10".equals(functionCode)) {
+
             // 文本消息属性
             //  byte[] chars = new byte[16];
             // 第0位 综合监控控制取消播控区域文本内容   1 启动
@@ -122,7 +113,7 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
 //            String request = limitStyle  + showTime + "000" + priority + showType + isOpen;
 //            String request = "1110000001010001";
             String request = limitStyle  + showTime + "000" + "001" + showType + isOpen;
-            boolean hengli = true;
+            boolean hengli = false;
             if(hengli) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(request);
@@ -137,27 +128,28 @@ public class ModBusEncoder extends MessageToByteEncoder<RequestDataDto> {
             byte[] bytesStr = textCont.getBytes("unicode");
             byteBuf1.writeBytes(ByteUtils.storeInBytes(bytesStr, 250));
 
-            // 播放区域
+
             ByteBuf byteBuf = Unpooled.buffer();
+            // 播控选择方式
+            String playerSelection = (String) jsonObject.get("playerSelection");
+            // 播放区域
             BitSet bitSet1 = new BitSet(247 * 2 * 8);
-            bitSet1.set(0, 247*2*8, true);
-//            bitSet1.set(485, true);
+
+            if ("0".equals(playerSelection)) {
+                bitSet1.set(0, 247*2*8, true);
+            } else if ("1".equals(playerSelection)) {
+                // TODO 车站级
+            } else if ("2".equals(playerSelection)) {
+                String playerLocation = (String) jsonObject.get("playerLocation");
+                String[] players = playerLocation.split(",");
+                for (int i = 0; i < players.length; i++) {
+                    bitSet1.set(Integer.parseInt(players[i]), true);
+                }
+            }
+
             byte[] bytes2 = ByteUtils.bitSetToByteArray(bitSet1, 247 * 2);
             byte[] bytes = ByteUtils.returnReverseTwoByte(bytes2);
             byteBuf.writeBytes(bytes);
-//            BitSet bitSet = new BitSet(247 * 16);
-//            bitSet.set(448, true);
-//            byte[] bytes2 = ByteUtils.toByteArray(bitSet);
-//            byteBuf.writeBytes(bytes2);
-
-
-//            for (int i = 0; i < 247 * 2; i++) {
-//                byte[] bytes = ByteUtils.strToBytes("1");
-//                byteBuf.writeBytes(bytes);
-//            }
-            //字节个数
-//            byte[] rnum = ByteUtils.hexString2Bytes("752");
-//            out.writeBytes(rnum);
             out.writeByte(0);
             out.writeBytes(byteBuf1);
             out.writeBytes(byteBuf);

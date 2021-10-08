@@ -1,22 +1,34 @@
 package com.yuyi.pts;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.yuyi.pts.common.util.Desc;
 import com.yuyi.pts.common.util.ReflectionUtil;
 import com.yuyi.pts.entity.CodecEntity;
 import com.yuyi.pts.entity.MessageTypeEntity;
 import com.yuyi.pts.entity.ProjectWithMessageTypeEntity;
+import com.yuyi.pts.entity.StationEntity;
 import com.yuyi.pts.netty.NettyServer;
 import com.yuyi.pts.netty.initializer.TcpServerInitializer;
 import com.yuyi.pts.repository.CodecRepository;
 import com.yuyi.pts.repository.MessageTypeRepository;
 import com.yuyi.pts.repository.ProjectWithMessageTypeRepository;
+import com.yuyi.pts.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -38,14 +50,51 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     @Autowired
     ProjectWithMessageTypeRepository projectWithMessageTypeRepository;
 
+    @Autowired
+    StationRepository stationRepository;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
+//        initStationInfo();
         initCodec();
         initMessageType();
         TcpServerInitializer tcpServerInitializer = new TcpServerInitializer();
         NettyServer nettyServer = new NettyServer(tcpServerInitializer, 1998);
         nettyServer.start();
         log.info("闸机状态的Netty Server启动了");
+    }
+
+    private void initStationInfo() {
+        String os = System.getProperty("os.name");
+        String path = "/opt/station_code.json";
+        if (os.toLowerCase().contains("windows")) {
+            path = "d:/station_code.json";
+        }
+        InputStream inputStream = null;
+        String stationJson = null;
+        try {
+            ClassPathResource classPathResource = new ClassPathResource("/station_list.json");
+            if (Files.exists(Paths.get(path))) {
+                inputStream = new FileInputStream(path);
+            } else if (classPathResource.exists()) {
+                path = classPathResource.getPath();
+                inputStream = classPathResource.getInputStream();
+            }
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+            stationJson = new String(buffer, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JSONArray stationMapList = JSON.parseArray(stationJson);
+        if (stationMapList != null) {
+            for (Object jsonObject : stationMapList) {
+                StationEntity stationIdModel = JSONObject.parseObject(jsonObject.toString(), StationEntity.class);
+                stationRepository.save(stationIdModel);
+            }
+        }
     }
 
     /**

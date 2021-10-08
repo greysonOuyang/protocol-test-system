@@ -26,6 +26,17 @@
     </parent>
 
     <dependencies>
+        <!--commons-net -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.49</version>
+        </dependency>
         <!--spring boot 相关依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

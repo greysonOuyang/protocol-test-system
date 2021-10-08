@@ -1,0 +1,63 @@
+[
+  {
+    "stationId": "0.18.0",
+    "stationName": "万顷沙",
+    "ip": "10.75.48.146",
+    "password": "GZdt@2021"
+  }, {
+  "stationId": "0.18.1",
+  "stationName": "横沥",
+  "ip": "10.75.1.171",
+  "password": "Aa@123456"
+}, {
+  "stationId": "0.18.2",
+  "stationName": "番禺广场-18",
+  "ip": "10.75.52.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.18.3",
+  "stationName": "南村万博",
+  "ip": "10.75.53.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.18.4",
+  "stationName": "沙溪",
+  "ip": "10.75.54.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.18.5",
+  "stationName": "龙潭",
+  "ip": "10.75.55.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.18.6",
+  "stationName": "磨碟沙",
+  "ip": "10.75.56.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.18.7",
+  "stationName": "冼村",
+  "ip": "10.75.57.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.22.0",
+  "stationName": "番禺广场-22",
+  "ip": "10.91.48.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.22.1",
+  "stationName": "市广路",
+  "ip": "10.91.2.171",
+  "password": "Aa@123456"
+}, {
+  "stationId": "0.22.2",
+  "stationName": "广州南站",
+  "ip": "10.91.50.146",
+  "password": "GZdt@2021"
+}, {
+  "stationId": "0.22.3",
+  "stationName": "陈头岗",
+  "ip": "10.91.51.146",
+  "password": "GZdt@2021"
+}
+]
